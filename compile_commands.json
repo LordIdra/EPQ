@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/idra/Sync/EPQ",
+  "command": "/usr/bin/c++   -I/home/idra/Sync/EPQ/src    -fprofile-instr-generate -fcoverage-mapping -o CMakeFiles/LAMBDA.dir/src/main.cpp.o -c /home/idra/Sync/EPQ/src/main.cpp",
+  "file": "/home/idra/Sync/EPQ/src/main.cpp"
+},
+{
+  "directory": "/home/idra/Sync/EPQ",
+  "command": "/usr/bin/c++   -I/home/idra/Sync/EPQ/src    -fprofile-instr-generate -fcoverage-mapping -o CMakeFiles/LAMBDA.dir/src/assembler/assemble.cpp.o -c /home/idra/Sync/EPQ/src/assembler/assemble.cpp",
+  "file": "/home/idra/Sync/EPQ/src/assembler/assemble.cpp"
+},
+{
+  "directory": "/home/idra/Sync/EPQ",
+  "command": "/usr/bin/c++   -I/home/idra/Sync/EPQ/src    -fprofile-instr-generate -fcoverage-mapping -o CMakeFiles/TESTS.dir/tests/assembler.cpp.o -c /home/idra/Sync/EPQ/tests/assembler.cpp",
+  "file": "/home/idra/Sync/EPQ/tests/assembler.cpp"
+},
+{
+  "directory": "/home/idra/Sync/EPQ",
+  "command": "/usr/bin/c++   -I/home/idra/Sync/EPQ/src    -fprofile-instr-generate -fcoverage-mapping -o CMakeFiles/TESTS.dir/src/assembler/assemble.cpp.o -c /home/idra/Sync/EPQ/src/assembler/assemble.cpp",
+  "file": "/home/idra/Sync/EPQ/src/assembler/assemble.cpp"
+}
+]
