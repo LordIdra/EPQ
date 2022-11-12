@@ -19,6 +19,8 @@ SET(TEST_FILES
     "test_util.cpp"
 )
 
+#set(CMAKE_TOOLCHAIN_FILE "~/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
 # Create library
 ADD_LIBRARY(LAMBDA_LIBRARY INTERFACE)
 TARGET_COMPILE_OPTIONS(LAMBDA_LIBRARY INTERFACE -O0 -g --coverage)

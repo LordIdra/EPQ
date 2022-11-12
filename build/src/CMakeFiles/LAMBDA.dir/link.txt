@@ -1,0 +1,1 @@
+/usr/bin/g++  -g   CMakeFiles/LAMBDA.dir/assembler/assembler.cpp.o CMakeFiles/LAMBDA.dir/util/util.cpp.o CMakeFiles/LAMBDA.dir/compile.cpp.o  -o LAMBDA  --coverage 

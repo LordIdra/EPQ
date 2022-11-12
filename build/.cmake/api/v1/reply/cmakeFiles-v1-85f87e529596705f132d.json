@@ -148,19 +148,23 @@
 		},
 		{
 			"isExternal" : true,
-			"path" : "/usr/local/lib/cmake/Catch2/Catch2ConfigVersion.cmake"
+			"path" : "/home/idra/vcpkg/installed/x64-linux/share/catch2/Catch2ConfigVersion.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "/usr/local/lib/cmake/Catch2/Catch2Config.cmake"
+			"path" : "/home/idra/vcpkg/installed/x64-linux/share/catch2/Catch2Config.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "/usr/local/lib/cmake/Catch2/Catch2Targets.cmake"
+			"path" : "/home/idra/vcpkg/installed/x64-linux/share/catch2/Catch2Targets.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "/usr/local/lib/cmake/Catch2/Catch2Targets-noconfig.cmake"
+			"path" : "/home/idra/vcpkg/installed/x64-linux/share/catch2/Catch2Targets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/idra/vcpkg/installed/x64-linux/share/catch2/Catch2Targets-release.cmake"
 		}
 	],
 	"kind" : "cmakeFiles",

@@ -35,7 +35,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 540,
+				"line" : 573,
 				"parent" : 1
 			},
 			{
@@ -98,6 +98,11 @@
 				{
 					"backtrace" : 6,
 					"path" : "/home/idra/Sync/EPQ/tests/../src"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "/home/idra/vcpkg/installed/x64-linux/include"
 				}
 			],
 			"language" : "CXX",
@@ -125,7 +130,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "/usr/local/lib/libCatch2Main.a",
+				"fragment" : "/home/idra/vcpkg/installed/x64-linux/debug/lib/manual-link/libCatch2Maind.a",
 				"role" : "libraries"
 			},
 			{
@@ -133,7 +138,7 @@
 				"role" : "libraries"
 			},
 			{
-				"fragment" : "/usr/local/lib/libCatch2.a",
+				"fragment" : "/home/idra/vcpkg/installed/x64-linux/debug/lib/libCatch2d.a",
 				"role" : "libraries"
 			},
 			{
