@@ -96,6 +96,20 @@ build src/CMakeFiles/LAMBDA.dir/assembler/assembler.cpp.o: CXX_COMPILER__LAMBDA 
   OBJECT_DIR = src/CMakeFiles/LAMBDA.dir
   OBJECT_FILE_DIR = src/CMakeFiles/LAMBDA.dir/assembler
 
+build src/CMakeFiles/LAMBDA.dir/readfile/readfile.cpp.o: CXX_COMPILER__LAMBDA ../src/readfile/readfile.cpp || cmake_object_order_depends_target_LAMBDA
+  DEP_FILE = src/CMakeFiles/LAMBDA.dir/readfile/readfile.cpp.o.d
+  FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
+  INCLUDES = -I../src/.
+  OBJECT_DIR = src/CMakeFiles/LAMBDA.dir
+  OBJECT_FILE_DIR = src/CMakeFiles/LAMBDA.dir/readfile
+
+build src/CMakeFiles/LAMBDA.dir/scanner/scanner.cpp.o: CXX_COMPILER__LAMBDA ../src/scanner/scanner.cpp || cmake_object_order_depends_target_LAMBDA
+  DEP_FILE = src/CMakeFiles/LAMBDA.dir/scanner/scanner.cpp.o.d
+  FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
+  INCLUDES = -I../src/.
+  OBJECT_DIR = src/CMakeFiles/LAMBDA.dir
+  OBJECT_FILE_DIR = src/CMakeFiles/LAMBDA.dir/scanner
+
 build src/CMakeFiles/LAMBDA.dir/util/util.cpp.o: CXX_COMPILER__LAMBDA ../src/util/util.cpp || cmake_object_order_depends_target_LAMBDA
   DEP_FILE = src/CMakeFiles/LAMBDA.dir/util/util.cpp.o.d
   FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
@@ -118,7 +132,7 @@ build src/CMakeFiles/LAMBDA.dir/compile.cpp.o: CXX_COMPILER__LAMBDA ../src/compi
 #############################################
 # Link the executable src/LAMBDA
 
-build src/LAMBDA: CXX_EXECUTABLE_LINKER__LAMBDA src/CMakeFiles/LAMBDA.dir/assembler/assembler.cpp.o src/CMakeFiles/LAMBDA.dir/util/util.cpp.o src/CMakeFiles/LAMBDA.dir/compile.cpp.o
+build src/LAMBDA: CXX_EXECUTABLE_LINKER__LAMBDA src/CMakeFiles/LAMBDA.dir/assembler/assembler.cpp.o src/CMakeFiles/LAMBDA.dir/readfile/readfile.cpp.o src/CMakeFiles/LAMBDA.dir/scanner/scanner.cpp.o src/CMakeFiles/LAMBDA.dir/util/util.cpp.o src/CMakeFiles/LAMBDA.dir/compile.cpp.o
   FLAGS = -g
   LINK_LIBRARIES = --coverage
   OBJECT_DIR = src/CMakeFiles/LAMBDA.dir
@@ -171,6 +185,13 @@ build tests/CMakeFiles/LAMBDA_TESTS.dir/test_assembler.cpp.o: CXX_COMPILER__LAMB
   OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
   OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
 
+build tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../tests/test_readfile.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
+  DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o.d
+  FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
+  INCLUDES = -I../tests/../src
+  OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
+  OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
+
 build tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../tests/test_util.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
   DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o.d
   FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
@@ -184,6 +205,20 @@ build tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler/assembler.cpp.o: CXX_CO
   INCLUDES = -I../tests/../src
   OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
   OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler
+
+build tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile/readfile.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../src/readfile/readfile.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
+  DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile/readfile.cpp.o.d
+  FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
+  INCLUDES = -I../tests/../src
+  OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
+  OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile
+
+build tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner/scanner.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../src/scanner/scanner.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
+  DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner/scanner.cpp.o.d
+  FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
+  INCLUDES = -I../tests/../src
+  OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
+  OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner
 
 build tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../src/util/util.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
   DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o.d
@@ -200,7 +235,7 @@ build tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o: CXX_COMPILER__LA
 #############################################
 # Link the executable tests/LAMBDA_TESTS
 
-build tests/LAMBDA_TESTS: CXX_EXECUTABLE_LINKER__LAMBDA_TESTS tests/CMakeFiles/LAMBDA_TESTS.dir/test_assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler/assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o | /usr/local/lib/libCatch2Main.a /usr/local/lib/libCatch2.a
+build tests/LAMBDA_TESTS: CXX_EXECUTABLE_LINKER__LAMBDA_TESTS tests/CMakeFiles/LAMBDA_TESTS.dir/test_assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler/assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile/readfile.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner/scanner.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o | /usr/local/lib/libCatch2Main.a /usr/local/lib/libCatch2.a
   FLAGS = -g
   LINK_LIBRARIES = /usr/local/lib/libCatch2Main.a  --coverage  /usr/local/lib/libCatch2.a  --coverage
   OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir

@@ -1,9 +1,9 @@
-#include "util/util.h"
+#include "util/util.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 #include <unordered_map>
-#include <util/types.h>
-#include <util/util.h>
+#include <util/types.hpp>
+#include <util/util.hpp>
 
 
 

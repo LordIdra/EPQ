@@ -1,68 +1,76 @@
 #pragma once
 
-#include <util/types.h>
+#include <util/types.hpp>
+
+#define TOKEN(id) struct id : public Token{\
+    id(string text) : Token(text) {}\
+};
 
 
 
-namespace tokens {
-    struct Token { const string text; };
+struct Token { 
+    string text;
+    Token(string text) : text(text) {};
+};
 
-    // Punctuators
-    struct COMMA                : Token {};
-    struct DOT                  : Token {};
-    struct COLON                : Token {};
-    struct SEMICOLON            : Token {};
-    struct OPEN_SQUARE_BRACKET  : Token {};
-    struct CLOSE_SQUARE_BRACKET : Token {};
-    struct OPEN_PARENTHESIS     : Token {};
-    struct CLOSE_PARENTHESIS    : Token {};
+// Punctuators
+TOKEN(COMMA)
+TOKEN(DOT)
+TOKEN(COLON)
+TOKEN(SEMICOLON)
+TOKEN(OPEN_SQUARE_BRACKET)
+TOKEN(CLOSE_SQUARE_BRACKET)
+TOKEN(OPEN_PARENTHESIS)
+TOKEN(CLOSE_PARENTHESIS)
 
-    // Operators
-    struct ASSIGN           : Token {};
-    struct EQUALS           : Token {};
-    struct GREATER          : Token {};
-    struct GREATER_OR_EQUAL : Token {};
-    struct LESS             : Token {};
-    struct LESS_OR_EQUAL    : Token {};
-    struct ADD              : Token {};
-    struct ADD_ASSIGN       : Token {};
-    struct SUBTRACT         : Token {};
-    struct SUBTRACT_ASSIGN  : Token {};
-    struct MULTIPLY         : Token {};
-    struct MULTIPLY_ASSIGN  : Token {};
-    struct DIVIDE           : Token {};
-    struct DIVIDE_ASSIGN    : Token {};
-    struct MODULUS          : Token {};
-    struct MODULUS_ASSIGN   : Token {};
-    struct REFERENCE        : Token {};
-    struct DEREFERENCE      : Token {};
+// Operators
+TOKEN(ASSIGN)
+TOKEN(EQUALS)
+TOKEN(GREATER)
+TOKEN(GREATER_OR_EQUAL)
+TOKEN(LESS)
+TOKEN(LESS_OR_EQUAL)
+TOKEN(ADD)
+TOKEN(ADD_ASSIGN)
+TOKEN(SUBTRACT)
+TOKEN(SUBTRACT_ASSIGN)
+TOKEN(MULTIPLY)
+TOKEN(MULTIPLY_ASSIGN)
+TOKEN(DIVIDE)
+TOKEN(DIVIDE_ASSIGN)
+TOKEN(MODULUS)
+TOKEN(MODULUS_ASSIGN)
+TOKEN(REFERENCE)
+TOKEN(DEREFERENCE)
 
-    // Literals
-    struct TRUE     : Token {};
-    struct FALSE    : Token {};
-    struct NUMBER   : Token {};
+// Identifiers
+TOKEN(IDENTIFIER)
 
-    // Datatypes
-    struct BOOL  : Token {};
-    struct INT4  : Token {};
-    struct INT8  : Token {};
-    struct INT16 : Token {};
-    struct INT32 : Token {};
-    struct INT64 : Token {};
+// Literals
+TOKEN(TRUE)
+TOKEN(FALSE)
+TOKEN(NUMBER)
 
-    // Keywords
-    struct NOT      : Token {};
-    struct OR       : Token {};
-    struct AND      : Token {};
-    struct CONST    : Token {};
-    struct IF       : Token {};
-    struct ELSE     : Token {};
-    struct SWITCH   : Token {};
-    struct CASE     : Token {};
-    struct DEFAULT  : Token {};
-    struct FOR      : Token {};
-    struct WHILE    : Token {};
-    struct CONTINUE : Token {};
-    struct BREAK    : Token {};
-    struct RETURN   : Token {};
-}
+// Datatypes
+TOKEN(BOOL)
+TOKEN(INT4)
+TOKEN(INT8)
+TOKEN(INT16)
+TOKEN(INT32)
+TOKEN(INT64)
+
+// Keywords
+TOKEN(NOT)
+TOKEN(OR)
+TOKEN(AND)
+TOKEN(CONST)
+TOKEN(IF)
+TOKEN(ELSE)
+TOKEN(SWITCH)
+TOKEN(CASE)
+TOKEN(DEFAULT)
+TOKEN(FOR)
+TOKEN(WHILE)
+TOKEN(CONTINUE)
+TOKEN(BREAK)
+TOKEN(RETURN)

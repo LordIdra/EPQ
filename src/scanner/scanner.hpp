@@ -1,9 +1,9 @@
 #pragma once
 
-#include <util/types.h>
+#include <scanner/tokens.hpp>
 
 
 
 namespace scanner {
-    auto Scan(const vector<string> &lines) -> string;
+    auto Scan(const vector<string> &lines) -> vector<Token>;
 }

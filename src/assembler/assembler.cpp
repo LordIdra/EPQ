@@ -1,6 +1,6 @@
 #include "assembler.hpp"
 
-#include <util/util.h>
+#include <util/util.hpp>
 
 #include <algorithm>
 #include <iostream>

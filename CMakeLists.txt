@@ -10,12 +10,15 @@ SET(MAIN_FILE
 # Source files
 SET(SOURCE_FILES
     "assembler/assembler.cpp"
+    "readfile/readfile.cpp"
+    "scanner/scanner.cpp"
     "util/util.cpp"
 )
 
 # Test files
 SET(TEST_FILES
     "test_assembler.cpp"
+    "test_readfile.cpp"
     "test_util.cpp"
 )
 

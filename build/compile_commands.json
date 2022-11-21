@@ -7,6 +7,18 @@
 
 {
   "directory": "/home/idra/Sync/EPQ/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I../src/.  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o src/CMakeFiles/LAMBDA.dir/readfile/readfile.cpp.o -c /home/idra/Sync/EPQ/src/readfile/readfile.cpp",
+  "file": "/home/idra/Sync/EPQ/src/readfile/readfile.cpp"
+},
+
+{
+  "directory": "/home/idra/Sync/EPQ/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I../src/.  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o src/CMakeFiles/LAMBDA.dir/scanner/scanner.cpp.o -c /home/idra/Sync/EPQ/src/scanner/scanner.cpp",
+  "file": "/home/idra/Sync/EPQ/src/scanner/scanner.cpp"
+},
+
+{
+  "directory": "/home/idra/Sync/EPQ/build",
   "command": "/bin/x86_64-linux-gnu-g++-9   -I../src/.  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o src/CMakeFiles/LAMBDA.dir/util/util.cpp.o -c /home/idra/Sync/EPQ/src/util/util.cpp",
   "file": "/home/idra/Sync/EPQ/src/util/util.cpp"
 },
@@ -25,6 +37,12 @@
 
 {
   "directory": "/home/idra/Sync/EPQ/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I../tests/../src  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o -c /home/idra/Sync/EPQ/tests/test_readfile.cpp",
+  "file": "/home/idra/Sync/EPQ/tests/test_readfile.cpp"
+},
+
+{
+  "directory": "/home/idra/Sync/EPQ/build",
   "command": "/bin/x86_64-linux-gnu-g++-9   -I../tests/../src  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o -c /home/idra/Sync/EPQ/tests/test_util.cpp",
   "file": "/home/idra/Sync/EPQ/tests/test_util.cpp"
 },
@@ -33,6 +51,18 @@
   "directory": "/home/idra/Sync/EPQ/build",
   "command": "/bin/x86_64-linux-gnu-g++-9   -I../tests/../src  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler/assembler.cpp.o -c /home/idra/Sync/EPQ/src/assembler/assembler.cpp",
   "file": "/home/idra/Sync/EPQ/src/assembler/assembler.cpp"
+},
+
+{
+  "directory": "/home/idra/Sync/EPQ/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I../tests/../src  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile/readfile.cpp.o -c /home/idra/Sync/EPQ/src/readfile/readfile.cpp",
+  "file": "/home/idra/Sync/EPQ/src/readfile/readfile.cpp"
+},
+
+{
+  "directory": "/home/idra/Sync/EPQ/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I../tests/../src  -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g -o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner/scanner.cpp.o -c /home/idra/Sync/EPQ/src/scanner/scanner.cpp",
+  "file": "/home/idra/Sync/EPQ/src/scanner/scanner.cpp"
 },
 
 {
