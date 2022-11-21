@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <assembler/assembler.h>
+#include <assembler/assembler.hpp>
 #include <util/util.h>
 
 
