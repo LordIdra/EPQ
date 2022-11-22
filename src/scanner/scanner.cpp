@@ -5,6 +5,8 @@
 
 namespace scanner {
 
+    bool error;
+
     namespace {
         const unordered_map<char, int> lowercaseTransitions {
             {'a', 99},
@@ -62,6 +64,8 @@ namespace scanner {
                 {']', 7},
                 {'(', 8},
                 {')', 9},
+                {'{', 15},
+                {'}', 17},
                 {'=', 10},
                 {'+', 12},
                 {'-', 14},
@@ -164,9 +168,9 @@ namespace scanner {
             {},
             {},
             {},
+            Transition_LowercaseAZ('t', 21),
             {},
-            {},
-            {},
+            Transition_LowercaseAZ('p', 100),
             {
                 {'0', 22},
                 {'1', 22},
@@ -231,7 +235,9 @@ namespace scanner {
             Transition_LowercaseAZ(unordered_map<char, int> {
                 {'n', 68},
                 {'f', 78}}),
-            Transition_LowercaseAZ('t', 69),
+            Transition_LowercaseAZ(unordered_map<char, int> {
+                {'t', 69},
+                {'p', 103}}),
             Transition_LowercaseAZ(unordered_map<char, int> {
                 {'4', 70},
                 {'8', 71},
@@ -250,7 +256,9 @@ namespace scanner {
             Transition_LowercaseAZ('o', 80),
             Transition_LowercaseAZ('t', 81),
             lowercaseTransitions,
-            Transition_LowercaseAZ('r', 83),
+            Transition_LowercaseAZ(unordered_map<char, int> {
+                {'r', 83},
+                {'u', 19}}),
             lowercaseTransitions,
             Transition_LowercaseAZ('e', 85),
             Transition_LowercaseAZ('t', 86),
@@ -330,7 +338,13 @@ namespace scanner {
                 {'7', 99},
                 {'8', 99},
                 {'9', 99}
-            }
+            },
+            Transition_LowercaseAZ('u', 101),
+            Transition_LowercaseAZ('t', 102),
+            lowercaseTransitions,
+            Transition_LowercaseAZ('u', 104),
+            Transition_LowercaseAZ('t', 105),
+            lowercaseTransitions
         };
 
         int state;
@@ -358,5 +372,9 @@ namespace scanner {
             ParseLine(line);
         }
         return tokens;
+    }
+
+    auto GetError() -> bool {
+        return error;
     }
 }
