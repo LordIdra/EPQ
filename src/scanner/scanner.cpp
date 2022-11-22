@@ -43,7 +43,7 @@ namespace scanner {
             return m;
         }
 
-        auto Transition_LowercaseAZ(const std::unordered_map<char, int> characterToStateMap) -> unordered_map<char, int> {
+        auto Transition_LowercaseAZ(std::unordered_map<char, int> characterToStateMap) -> unordered_map<char, int> {
             unordered_map<char, int> m = lowercaseTransitions;
             for (auto pair : characterToStateMap) {
                 m.at(pair.first) = pair.second;
@@ -353,7 +353,6 @@ namespace scanner {
         auto ScanNextToken(const string &line) -> int {
             bool tokenEnd = false;
             int index = 0;
-            Token token = {""};
             while (!tokenEnd) {
                 const char character = line[index];
             }
