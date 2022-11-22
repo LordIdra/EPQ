@@ -19,6 +19,7 @@ SET(SOURCE_FILES
 SET(TEST_FILES
     "test_assembler.cpp"
     "test_readfile.cpp"
+    "test_scanner.cpp"
     "test_util.cpp"
 )
 

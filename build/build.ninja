@@ -192,6 +192,13 @@ build tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o: CXX_COMPILER__LAMBD
   OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
   OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
 
+build tests/CMakeFiles/LAMBDA_TESTS.dir/test_scanner.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../tests/test_scanner.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
+  DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/test_scanner.cpp.o.d
+  FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
+  INCLUDES = -I../tests/../src
+  OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
+  OBJECT_FILE_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir
+
 build tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o: CXX_COMPILER__LAMBDA_TESTS ../tests/test_util.cpp || cmake_object_order_depends_target_LAMBDA_TESTS
   DEP_FILE = tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o.d
   FLAGS = -g   -fprofile-arcs -ftest-coverage --coverage -O0 -g
@@ -235,7 +242,7 @@ build tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o: CXX_COMPILER__LA
 #############################################
 # Link the executable tests/LAMBDA_TESTS
 
-build tests/LAMBDA_TESTS: CXX_EXECUTABLE_LINKER__LAMBDA_TESTS tests/CMakeFiles/LAMBDA_TESTS.dir/test_assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler/assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile/readfile.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner/scanner.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o | /usr/local/lib/libCatch2Main.a /usr/local/lib/libCatch2.a
+build tests/LAMBDA_TESTS: CXX_EXECUTABLE_LINKER__LAMBDA_TESTS tests/CMakeFiles/LAMBDA_TESTS.dir/test_assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_readfile.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_scanner.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/test_util.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/assembler/assembler.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/readfile/readfile.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/scanner/scanner.cpp.o tests/CMakeFiles/LAMBDA_TESTS.dir/__/src/util/util.cpp.o | /usr/local/lib/libCatch2Main.a /usr/local/lib/libCatch2.a
   FLAGS = -g
   LINK_LIBRARIES = /usr/local/lib/libCatch2Main.a  --coverage  /usr/local/lib/libCatch2.a  --coverage
   OBJECT_DIR = tests/CMakeFiles/LAMBDA_TESTS.dir

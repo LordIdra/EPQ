@@ -14,5 +14,8 @@ TEST_CASE("1") {
         IDENTIFIER{"I"}, IDENTIFIER("AM"), ADD("+"), IDENTIFIER("BAYEH"), IDENTIFIER("AND"), NUMBER("1"), IDENTIFIER("SPEAK"), IDENTIFIER("FOR"), DOT("."), OPEN_PARENTHESIS("("), IDENTIFIER("THE"), CLOSE_PARENTHESIS(")"), IDENTIFIER("TREES")
     };
     vector<Token> output = scanner::Scan(input);
-    REQUIRE(output == expected);
+    REQUIRE(output.size() == expected.size());
+    for (int i = 0; i < output.size(); i++) {
+        REQUIRE(typeid(expected.at(i)) == typeid(output.at(i).text));
+    }
 }
