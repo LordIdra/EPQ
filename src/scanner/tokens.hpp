@@ -5,6 +5,11 @@
 
 
 enum TokenType {
+    // 'NONE' = no transitions from the current token
+    // 'NO_TOKEN' = final state, but don't write any tokens
+    NONE,
+    NO_TOKEN,
+    
     // Punctuators
     COMMA,
     DOT,
@@ -76,3 +81,4 @@ struct Token {
     TokenType type;
     string text;
 };
+

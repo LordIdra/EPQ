@@ -17,8 +17,8 @@ TEST_CASE("Invalid program") {
 
 TEST_CASE("Valid but nonsensical program") {
     vector<string> input = {
-        "I AM + BAYEH",
-        "AND 1 SPEAK FOR. (THE) TREES",
+        "I AM + BAYEH\n",
+        "AND 1 SPEAK FOR. (THE) TREES\n",
     };
     vector<Token> expected = {
         {IDENTIFIER, "I"}, 
@@ -34,32 +34,34 @@ TEST_CASE("Valid but nonsensical program") {
         {OPEN_PARENTHESIS, "("},
         {IDENTIFIER, "THE"},
         {CLOSE_PARENTHESIS, ")"},
-        {IDENTIFIER, "TREE"},
+        {IDENTIFIER, "TREES"},
     };
     vector<Token> output = scanner::Scan(input);
 
+    REQUIRE(!scanner::GetError());
     REQUIRE(output.size() == expected.size());
     for (int i = 0; i < output.size(); i++) {
-        REQUIRE(typeid(expected.at(i)) == typeid(output.at(i).text));
+        REQUIRE(expected.at(i).type == output.at(i).type);
+        REQUIRE(expected.at(i).text == output.at(i).text);
     }
 }
 
 TEST_CASE("Valid program") {
     vector<string> input = {
-        "int64 Factorial(int32 x) {",
-        "   int16 y = 1;",
-        "   for (int8 i = 0; i < x; i+=1) {",
-        "       y *= i;",
-        "   }",
-        "   return y;",
-        "}",
-        "int4 x = input;",
-        "int4 z = -3;",
-        "bool a = true;",
-        "if (a) {",
-        "   x /= z;",
-        "}",
-        "output Factorial(x);"
+        "int64 Factorial(int32 x) {\n",
+        "   int16 y = 1;\n",
+        "   for (int8 i = 0; i < x; i+=1) {\n",
+        "       y *= i;\n",
+        "   }\n",
+        "   return y;\n",
+        "}\n",
+        "int4 x = input;\n",
+        "int4 z = -3;\n",
+        "bool a = true;\n",
+        "if (a) {\n",
+        "   x /= z;\n",
+        "}\n",
+        "output Factorial(x);\n"
     };
     vector<Token> expected = {
         {INT16, "int16"},
@@ -143,8 +145,10 @@ TEST_CASE("Valid program") {
 
     vector<Token> output = scanner::Scan(input);
 
+    REQUIRE(!scanner::GetError());
     REQUIRE(output.size() == expected.size());
     for (int i = 0; i < output.size(); i++) {
-        REQUIRE(typeid(expected.at(i)) == typeid(output.at(i).text));
+        REQUIRE(expected.at(i).type == output.at(i).type);
+        REQUIRE(expected.at(i).text == output.at(i).text);
     }
 }

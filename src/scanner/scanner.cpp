@@ -1,5 +1,8 @@
 #include "scanner.hpp"
-#include <unordered_map>
+#include "scanner/tokens.hpp"
+
+#include <iostream>
+#include <scanner/States.hpp>
 
 
 
@@ -8,367 +11,76 @@ namespace scanner {
     bool error;
 
     namespace {
-        const unordered_map<char, int> lowercaseTransitions {
-            {'a', 99},
-            {'b', 99},
-            {'c', 99},
-            {'d', 99},
-            {'e', 99},
-            {'f', 99},
-            {'g', 99},
-            {'h', 99},
-            {'i', 99},
-            {'j', 99},
-            {'k', 99},
-            {'l', 99},
-            {'m', 99},
-            {'n', 99},
-            {'o', 99},
-            {'p', 99},
-            {'q', 99},
-            {'r', 99},
-            {'s', 99},
-            {'t', 99},
-            {'u', 99},
-            {'v', 99},
-            {'w', 99},
-            {'x', 99},
-            {'y', 99},
-            {'z', 99},
-        };
-
-        auto Transition_LowercaseAZ(const char character, int state) -> unordered_map<char, int> {
-            unordered_map<char, int> m = lowercaseTransitions;
-            m.at(character) = state;
-            return m;
-        }
-
-        auto Transition_LowercaseAZ(std::unordered_map<char, int> characterToStateMap) -> unordered_map<char, int> {
-            unordered_map<char, int> m = lowercaseTransitions;
-            for (auto pair : characterToStateMap) {
-                m.at(pair.first) = pair.second;
-            }
-            return m;
-        }
-
-        vector<unordered_map<char, int>> transitions {
-            {
-                {' ', 1},
-                {'\n', 1},
-                {'#', 1},
-                {',', 2},
-                {'.', 3},
-                {':', 4},
-                {';', 5},
-                {'[', 6},
-                {']', 7},
-                {'(', 8},
-                {')', 9},
-                {'{', 15},
-                {'}', 17},
-                {'=', 10},
-                {'+', 12},
-                {'-', 14},
-                {'0', 21},
-                {'1', 21},
-                {'2', 21},
-                {'3', 21},
-                {'4', 21},
-                {'5', 21},
-                {'6', 21},
-                {'7', 21},
-                {'8', 21},
-                {'9', 21},
-                {'*', 23},
-                {'/', 25},
-                {'%', 27},
-                {'!', 29},
-                {'>', 31},
-                {'<', 33},
-                {'a', 35},
-                {'b', 38},
-                {'c', 46},
-                {'d', 99},
-                {'e', 56},
-                {'f', 60},
-                {'g', 99},
-                {'h', 99},
-                {'i', 67},
-                {'j', 99},
-                {'k', 99},
-                {'l', 99},
-                {'m', 99},
-                {'n', 79},
-                {'o', 82},
-                {'p', 99},
-                {'q', 99},
-                {'r', 84},
-                {'s', 99},
-                {'t', 90},
-                {'u', 99},
-                {'v', 99},
-                {'w', 94},
-                {'x', 99},
-                {'y', 99},
-                {'z', 99},
-                {'A', 99},
-                {'B', 99},
-                {'C', 99},
-                {'D', 99},
-                {'E', 99},
-                {'F', 99},
-                {'G', 99},
-                {'H', 99},
-                {'I', 99},
-                {'J', 99},
-                {'K', 99},
-                {'L', 99},
-                {'M', 99},
-                {'N', 99},
-                {'O', 99},
-                {'P', 99},
-                {'Q', 99},
-                {'R', 99},
-                {'S', 99},
-                {'T', 99},
-                {'U', 99},
-                {'V', 99},
-                {'W', 99},
-                {'X', 99},
-                {'Y', 99},
-                {'Z', 99}}, 
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {{'=', 11}},
-            {},
-            {{'=', 13}},
-            {},
-            {
-                {'=', 16},
-                {'>', 18},
-                {'<', 20},
-                {'0', 22},
-                {'1', 22},
-                {'2', 22},
-                {'3', 22},
-                {'4', 22},
-                {'5', 22},
-                {'6', 22},
-                {'7', 22},
-                {'8', 22},
-                {'9', 22}},
-            {},
-            {},
-            {},
-            {},
-            Transition_LowercaseAZ('t', 21),
-            {},
-            Transition_LowercaseAZ('p', 100),
-            {
-                {'0', 22},
-                {'1', 22},
-                {'2', 22},
-                {'3', 22},
-                {'4', 22},
-                {'5', 22},
-                {'6', 22},
-                {'7', 22},
-                {'8', 22},
-                {'9', 22}},
-            {{'=', 24}},
-            {},
-            {{'=', 26}},
-            {},
-            {{'=', 28}},
-            {},
-            {{'=', 30}},
-            {},
-            {{'=', 32}},
-            {},
-            {{'=', 34}},
-            {},
-            Transition_LowercaseAZ('n', 36),
-            Transition_LowercaseAZ('d', 37),
-            lowercaseTransitions,
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'o', 39},
-                {'r', 42}}),
-            Transition_LowercaseAZ('o', 40),
-            Transition_LowercaseAZ('l', 41),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('e', 43),
-            Transition_LowercaseAZ('a', 44),
-            Transition_LowercaseAZ('k', 45),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('o', 47),
-            Transition_LowercaseAZ('n', 48),
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'t', 49},
-                {'s', 54}}),
-            Transition_LowercaseAZ('i', 50),
-            Transition_LowercaseAZ('n', 51),
-            Transition_LowercaseAZ('u', 52),
-            Transition_LowercaseAZ('e', 53),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('t', 55),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('l', 57),
-            Transition_LowercaseAZ('s', 58),
-            Transition_LowercaseAZ('e', 59),
-            lowercaseTransitions,
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'o', 61},
-                {'a', 63}}),
-            Transition_LowercaseAZ('r', 62),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('l', 64),
-            Transition_LowercaseAZ('s', 65),
-            Transition_LowercaseAZ('e', 66),
-            lowercaseTransitions,
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'n', 68},
-                {'f', 78}}),
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'t', 69},
-                {'p', 103}}),
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'4', 70},
-                {'8', 71},
-                {'1', 72},
-                {'3', 74},
-                {'6', 76}}),
-            lowercaseTransitions,
-            lowercaseTransitions,
-            Transition_LowercaseAZ('6', 73),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('3', 75),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('4', 77),
-            lowercaseTransitions,
-            lowercaseTransitions,
-            Transition_LowercaseAZ('o', 80),
-            Transition_LowercaseAZ('t', 81),
-            lowercaseTransitions,
-            Transition_LowercaseAZ(unordered_map<char, int> {
-                {'r', 83},
-                {'u', 19}}),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('e', 85),
-            Transition_LowercaseAZ('t', 86),
-            Transition_LowercaseAZ('u', 87),
-            Transition_LowercaseAZ('r', 88),
-            Transition_LowercaseAZ('n', 89),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('r', 91),
-            Transition_LowercaseAZ('u', 92),
-            Transition_LowercaseAZ('e', 93),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('h', 95),
-            Transition_LowercaseAZ('i', 96),
-            Transition_LowercaseAZ('l', 97),
-            Transition_LowercaseAZ('e', 98),
-            lowercaseTransitions,
-            {
-                {'a', 99},
-                {'b', 99},
-                {'c', 99},
-                {'d', 99},
-                {'e', 99},
-                {'f', 99},
-                {'g', 99},
-                {'h', 99},
-                {'i', 99},
-                {'j', 99},
-                {'k', 99},
-                {'l', 99},
-                {'m', 99},
-                {'n', 99},
-                {'o', 99},
-                {'p', 99},
-                {'q', 99},
-                {'r', 99},
-                {'s', 99},
-                {'t', 99},
-                {'u', 99},
-                {'v', 99},
-                {'w', 99},
-                {'x', 99},
-                {'y', 99},
-                {'z', 99},
-                {'A', 99},
-                {'B', 99},
-                {'C', 99},
-                {'D', 99},
-                {'E', 99},
-                {'F', 99},
-                {'G', 99},
-                {'H', 99},
-                {'I', 99},
-                {'J', 99},
-                {'K', 99},
-                {'L', 99},
-                {'M', 99},
-                {'N', 99},
-                {'O', 99},
-                {'P', 99},
-                {'Q', 99},
-                {'R', 99},
-                {'S', 99},
-                {'T', 99},
-                {'U', 99},
-                {'V', 99},
-                {'W', 99},
-                {'X', 99},
-                {'Y', 99},
-                {'Z', 99},
-                {'0', 99},
-                {'1', 99},
-                {'2', 99},
-                {'3', 99},
-                {'4', 99},
-                {'5', 99},
-                {'6', 99},
-                {'7', 99},
-                {'8', 99},
-                {'9', 99}
-            },
-            Transition_LowercaseAZ('u', 101),
-            Transition_LowercaseAZ('t', 102),
-            lowercaseTransitions,
-            Transition_LowercaseAZ('u', 104),
-            Transition_LowercaseAZ('t', 105),
-            lowercaseTransitions
-        };
-
-        int state;
+        int state = 0;
+        int lastFinalState = -1;
+        string stateText;
+        string lastFinalStateText;
+        string lastFinalStateRemainingText;
         vector<Token> tokens;
 
-        auto ScanNextToken(const string &line) -> int {
-            bool tokenEnd = false;
-            int index = 0;
-            while (!tokenEnd) {
-                const char character = line[index];
-            }
-            return index;
-        }
+        auto StepToNextState(string remainingText) -> void {
+            unordered_map<char, int> possibleTransitions = transitions.at(state);
 
-        auto ParseLine(const string &line) -> void {
-            for (const char c : line) {
-                ScanNextToken(line);
+            // Get next character
+            const char nextCharacter = remainingText.at(0);
+            
+            // Move state variable to next state if possible
+            if (possibleTransitions.count(nextCharacter) == 1) {
+                state = possibleTransitions.at(nextCharacter);
+                stateText += nextCharacter;
+
+                // Pop character off the text, since we've moved to the next state
+                remainingText = remainingText.substr(1, remainingText.size()-1);
+            
+            // Otherwise, try to complete the token
+            } else {
+
+                // If the token can be completed at the current state, complete the token and add it to the token vector
+                if (finalStates.at(state) != NONE) {
+
+                    // If the token type is NO_TOKEN, don't add a token
+                    if (finalStates.at(state) != NO_TOKEN) {
+                        tokens.push_back(Token{finalStates.at(state), stateText});
+                    }
+
+                    // Reset state machine for next cycle
+                    state = 0;
+                    stateText = "";
+                    lastFinalState = -1;
+                    lastFinalStateText = "";
+                }
+
+                // If not, backtrack to the previous final state and create the token with that
+                else {
+                    if (lastFinalState != -1) {
+                        tokens.push_back(Token{finalStates.at(lastFinalState), lastFinalStateText});
+                        remainingText = lastFinalStateRemainingText;
+
+                    // If there's no last final state, we have an error
+                    } else {
+                        error = true;
+                        return;
+                    }
+                }
+            }
+
+            // Check if we're in a potential final state
+            if (finalStates.at(state) != NONE) {
+                lastFinalState = state;
+                lastFinalStateText = stateText;
+                lastFinalStateRemainingText = remainingText;
+            }
+
+            // Recursive call if we still have text to go through
+            if (!remainingText.empty()) {
+                StepToNextState(remainingText);
             }
         }
     }
 
     auto Scan(const vector<string> &lines) -> vector<Token> {
         for (const string &line : lines) {
-            ParseLine(line);
+            StepToNextState(line);
         }
         return tokens;
     }
