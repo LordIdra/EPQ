@@ -11,7 +11,10 @@ TEST_CASE("Invalid program") {
         "   death++;",
         "} # do the thing"
     };
+    
+    scanner::Reset();
     scanner::Scan(input);
+
     REQUIRE(scanner::GetError());
 };
 
@@ -36,11 +39,108 @@ TEST_CASE("Valid but nonsensical program") {
         {CLOSE_PARENTHESIS, ")"},
         {IDENTIFIER, "TREES"},
     };
+
+    scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
     REQUIRE(!scanner::GetError());
     REQUIRE(output.size() == expected.size());
     for (int i = 0; i < output.size(); i++) {
+        REQUIRE(expected.at(i).type == output.at(i).type);
+        REQUIRE(expected.at(i).text == output.at(i).text);
+    }
+}
+
+TEST_CASE("All tokens") {
+    vector<string> input = {
+        "# This isn't a comment, definitely not\n",
+        ",.:;[](){=} == => =< += - -= ->\n",
+        "0 12935 8942758706 -4829367864 -0\n",
+        "*= /= %= >= <= <-\n",
+        "and bool break continue const\n",
+        "else for false input if\n",
+        "int4 int8 int16 int32 int64\n",
+        "not or output return true while\n",
+        "identifiers Yes jUs KI skjnafionefne_AWFsanus_aWSngjeke jeamoieea_P _ PPPPP i jie n\n"
+    };
+    vector<Token> expected = {
+        {COMMA, ","},
+        {DOT, "."},
+        {COLON, ":"},
+        {SEMICOLON, ";"},
+        {OPEN_SQUARE_BRACKET, "["},
+        {CLOSE_SQUARE_BRACKET, "]"},
+        {OPEN_PARENTHESIS, "("},
+        {CLOSE_PARENTHESIS, ")"},
+        {OPEN_BRACE, "{"},
+        {ASSIGN, "="},
+        {CLOSE_BRACE, "}"},
+        {EQUALS, "=="},
+        {GREATER_OR_EQUAL, "=>"},
+        {LESS_OR_EQUAL, "=<"},
+        {ADD_ASSIGN, "+="},
+        {SUBTRACT, "-"},
+        {SUBTRACT_ASSIGN, "-="},
+        {REFERENCE, "->"},
+
+        {NUMBER, "0"},
+        {NUMBER, "12935"},
+        {NUMBER, "8942758706"},
+        {NUMBER, "-4829367864"},
+        {NUMBER, "-0"},
+
+        {MULTIPLY_ASSIGN, "*="},
+        {DIVIDE_ASSIGN, "/="},
+        {MODULUS_ASSIGN, "%="},
+        {GREATER_OR_EQUAL, ">="},
+        {LESS_OR_EQUAL, "<="},
+        {DEREFERENCE, "<-"},
+
+        {AND, "and"},
+        {BOOL, "bool"},
+        {BREAK, "break"},
+        {CONTINUE, "continue"},
+        {CONST, "const"},
+
+        {ELSE, "else"},
+        {FOR, "for"},
+        {FALSE, "false"},
+        {INPUT, "input"},
+        {IF, "if"},
+
+        {INT4, "int4"},
+        {INT8, "int8"},
+        {INT16, "int16"},
+        {INT32, "int32"},
+        {INT64, "int64"},
+
+        {NOT, "not"},
+        {OR, "or"},
+        {OUTPUT, "output"},
+        {RETURN, "return"},
+        {TRUE, "true"},
+        {WHILE, "while"},
+
+        {IDENTIFIER, "identifiers"},
+        {IDENTIFIER, "Yes"},
+        {IDENTIFIER, "jUs"},
+        {IDENTIFIER, "KI"},
+        {IDENTIFIER, "skjnafionefne_AWFsanus_aWSngjeke"},
+        {IDENTIFIER, "jeamoieea_P"},
+        {IDENTIFIER, "_"},
+        {IDENTIFIER, "PPPPP"},
+        {IDENTIFIER, "i"},
+        {IDENTIFIER, "jie"},
+        {IDENTIFIER, "n"},
+    };
+
+    scanner::Reset();
+    vector<Token> output = scanner::Scan(input);
+
+    REQUIRE(!scanner::GetError());
+    for (int i = 0; i < output.size(); i++) {
+        CAPTURE(expected.at(i).type, output.at(i).type);
+        CAPTURE(expected.at(i).text, output.at(i).text);
         REQUIRE(expected.at(i).type == output.at(i).type);
         REQUIRE(expected.at(i).text == output.at(i).text);
     }
@@ -58,21 +158,21 @@ TEST_CASE("Valid program") {
         "int4 x = input;\n",
         "int4 z = -3;\n",
         "bool a = true;\n",
-        "if (a) {\n",
+        "if (a == true) {\n",
         "   x /= z;\n",
         "}\n",
         "output Factorial(x);\n"
     };
     vector<Token> expected = {
-        {INT16, "int16"},
+        {INT64, "int64"},
         {IDENTIFIER, "Factorial"},
         {OPEN_PARENTHESIS, "("},
-        {INT4, "int4"},
+        {INT32, "int32"},
         {IDENTIFIER, "x"},
         {CLOSE_PARENTHESIS, ")"},
         {OPEN_BRACE, "{"},
 
-        {INT4, "int4"},
+        {INT16, "int16"},
         {IDENTIFIER, "y"},
         {ASSIGN, "="},
         {NUMBER, "1"},
@@ -98,6 +198,12 @@ TEST_CASE("Valid program") {
         {IDENTIFIER, "y"},
         {MULTIPLY_ASSIGN, "*="},
         {IDENTIFIER, "i"},
+        {SEMICOLON, ";"},
+
+        {CLOSE_BRACE, "}"},
+
+        {RETURN, "return"},
+        {IDENTIFIER, "y"},
         {SEMICOLON, ";"},
 
         {CLOSE_BRACE, "}"},
@@ -143,11 +249,13 @@ TEST_CASE("Valid program") {
         {SEMICOLON, ";"}
     };
 
+    scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
     REQUIRE(!scanner::GetError());
-    REQUIRE(output.size() == expected.size());
     for (int i = 0; i < output.size(); i++) {
+        CAPTURE(expected.at(i).type, output.at(i).type);
+        CAPTURE(expected.at(i).text, output.at(i).text);
         REQUIRE(expected.at(i).type == output.at(i).type);
         REQUIRE(expected.at(i).text == output.at(i).text);
     }

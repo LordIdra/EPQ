@@ -8,9 +8,8 @@
 
 namespace scanner {
 
-    bool error;
-
     namespace {
+        bool error = false;;
         int state = 0;
         int lastFinalState = -1;
         string stateText;
@@ -28,6 +27,15 @@ namespace scanner {
             if (possibleTransitions.count(nextCharacter) == 1) {
                 state = possibleTransitions.at(nextCharacter);
                 stateText += nextCharacter;
+
+                // If the new state is a comment state, we can discard the rest of the line
+                if (state == 108) {
+                    state = 0;
+                    stateText = "";
+                    lastFinalState = -1;
+                    lastFinalStateText = "";
+                    return;
+                }
 
                 // Pop character off the text, since we've moved to the next state
                 remainingText = remainingText.substr(1, remainingText.size()-1);
@@ -78,11 +86,22 @@ namespace scanner {
         }
     }
 
+
     auto Scan(const vector<string> &lines) -> vector<Token> {
         for (const string &line : lines) {
             StepToNextState(line);
         }
         return tokens;
+    }
+
+    auto Reset() -> void {
+        error = false;
+        state = 0;
+        lastFinalState = -1;
+        stateText = "";
+        lastFinalStateText = "";
+        lastFinalStateRemainingText = "";
+        tokens = vector<Token> ();
     }
 
     auto GetError() -> bool {

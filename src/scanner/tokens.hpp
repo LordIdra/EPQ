@@ -5,10 +5,11 @@
 
 
 enum TokenType {
-    // 'NONE' = no transitions from the current token
+    // 'NONE' = the state does not correspond to a token
     // 'NO_TOKEN' = final state, but don't write any tokens
     NONE,
     NO_TOKEN,
+    COMMENT,
     
     // Punctuators
     COMMA,
