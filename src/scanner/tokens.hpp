@@ -12,6 +12,7 @@ enum TokenType {
     COMMENT,
     
     // Punctuators
+    POINTER,
     COMMA,
     DOT,
     COLON,

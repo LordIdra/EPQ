@@ -17,69 +17,90 @@ namespace scanner {
         string lastFinalStateRemainingText;
         vector<Token> tokens;
 
-        auto StepToNextState(string remainingText) -> void {
+        auto ResetStateMachine() -> void {
+            state = 0;
+            stateText = "";
+            lastFinalState = -1;
+            lastFinalStateText = "";
+        }
+
+        auto TransitionPossible(const char character) -> bool {
             unordered_map<char, int> possibleTransitions = transitions.at(state);
+            return possibleTransitions.count(character) == 1;
+        }
 
-            // Get next character
-            const char nextCharacter = remainingText.at(0);
-            
-            // Move state variable to next state if possible
-            if (possibleTransitions.count(nextCharacter) == 1) {
-                state = possibleTransitions.at(nextCharacter);
-                stateText += nextCharacter;
+        auto MakeTransition(const char character) -> void {
+            unordered_map<char, int> possibleTransitions = transitions.at(state);
+            state = possibleTransitions.at(character);
+            stateText += character;
+        }
 
-                // If the new state is a comment state, we can discard the rest of the line
-                if (state == 108) {
-                    state = 0;
-                    stateText = "";
-                    lastFinalState = -1;
-                    lastFinalStateText = "";
+        auto IsCommentState() -> bool {
+            return state == 108;
+        }
+
+        auto IsDeadEndState() -> bool {
+            return finalStates.at(state) != NONE;
+        }
+
+        auto PopCharacter(string &str) -> void {
+            str = str.substr(1, str.size()-1);
+        }
+
+        auto ShouldAddToken() -> bool {
+            return finalStates.at(state) != NO_TOKEN;
+        }
+
+        auto AddToken() -> void {
+            tokens.push_back(Token{finalStates.at(state), stateText});
+        }
+
+        auto LastFinalStateExists() -> bool {
+            return lastFinalState != -1;
+        }
+
+        auto AddFinalStateToken() -> void {
+            tokens.push_back(Token{finalStates.at(lastFinalState), lastFinalStateText});
+        }
+
+        auto IsCurrentStateFinal() -> bool {
+            return finalStates.at(state) != NONE;
+        }
+
+        auto UpdateLastFinalState(const string &remainingText) -> void {
+            lastFinalState = state;
+            lastFinalStateText = stateText;
+            lastFinalStateRemainingText = remainingText;
+        }
+
+        auto StepToNextState(string remainingText) -> void {
+            const char character = remainingText.at(0);
+            if (TransitionPossible(character)) {
+                MakeTransition(character);
+                if (IsCommentState()) {
+                    ResetStateMachine();
                     return;
                 }
-
-                // Pop character off the text, since we've moved to the next state
-                remainingText = remainingText.substr(1, remainingText.size()-1);
-            
-            // Otherwise, try to complete the token
+                PopCharacter(remainingText);
             } else {
-
-                // If the token can be completed at the current state, complete the token and add it to the token vector
-                if (finalStates.at(state) != NONE) {
-
-                    // If the token type is NO_TOKEN, don't add a token
-                    if (finalStates.at(state) != NO_TOKEN) {
-                        tokens.push_back(Token{finalStates.at(state), stateText});
+                if (IsDeadEndState()) {
+                    if (ShouldAddToken()) {
+                       AddToken();
                     }
-
-                    // Reset state machine for next cycle
-                    state = 0;
-                    stateText = "";
-                    lastFinalState = -1;
-                    lastFinalStateText = "";
-                }
-
-                // If not, backtrack to the previous final state and create the token with that
-                else {
-                    if (lastFinalState != -1) {
-                        tokens.push_back(Token{finalStates.at(lastFinalState), lastFinalStateText});
+                    ResetStateMachine();
+                } else {
+                    if (LastFinalStateExists()) {
+                        AddFinalStateToken();
                         remainingText = lastFinalStateRemainingText;
-
-                    // If there's no last final state, we have an error
                     } else {
                         error = true;
                         return;
                     }
                 }
             }
-
-            // Check if we're in a potential final state
-            if (finalStates.at(state) != NONE) {
-                lastFinalState = state;
-                lastFinalStateText = stateText;
-                lastFinalStateRemainingText = remainingText;
+            if (IsCurrentStateFinal()) {
+                UpdateLastFinalState(remainingText);
             }
-
-            // Recursive call if we still have text to go through
             if (!remainingText.empty()) {
                 StepToNextState(remainingText);
             }

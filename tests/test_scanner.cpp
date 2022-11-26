@@ -54,7 +54,7 @@ TEST_CASE("Valid but nonsensical program") {
 TEST_CASE("All tokens") {
     vector<string> input = {
         "# This isn't a comment, definitely not\n",
-        ",.:;[](){=} == => =< += - -= ->\n",
+        "@,.:;[](){=} == => =< += - -= ->\n",
         "0 12935 8942758706 -4829367864 -0\n",
         "*= /= %= >= <= <-\n",
         "and bool break continue const\n",
@@ -64,6 +64,7 @@ TEST_CASE("All tokens") {
         "identifiers Yes jUs KI skjnafionefne_AWFsanus_aWSngjeke jeamoieea_P _ PPPPP i jie n\n"
     };
     vector<Token> expected = {
+        {POINTER, "@"},
         {COMMA, ","},
         {DOT, "."},
         {COLON, ":"},

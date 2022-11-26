@@ -5,7 +5,7 @@
 
 
 
-const unordered_map<char, int> lowercaseTransitions {
+const unordered_map<char, int> lowercaseAndNumberTransitions {
     {'a', 99},
     {'b', 99},
     {'c', 99},
@@ -44,25 +44,33 @@ const unordered_map<char, int> lowercaseTransitions {
     {'9', 99},
 };
 
+// Generates transitions for all a-z and 0-9 to 99
+// The transition with character 'character' is replaced with a transition to parameter 'state'
 static auto Transition_LowercaseAZorNumber(const char character, int state) -> unordered_map<char, int> {
-    unordered_map<char, int> m = lowercaseTransitions;
+    unordered_map<char, int> m = lowercaseAndNumberTransitions;
     m.at(character) = state;
     return m;
 }
 
+// Same as above, except...
+// The parameter characterToStateMap contains pairs representing transitions
+// It is used to replace the default transitions with the transitions in the map
 static auto Transition_LowercaseAZorNumber(const std::unordered_map<char, int> &characterToStateMap) -> unordered_map<char, int> {
-    unordered_map<char, int> m = lowercaseTransitions;
+    unordered_map<char, int> m = lowercaseAndNumberTransitions;
     for (auto pair : characterToStateMap) {
         m.at(pair.first) = pair.second;
     }
     return m;
 }
 
+// Stores all the transitions that can be made from state A (the index of the element within the vector)
+// to state B through character C, stored as pairs in the corresponding map
 const vector<unordered_map<char, int>> transitions {
     {
         {' ', 1},
         {'\n', 1},
         {'#', 108},
+        {'@', 109},
         {',', 2},
         {'.', 3},
         {':', 4},
@@ -208,17 +216,17 @@ const vector<unordered_map<char, int>> transitions {
     {},
     Transition_LowercaseAZorNumber('n', 36),
     Transition_LowercaseAZorNumber('d', 37),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
         {'o', 39},
         {'r', 42}}),
     Transition_LowercaseAZorNumber('o', 40),
     Transition_LowercaseAZorNumber('l', 41),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('e', 43),
     Transition_LowercaseAZorNumber('a', 44),
     Transition_LowercaseAZorNumber('k', 45),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('o', 47),
     Transition_LowercaseAZorNumber('n', 48),
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
@@ -228,22 +236,22 @@ const vector<unordered_map<char, int>> transitions {
     Transition_LowercaseAZorNumber('n', 51),
     Transition_LowercaseAZorNumber('u', 52),
     Transition_LowercaseAZorNumber('e', 53),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('t', 55),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('l', 57),
     Transition_LowercaseAZorNumber('s', 58),
     Transition_LowercaseAZorNumber('e', 59),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
         {'o', 61},
         {'a', 63}}),
     Transition_LowercaseAZorNumber('r', 62),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('l', 64),
     Transition_LowercaseAZorNumber('s', 65),
     Transition_LowercaseAZorNumber('e', 66),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
         {'n', 68},
         {'f', 78}}),
@@ -256,37 +264,37 @@ const vector<unordered_map<char, int>> transitions {
         {'1', 72},
         {'3', 74},
         {'6', 76}}),
-    lowercaseTransitions,
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('6', 73),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('2', 75),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('4', 77),
-    lowercaseTransitions,
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('o', 80),
     Transition_LowercaseAZorNumber('t', 81),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
         {'r', 83},
         {'u', 19}}),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('e', 85),
     Transition_LowercaseAZorNumber('t', 86),
     Transition_LowercaseAZorNumber('u', 87),
     Transition_LowercaseAZorNumber('r', 88),
     Transition_LowercaseAZorNumber('n', 89),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('r', 91),
     Transition_LowercaseAZorNumber('u', 92),
     Transition_LowercaseAZorNumber('e', 93),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('h', 95),
     Transition_LowercaseAZorNumber('i', 96),
     Transition_LowercaseAZorNumber('l', 97),
     Transition_LowercaseAZorNumber('e', 98),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     {
         {'_', 99},
         {'a', 99},
@@ -354,15 +362,19 @@ const vector<unordered_map<char, int>> transitions {
     },
     Transition_LowercaseAZorNumber('u', 101),
     Transition_LowercaseAZorNumber('t', 102),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('u', 104),
     Transition_LowercaseAZorNumber('t', 105),
-    lowercaseTransitions,
+    lowercaseAndNumberTransitions,
+    {},
     {},
     {},
     {}
 };
 
+// The state here is indicated by the index of the element
+// The corresponding vector entry represents the output for that state
+// If the state is not a final state, a NONE or NO_TOKEN output can be used
 const vector<TokenType> finalStates {
     NONE,
     NO_TOKEN,
@@ -472,5 +484,6 @@ const vector<TokenType> finalStates {
     INPUT,
     GREATER_OR_EQUAL,
     LESS_OR_EQUAL,
-    NONE
+    NONE,
+    POINTER
 };
