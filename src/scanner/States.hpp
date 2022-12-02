@@ -104,7 +104,7 @@ const vector<unordered_map<char, int>> transitions {
         {'a', 35},
         {'b', 38},
         {'c', 46},
-        {'d', 99},
+        {'d', 114},
         {'e', 56},
         {'f', 60},
         {'g', 99},
@@ -122,7 +122,7 @@ const vector<unordered_map<char, int>> transitions {
         {'s', 99},
         {'t', 90},
         {'u', 99},
-        {'v', 99},
+        {'v', 110},
         {'w', 94},
         {'x', 99},
         {'y', 99},
@@ -369,7 +369,18 @@ const vector<unordered_map<char, int>> transitions {
     {},
     {},
     {},
-    {}
+    {},
+    Transition_LowercaseAZorNumber('o', 111),
+    Transition_LowercaseAZorNumber('i', 112),
+    Transition_LowercaseAZorNumber('d', 113),
+    lowercaseAndNumberTransitions,
+    Transition_LowercaseAZorNumber('e', 115),
+    Transition_LowercaseAZorNumber('f', 116),
+    Transition_LowercaseAZorNumber('a', 117),
+    Transition_LowercaseAZorNumber('u', 118),
+    Transition_LowercaseAZorNumber('l', 119),
+    Transition_LowercaseAZorNumber('t', 120),
+    lowercaseAndNumberTransitions
 };
 
 // The state here is indicated by the index of the element
@@ -485,5 +496,16 @@ const vector<TokenType> finalStates {
     GREATER_OR_EQUAL,
     LESS_OR_EQUAL,
     NONE,
-    POINTER
+    POINTER,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    VOID,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    DEFAULT
 };

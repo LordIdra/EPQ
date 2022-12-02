@@ -58,9 +58,9 @@ TEST_CASE("All tokens") {
         "0 12935 8942758706 -4829367864 -0\n",
         "*= /= %= >= <= <-\n",
         "and bool break continue const\n",
-        "else for false input if\n",
+        "default else for false input if\n",
         "int4 int8 int16 int32 int64\n",
-        "not or output return true while\n",
+        "not or output return true void while\n",
         "identifiers Yes jUs KI skjnafionefne_AWFsanus_aWSngjeke jeamoieea_P _ PPPPP i jie n\n"
     };
     vector<Token> expected = {
@@ -103,6 +103,7 @@ TEST_CASE("All tokens") {
         {CONTINUE, "continue"},
         {CONST, "const"},
 
+        {DEFAULT, "default"},
         {ELSE, "else"},
         {FOR, "for"},
         {FALSE, "false"},
@@ -120,6 +121,7 @@ TEST_CASE("All tokens") {
         {OUTPUT, "output"},
         {RETURN, "return"},
         {TRUE, "true"},
+        {VOID, "void"},
         {WHILE, "while"},
 
         {IDENTIFIER, "identifiers"},

@@ -53,6 +53,7 @@ enum TokenType {
     NUMBER,
 
     // Datatypes
+    VOID,
     BOOL,
     INT4,
     INT8,
