@@ -1,0 +1,3 @@
+void DoThing() {
+    const int4 x = true;
+}

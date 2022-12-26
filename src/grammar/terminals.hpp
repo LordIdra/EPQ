@@ -4,13 +4,14 @@
 
 
 
-enum TokenType {
+enum Terminal {
     // 'NONE' = the state does not correspond to a token
     // 'NO_TOKEN' = final state, but don't write any tokens
     NONE,
+    NEWLINE,
     NO_TOKEN,
     COMMENT,
-    
+
     // Punctuators
     POINTER,
     COMMA,
@@ -26,6 +27,7 @@ enum TokenType {
 
     // Operators
     ASSIGN,
+    NOT_EQUALS,
     EQUALS,
     GREATER,
     GREATER_OR_EQUAL,
@@ -54,7 +56,8 @@ enum TokenType {
 
     // Datatypes
     VOID,
-    BOOL,
+    INT1,
+    INT2,
     INT4,
     INT8,
     INT16,
@@ -68,6 +71,7 @@ enum TokenType {
     CONST,
     IF,
     ELSE,
+    ELSEIF,
     SWITCH,
     CASE,
     DEFAULT,
@@ -80,8 +84,10 @@ enum TokenType {
     INPUT
 };
 
+const int FIRST_TERMINAL = NONE;
+const int LAST_TERMINAL = INPUT;
+
 struct Token { 
-    TokenType type;
+    int type;
     string text;
 };
-

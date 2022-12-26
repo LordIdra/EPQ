@@ -1,0 +1,17 @@
+int64 Factorial(int32 x) {
+   int16 y = 1;
+   for (int8 i = 0; i < x; i+=1) {
+       y *= i;
+   }
+   return y;
+}
+
+void main() {
+    int4 x = input;
+    const int4 z = -3;
+    int1 a = true;
+    if (a) {
+       x /= z;
+    }
+    output Factorial(x);
+}

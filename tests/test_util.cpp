@@ -7,7 +7,7 @@
 
 
 
-TEST_CASE("Power of integer") {
+TEST_CASE("[0|UTL] Power of integer") {
     struct Test { unsigned int x; unsigned int y; unsigned int result; };
     vector<Test> tests {
         {77756, 0, 1},
@@ -22,7 +22,7 @@ TEST_CASE("Power of integer") {
 }
 
 
-TEST_CASE("Binary to denary") {
+TEST_CASE("[0|UTL] Binary to denary") {
     struct Test { unsigned int x; unsigned int bits; string result; };
     vector<Test> tests {
         {0, 1, "0"},

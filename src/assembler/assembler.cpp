@@ -1,4 +1,5 @@
 #include "assembler.hpp"
+#include "util/errors.hpp"
 
 #include <util/util.hpp>
 
@@ -32,7 +33,7 @@ namespace assembler {
                 return operand <= MAX_OPERAND_VALUE;
             }
 
-            // Should never be triggered, let's set it to false so if there is an edge case, it doesn't fail silently
+            // Should never be triggered
             return false;
         }
 
@@ -130,29 +131,33 @@ namespace assembler {
     auto Assemble(const string &instruction) -> string {
         // Check if the instruciton is a valid length          
         if (!Detail::IsValidInstructionSize(instruction.size())) {
-            std::cerr << INVALID_INSTRUCTION_SIZE << ": " << instruction << "\n";
-            return INVALID_INSTRUCTION_SIZE;
+            errors::AddError(errors::INVALID_INSTRUCTION_SIZE, 
+                colors::RED + "Invalid instruction size: " + colors::CYAN + instruction + colors::WHITE);
+            return "";
         }
         
         // Get opcode string and check opcode is valid
         string opcode_string = instruction.substr(0, 3);
         if (!Detail::IsValidOpcode(opcode_string)) {
-            std::cerr << INVALID_OPCODE << ": " << instruction << "\n";
-            return INVALID_OPCODE;
+            errors::AddError(errors::INVALID_OPCODE, 
+                colors::RED + "Invalid opcode: " + colors::CYAN + instruction + colors::WHITE);
+            return "";
         }
 
         // Get operand strings and check there's a valid number of them
         vector<string> operand_strings = Detail::GetOperandStrings(instruction);
         if (!Detail::OperandCountValid(opcode_string, operand_strings)) {
-            std::cerr << INVALID_OPERAND_COUNT << ": " << instruction << "\n";
-            return INVALID_OPERAND_COUNT;
+            errors::AddError(errors::INVALID_OPERAND_COUNT, 
+                colors::RED + "Invalid operand count: " + colors::CYAN + instruction + colors::WHITE);
+            return "";
         }
 
         // Convert all those operand strings into integers and check they're valid
         vector<int> operand_ints = Detail::OperandsAsIntegers(operand_strings);
         if (!Detail::OperandsValid(opcode_string, operand_ints)) {
-            std::cerr << INVALID_OPERAND << ": " << instruction << "\n";
-            return INVALID_OPERAND;
+            errors::AddError(errors::INVALID_OPERAND, 
+                colors::RED + "Invalid operand: " + colors::CYAN + instruction + colors::WHITE);
+            return "";
         }
 
         // Convert integers into binary

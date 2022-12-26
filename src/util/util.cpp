@@ -1,5 +1,6 @@
 #include "util.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 
@@ -61,4 +62,8 @@ auto FileExists(const string &path) -> bool {
     
     // Check if the opened file contains any data - if so, the file exists
     return bool(file);
+}
+
+auto Contains(const vector<int> container, const int target) -> bool {
+    return std::count(container.begin(), container.end(), target) != 0;
 }

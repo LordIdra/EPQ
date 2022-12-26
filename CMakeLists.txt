@@ -9,18 +9,27 @@ SET(MAIN_FILE
 
 # Source files
 SET(SOURCE_FILES
-    "assembler/assembler.cpp"
+    "util/util.cpp" 
+    "util/errors.cpp" 
     "readfile/readfile.cpp"
     "scanner/scanner.cpp"
-    "util/util.cpp"
+    "parser/parser.cpp"
+    "parser/sets/setUtil.cpp"
+    "parser/sets/first.cpp"
+    "parser/sets/follow.cpp"
+    "parser/parser.cpp"
+    "parser/table.cpp"
+    "assembler/assembler.cpp"
 )
 
 # Test files
 SET(TEST_FILES
-    "test_assembler.cpp"
+    "test_util.cpp"
     "test_readfile.cpp"
     "test_scanner.cpp"
-    "test_util.cpp"
+    "test_parser.cpp"
+    "test_grammar.cpp"
+    "test_assembler.cpp"
 )
 
 #set(CMAKE_TOOLCHAIN_FILE "~/vcpkg/scripts/buildsystems/vcpkg.cmake")

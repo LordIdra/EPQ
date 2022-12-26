@@ -1,0 +1,29 @@
+void main() {
+    int64 x = input;
+    for (int32 i = 0; i < x; i+=1) {
+        i %= 3;
+        switch (i) {
+            case (1) {
+                output 0;
+                continue;
+            }
+            case (2) {
+                output 15;
+            }
+ 
+            default {
+                output 3;
+            }
+        }
+
+        output 10;
+    }
+    while (x) {
+        x -= 1;
+
+        output (5 and 16) or not x;
+        if (x < 10) {
+            break;
+        }
+    }
+}

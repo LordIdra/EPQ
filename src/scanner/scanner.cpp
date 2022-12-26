@@ -1,17 +1,19 @@
 #include "scanner.hpp"
-#include "scanner/tokens.hpp"
+#include "grammar/terminals.hpp"
+#include "util/errors.hpp"
 
 #include <iostream>
-#include <scanner/States.hpp>
+#include <scanner/states.hpp>
 
 
 
 namespace scanner {
 
     namespace {
-        bool error = false;;
+        bool restOfLineIsComment = false;
         int state = 0;
         int lastFinalState = -1;
+        int currentLine = 1;
         string stateText;
         string lastFinalStateText;
         string lastFinalStateRemainingText;
@@ -40,7 +42,7 @@ namespace scanner {
         }
 
         auto IsDeadEndState() -> bool {
-            return finalStates.at(state) != NONE;
+            return finalStates.at(state) == NONE;
         }
 
         auto PopCharacter(string &str) -> void {
@@ -73,27 +75,57 @@ namespace scanner {
             lastFinalStateRemainingText = remainingText;
         }
 
+        auto LogUnrecognizedSymbol() -> void {
+            errors::AddError(errors::UNRECOGNIZED_SYMBOL, 
+                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
+                colors::RED + " Unrecognized Symbol: " + stateText + colors::WHITE);
+        }
+
+        auto LogUnexpectedEndOfLine() -> void {
+            errors::AddError(errors::UNRECOGNIZED_SYMBOL, 
+                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
+                colors::RED + " Unrecognized end-of-line: " + stateText + colors::WHITE);
+        }
+
+        auto FinishLine() -> void {
+            if (IsDeadEndState()) {
+                LogUnexpectedEndOfLine();
+                return;
+            }
+            if (ShouldAddToken()) {
+               AddToken();
+            }
+            ResetStateMachine();
+        }
+
         auto StepToNextState(string remainingText) -> void {
             const char character = remainingText.at(0);
+
             if (TransitionPossible(character)) {
                 MakeTransition(character);
+                PopCharacter(remainingText);
+
                 if (IsCommentState()) {
+                    restOfLineIsComment = true;
                     ResetStateMachine();
                     return;
                 }
-                PopCharacter(remainingText);
+
             } else {
-                if (IsDeadEndState()) {
+                if (!IsDeadEndState()) {
                     if (ShouldAddToken()) {
                        AddToken();
                     }
+
                     ResetStateMachine();
+
                 } else {
                     if (LastFinalStateExists()) {
                         AddFinalStateToken();
                         remainingText = lastFinalStateRemainingText;
+
                     } else {
-                        error = true;
+                        LogUnrecognizedSymbol();
                         return;
                     }
                 }
@@ -110,22 +142,29 @@ namespace scanner {
 
     auto Scan(const vector<string> &lines) -> vector<Token> {
         for (const string &line : lines) {
-            StepToNextState(line);
+            restOfLineIsComment = false;
+
+            if (!line.empty()) {
+                StepToNextState(line);
+                if (!restOfLineIsComment) {
+                    FinishLine();
+                }
+            }
+
+            tokens.push_back(Token{NEWLINE, ""});
+
+            currentLine++;
         }
         return tokens;
     }
 
     auto Reset() -> void {
-        error = false;
         state = 0;
         lastFinalState = -1;
         stateText = "";
         lastFinalStateText = "";
         lastFinalStateRemainingText = "";
         tokens = vector<Token> ();
-    }
-
-    auto GetError() -> bool {
-        return error;
+        currentLine = 1;
     }
 }

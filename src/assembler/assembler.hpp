@@ -6,11 +6,6 @@
 
 
 namespace assembler {
-    const string INVALID_INSTRUCTION_SIZE = "INVALID_INSTRUCTION_SIZE";
-    const string INVALID_OPCODE = "INVALID_OPCODE";
-    const string INVALID_OPERAND_COUNT = "INVALID_OPERAND_COUNT";
-    const string INVALID_OPERAND = "INVALID_OPERAND";
-
     const int WORD_SIZE = 4;
     const int LENGTH_WITH_0_OPERANDS = 3;
     const int LENGTH_WITH_1_OPERANDS = 6;

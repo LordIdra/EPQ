@@ -1,33 +1,31 @@
-#include "scanner/tokens.hpp"
+#include "grammar/terminals.hpp"
+#include "readfile/readfile.hpp"
+#include "util/errors.hpp"
 #include <catch2/catch_test_macros.hpp>
 
+#include <iostream>
 #include <scanner/scanner.hpp>
 
 
 
-TEST_CASE("Invalid program") {
-    vector<string> input = {
-        "for (5£££int4 i = 0; i < +; i-+) {",
-        "   death++;",
-        "} # do the thing"
-    };
+TEST_CASE("[3|SCN] Invalid program") {
+    vector<string> input = readfile::Read("../../tests/resources/scanner_fail_1.txt");
     
+    errors::Reset();
     scanner::Reset();
     scanner::Scan(input);
 
-    REQUIRE(scanner::GetError());
+    REQUIRE(errors::GetErrorCode() == errors::UNRECOGNIZED_SYMBOL);
 };
 
-TEST_CASE("Valid but nonsensical program") {
-    vector<string> input = {
-        "I AM + BAYEH\n",
-        "AND 1 SPEAK FOR. (THE) TREES\n",
-    };
+TEST_CASE("[3|SCN] Valid but nonsensical program") {
+    vector<string> input = readfile::Read("../../tests/resources/scanner_fail_2.txt");
     vector<Token> expected = {
         {IDENTIFIER, "I"}, 
         {IDENTIFIER, "AM"}, 
-        {ADD, "+"}, 
-        {IDENTIFIER, "BAYEH"}, 
+        {ADD, "+"},
+        {IDENTIFIER, "BAYEH"},
+        {NEWLINE, ""},
 
         {IDENTIFIER, "AND"},
         {NUMBER, "1"},
@@ -38,32 +36,27 @@ TEST_CASE("Valid but nonsensical program") {
         {IDENTIFIER, "THE"},
         {CLOSE_PARENTHESIS, ")"},
         {IDENTIFIER, "TREES"},
+        {NEWLINE, ""},
     };
 
+    errors::Reset();
     scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
-    REQUIRE(!scanner::GetError());
+    REQUIRE(errors::GetErrorCode() == NONE);
     REQUIRE(output.size() == expected.size());
-    for (int i = 0; i < output.size(); i++) {
+
+    for (int i = 0; i < expected.size(); i++) {
         REQUIRE(expected.at(i).type == output.at(i).type);
         REQUIRE(expected.at(i).text == output.at(i).text);
     }
 }
 
-TEST_CASE("All tokens") {
-    vector<string> input = {
-        "# This isn't a comment, definitely not\n",
-        "@,.:;[](){=} == => =< += - -= ->\n",
-        "0 12935 8942758706 -4829367864 -0\n",
-        "*= /= %= >= <= <-\n",
-        "and bool break continue const\n",
-        "default else for false input if\n",
-        "int4 int8 int16 int32 int64\n",
-        "not or output return true void while\n",
-        "identifiers Yes jUs KI skjnafionefne_AWFsanus_aWSngjeke jeamoieea_P _ PPPPP i jie n\n"
-    };
+TEST_CASE("[3|SCN] All tokens") {
+    vector<string> input = readfile::Read("../../tests/resources/scanner_pass_1.txt");
     vector<Token> expected = {
+        {NEWLINE, ""},
+
         {POINTER, "@"},
         {COMMA, ","},
         {DOT, "."},
@@ -77,18 +70,21 @@ TEST_CASE("All tokens") {
         {ASSIGN, "="},
         {CLOSE_BRACE, "}"},
         {EQUALS, "=="},
+        {NOT_EQUALS, "!="},
         {GREATER_OR_EQUAL, "=>"},
         {LESS_OR_EQUAL, "=<"},
         {ADD_ASSIGN, "+="},
         {SUBTRACT, "-"},
         {SUBTRACT_ASSIGN, "-="},
         {REFERENCE, "->"},
+        {NEWLINE, ""},
 
         {NUMBER, "0"},
         {NUMBER, "12935"},
         {NUMBER, "8942758706"},
         {NUMBER, "-4829367864"},
         {NUMBER, "-0"},
+        {NEWLINE, ""},
 
         {MULTIPLY_ASSIGN, "*="},
         {DIVIDE_ASSIGN, "/="},
@@ -96,33 +92,46 @@ TEST_CASE("All tokens") {
         {GREATER_OR_EQUAL, ">="},
         {LESS_OR_EQUAL, "<="},
         {DEREFERENCE, "<-"},
+        {NEWLINE, ""},
 
         {AND, "and"},
-        {BOOL, "bool"},
         {BREAK, "break"},
+        {CASE, "case"},
         {CONTINUE, "continue"},
         {CONST, "const"},
+        {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {DEFAULT, "default"},
         {ELSE, "else"},
+        {ELSEIF, "elseif"},
         {FOR, "for"},
         {FALSE, "false"},
         {INPUT, "input"},
         {IF, "if"},
+        {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
+        {INT1, "int1"},
+        {INT2, "int2"},
         {INT4, "int4"},
         {INT8, "int8"},
         {INT16, "int16"},
         {INT32, "int32"},
         {INT64, "int64"},
+        {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {NOT, "not"},
         {OR, "or"},
         {OUTPUT, "output"},
         {RETURN, "return"},
+        {SWITCH, "switch"},
         {TRUE, "true"},
         {VOID, "void"},
         {WHILE, "while"},
+        {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {IDENTIFIER, "identifiers"},
         {IDENTIFIER, "Yes"},
@@ -135,12 +144,15 @@ TEST_CASE("All tokens") {
         {IDENTIFIER, "i"},
         {IDENTIFIER, "jie"},
         {IDENTIFIER, "n"},
-    };
+        {NEWLINE, ""}};
 
+    errors::Reset();
     scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
-    REQUIRE(!scanner::GetError());
+    REQUIRE(errors::GetErrorCode() == NONE);
+    REQUIRE(output.size() == expected.size());
+
     for (int i = 0; i < output.size(); i++) {
         CAPTURE(expected.at(i).type, output.at(i).type);
         CAPTURE(expected.at(i).text, output.at(i).text);
@@ -149,23 +161,8 @@ TEST_CASE("All tokens") {
     }
 }
 
-TEST_CASE("Valid program") {
-    vector<string> input = {
-        "int64 Factorial(int32 x) {\n",
-        "   int16 y = 1;\n",
-        "   for (int8 i = 0; i < x; i+=1) {\n",
-        "       y *= i;\n",
-        "   }\n",
-        "   return y;\n",
-        "}\n",
-        "int4 x = input;\n",
-        "int4 z = -3;\n",
-        "bool a = true;\n",
-        "if (a == true) {\n",
-        "   x /= z;\n",
-        "}\n",
-        "output Factorial(x);\n"
-    };
+TEST_CASE("[3|SCN] Valid program") {
+    vector<string> input = readfile::Read("../../tests/resources/scanner_pass_2.txt");
     vector<Token> expected = {
         {INT64, "int64"},
         {IDENTIFIER, "Factorial"},
@@ -174,12 +171,14 @@ TEST_CASE("Valid program") {
         {IDENTIFIER, "x"},
         {CLOSE_PARENTHESIS, ")"},
         {OPEN_BRACE, "{"},
+        {NEWLINE, ""},
 
         {INT16, "int16"},
         {IDENTIFIER, "y"},
         {ASSIGN, "="},
         {NUMBER, "1"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {FOR, "for"},
         {OPEN_PARENTHESIS, "("},
@@ -197,37 +196,46 @@ TEST_CASE("Valid program") {
         {NUMBER, "1"},
         {CLOSE_PARENTHESIS, ")"},
         {OPEN_BRACE, "{"},
+        {NEWLINE, ""},
 
         {IDENTIFIER, "y"},
         {MULTIPLY_ASSIGN, "*="},
         {IDENTIFIER, "i"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {CLOSE_BRACE, "}"},
+        {NEWLINE, ""},
 
         {RETURN, "return"},
         {IDENTIFIER, "y"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {CLOSE_BRACE, "}"},
+        {NEWLINE, ""},
+        {NEWLINE, ""},
 
         {INT4, "int4"},
         {IDENTIFIER, "x"},
         {ASSIGN, "="},
         {INPUT, "input"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {INT4, "int4"},
         {IDENTIFIER, "z"},
         {ASSIGN, "="},
         {NUMBER, "-3"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
-        {BOOL, "bool"},
+        {INT1, "int1"},
         {IDENTIFIER, "a"},
         {ASSIGN, "="},
         {TRUE, "true"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {IF, "if"},
         {OPEN_PARENTHESIS, "("},
@@ -236,26 +244,35 @@ TEST_CASE("Valid program") {
         {TRUE, "true"},
         {CLOSE_PARENTHESIS, ")"},
         {OPEN_BRACE, "{"},
+        {NEWLINE, ""},
 
         {IDENTIFIER, "x"},
         {DIVIDE_ASSIGN, "/="},
         {IDENTIFIER, "z"},
         {SEMICOLON, ";"},
+        {NEWLINE, ""},
 
         {CLOSE_BRACE, "}"},
+        {NEWLINE, ""},
 
         {OUTPUT, "output"},
         {IDENTIFIER, "Factorial"},
         {OPEN_PARENTHESIS, "("},
         {IDENTIFIER, "x"},
         {CLOSE_PARENTHESIS, ")"},
-        {SEMICOLON, ";"}
+        {SEMICOLON, ";"},
+        {NEWLINE, ""}
     };
 
+    errors::Reset();
     scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
-    REQUIRE(!scanner::GetError());
+    errors::OutputErrors();
+
+    REQUIRE(errors::GetErrorCode() == NONE);
+    REQUIRE(output.size() == expected.size());
+
     for (int i = 0; i < output.size(); i++) {
         CAPTURE(expected.at(i).type, output.at(i).type);
         CAPTURE(expected.at(i).text, output.at(i).text);

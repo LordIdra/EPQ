@@ -4,13 +4,13 @@
 
 
 
-TEST_CASE("Invalid File") {
+TEST_CASE("[1|RFL] Invalid File") {
     vector<string> actualLines = readfile::Read("this file does not exist");
     vector<string> expectedLines = {};
     REQUIRE(expectedLines == actualLines);
 }
 
-TEST_CASE("../../tests/resources/hello.txt") {
+TEST_CASE("[1|RFL] Success 1") {
     vector<string> actualLines = readfile::Read("../../tests/resources/hello.txt");
     vector<string> expectedLines = {
         "Hi mate, my name's John. I come from the land of the free.",
@@ -26,7 +26,7 @@ TEST_CASE("../../tests/resources/hello.txt") {
     REQUIRE(expectedLines == actualLines);
 }
 
-TEST_CASE("../../tests/resources/mr.bayeh") {
+TEST_CASE("[1|RFL] Success 2") {
     vector<string> actualLines = readfile::Read("../../tests/resources/mr.bayeh");
     vector<string> expectedLines = {
         "Year 9s are terrifying",

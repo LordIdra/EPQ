@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scanner/tokens.hpp"
+#include "grammar/terminals.hpp"
 #include <util/types.hpp>
 
 
@@ -97,7 +97,7 @@ const vector<unordered_map<char, int>> transitions {
         {'*', 23},
         {'/', 25},
         {'%', 27},
-        {'!', 29},
+        {'!', 130},
         {'>', 31},
         {'<', 33},
         {'_', 99},
@@ -119,7 +119,7 @@ const vector<unordered_map<char, int>> transitions {
         {'p', 99},
         {'q', 99},
         {'r', 84},
-        {'s', 99},
+        {'s', 124},
         {'t', 90},
         {'u', 99},
         {'v', 110},
@@ -217,17 +217,17 @@ const vector<unordered_map<char, int>> transitions {
     Transition_LowercaseAZorNumber('n', 36),
     Transition_LowercaseAZorNumber('d', 37),
     lowercaseAndNumberTransitions,
-    Transition_LowercaseAZorNumber(unordered_map<char, int> {
-        {'o', 39},
-        {'r', 42}}),
-    Transition_LowercaseAZorNumber('o', 40),
-    Transition_LowercaseAZorNumber('l', 41),
+    Transition_LowercaseAZorNumber('r', 42),
     lowercaseAndNumberTransitions,
+    Transition_LowercaseAZorNumber('s', 41),
+    Transition_LowercaseAZorNumber('e', 123),
     Transition_LowercaseAZorNumber('e', 43),
     Transition_LowercaseAZorNumber('a', 44),
     Transition_LowercaseAZorNumber('k', 45),
     lowercaseAndNumberTransitions,
-    Transition_LowercaseAZorNumber('o', 47),
+    Transition_LowercaseAZorNumber(unordered_map<char, int> {
+        {'o', 47},
+        {'a', 40}}),
     Transition_LowercaseAZorNumber('n', 48),
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
         {'t', 49},
@@ -242,7 +242,7 @@ const vector<unordered_map<char, int>> transitions {
     Transition_LowercaseAZorNumber('l', 57),
     Transition_LowercaseAZorNumber('s', 58),
     Transition_LowercaseAZorNumber('e', 59),
-    lowercaseAndNumberTransitions,
+    Transition_LowercaseAZorNumber('i', 121),
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
         {'o', 61},
         {'a', 63}}),
@@ -259,6 +259,7 @@ const vector<unordered_map<char, int>> transitions {
         {'t', 69},
         {'p', 103}}),
     Transition_LowercaseAZorNumber(unordered_map<char, int> {
+        {'2', 39},
         {'4', 70},
         {'8', 71},
         {'1', 72},
@@ -380,13 +381,24 @@ const vector<unordered_map<char, int>> transitions {
     Transition_LowercaseAZorNumber('u', 118),
     Transition_LowercaseAZorNumber('l', 119),
     Transition_LowercaseAZorNumber('t', 120),
-    lowercaseAndNumberTransitions
+    lowercaseAndNumberTransitions,
+    Transition_LowercaseAZorNumber('f', 122),
+    lowercaseAndNumberTransitions,
+    lowercaseAndNumberTransitions,
+    Transition_LowercaseAZorNumber('w', 125),
+    Transition_LowercaseAZorNumber('i', 126),
+    Transition_LowercaseAZorNumber('t', 127),
+    Transition_LowercaseAZorNumber('c', 128),
+    Transition_LowercaseAZorNumber('h', 129),
+    lowercaseAndNumberTransitions,
+    {{'=', 131}},
+    {}
 };
 
 // The state here is indicated by the index of the element
 // The corresponding vector entry represents the output for that state
 // If the state is not a final state, a NONE or NO_TOKEN output can be used
-const vector<TokenType> finalStates {
+const vector<Terminal> finalStates {
     NONE,
     NO_TOKEN,
     COMMA,
@@ -426,9 +438,9 @@ const vector<TokenType> finalStates {
     IDENTIFIER,
     AND,
     IDENTIFIER,
+    INT2,
     IDENTIFIER,
     IDENTIFIER,
-    BOOL,
     IDENTIFIER,
     IDENTIFIER,
     IDENTIFIER,
@@ -459,7 +471,7 @@ const vector<TokenType> finalStates {
     IDENTIFIER,
     INT4,
     INT8,
-    IDENTIFIER,
+    INT1,
     INT16,
     IDENTIFIER,
     INT32,
@@ -507,5 +519,16 @@ const vector<TokenType> finalStates {
     IDENTIFIER,
     IDENTIFIER,
     IDENTIFIER,
-    DEFAULT
+    DEFAULT,
+    IDENTIFIER,
+    ELSEIF,
+    CASE,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    IDENTIFIER,
+    SWITCH,
+    NOT,
+    NOT_EQUALS
 };

@@ -1,0 +1,9 @@
+# This isn't a comment, definitely not
+@,.:;[](){=} == != => =< += - -= ->
+0 12935 8942758706 -4829367864 -0
+*= /= %= >= <= <-
+and break case continue const;
+default else elseif for false input if;
+int1 int2 int4 int8 int16 int32 int64;
+not or output return switch true void while;
+identifiers Yes jUs KI skjnafionefne_AWFsanus_aWSngjeke jeamoieea_P _ PPPPP i jie n

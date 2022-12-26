@@ -1,0 +1,3 @@
+int64 Factorial(int32 x) {
+   int16 y = input;
+}
