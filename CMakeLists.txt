@@ -19,6 +19,8 @@ SET(SOURCE_FILES
     "parser/sets/follow.cpp"
     "parser/parser.cpp"
     "parser/table.cpp"
+    "semanticAnalyser/symbolTable.cpp"
+    "semanticAnalyser/semanticAnalyser.cpp"
     "assembler/assembler.cpp"
 )
 
@@ -28,6 +30,7 @@ SET(TEST_FILES
     "test_readfile.cpp"
     "test_scanner.cpp"
     "test_parser.cpp"
+    "test_semanticAnalyser.cpp"
     "test_grammar.cpp"
     "test_assembler.cpp"
 )
