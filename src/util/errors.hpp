@@ -27,11 +27,19 @@ namespace errors {
 
         UNRECOGNIZED_SYMBOL,
         INVALID_SYNTAX,
+
+        UNKNOWN_IDENTIFIER,
+        MISMATCHED_TYPE,
         
         INVALID_INSTRUCTION_SIZE,
         INVALID_OPCODE,
         INVALID_OPERAND_COUNT,
-        INVALID_OPERAND
+        INVALID_OPERAND,
+
+        NO_FREE_REGISTERS,
+        FREE_UNALLOCATED_REGISTER,
+        OUT_OF_MEMORY,
+        FREE_UNALLOCATED_MEMORY
     };
     
     auto Reset() -> void;

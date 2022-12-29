@@ -21,6 +21,7 @@ SET(SOURCE_FILES
     "parser/table.cpp"
     "semanticAnalyser/symbolTable.cpp"
     "semanticAnalyser/semanticAnalyser.cpp"
+    "treeReducer/treeReducer.cpp"
     "assembler/assembler.cpp"
 )
 
@@ -33,6 +34,8 @@ SET(TEST_FILES
     "test_semanticAnalyser.cpp"
     "test_grammar.cpp"
     "test_assembler.cpp"
+    "test_treeReducer.cpp"
+    "treesIdentical.cpp"
 )
 
 #set(CMAKE_TOOLCHAIN_FILE "~/vcpkg/scripts/buildsystems/vcpkg.cmake")

@@ -1,0 +1,7 @@
+void main() {
+    int32 x = true;
+    if (x) {
+        int4 y = 50;  # lol
+    }
+    output y;
+}

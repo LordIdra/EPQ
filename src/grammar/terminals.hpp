@@ -81,13 +81,15 @@ enum Terminal {
     BREAK,
     RETURN,
     OUTPUT,
-    INPUT
+    INPUT,
+    CALL
 };
 
 const int FIRST_TERMINAL = NONE;
-const int LAST_TERMINAL = INPUT;
+const int LAST_TERMINAL = CALL;
 
 struct Token { 
     int type;
     string text;
+    int line;
 };

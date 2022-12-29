@@ -34,6 +34,8 @@ private:
     auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) -> IdentifierSymbol;
 
 public:
+    symbolTable();
+    
     auto EnterScope() -> void;
     auto ExitScope() -> void;
     auto CurrentScopeLevel() -> SymbolScope;

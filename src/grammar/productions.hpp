@@ -117,8 +117,7 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     
     {Term_14, {
         {OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS},
-        {Literal},
-        {Variable, FunctionCallSuffix}}},
+        {Value}}},
 
 
     /* Datatypes */
@@ -143,13 +142,21 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     {Dereference, {
         {DEREFERENCE, IDENTIFIER}}},
 
-    {IdentifierOperation, {
-        {NONE},
+    {ListIndex, {
         {OPEN_SQUARE_BRACKET, Term, CLOSE_SQUARE_BRACKET}}},
-
+    
+    {Value, {
+        {Variable},
+        {Literal},
+        {FunctionCall}}},
+    
     {Variable, {
-        {IDENTIFIER, IdentifierOperation},
+        {IDENTIFIER, IdentifierSuffix},
         {Dereference}}},
+
+    {IdentifierSuffix, {
+        {NONE},
+        {ListIndex}}},
     
     {Literal, {
         {NUMBER},
@@ -188,12 +195,9 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     
 
     /* Statements */
-    {VariableSuffix, {
-        {ArgumentList_1, SEMICOLON},
-        {AssignmentOperation, SEMICOLON}}},
-
     {SimpleStatement, {
-        {Variable, VariableSuffix},
+        {Assignment, SEMICOLON},
+        {FunctionCall, SEMICOLON},
         {ConstDeclaration, SEMICOLON},
         {NonConstDeclaration, SEMICOLON},
         {OUTPUT, Term, SEMICOLON}}},
@@ -298,9 +302,9 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     {ParameterList_1, {
         {OPEN_PARENTHESIS, ParameterList_0, CLOSE_PARENTHESIS}}},
 
-    {FunctionSequence, {
+    {FunctionDeclaration, {
         {NONE},
-        {VoidableDatatype, IDENTIFIER, ParameterList_1, N_Block, FunctionSequence}}},
+        {VoidableDatatype, IDENTIFIER, ParameterList_1, N_Block, FunctionDeclaration}}},
 
     
     /* Function calls */
@@ -316,11 +320,7 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {OPEN_PARENTHESIS, ArgumentList_0, CLOSE_PARENTHESIS}}},
 
     {FunctionCall, {
-        {IDENTIFIER, ArgumentList_1}}},
-
-    {FunctionCallSuffix, {
-        {NONE},
-        {ArgumentList_1}}},
+        {CALL, IDENTIFIER, ArgumentList_1}}},
 
 
     /* Blocks */
@@ -355,5 +355,5 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {OPEN_BRACE, L_Block_0, CLOSE_BRACE}}},
 
     {Program, {
-        {FunctionSequence}}}
+        {FunctionDeclaration}}}
 };

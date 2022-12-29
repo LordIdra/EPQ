@@ -9,7 +9,7 @@ using parser::TreeNode;
 
 const TreeNode expected_1 = {
     TreeNode{nullptr, Token{Program, ""}, vector<TreeNode>{
-        TreeNode{nullptr, Token{FunctionSequence, ""}, vector<TreeNode>{
+        TreeNode{nullptr, Token{FunctionDeclaration, ""}, vector<TreeNode>{
             TreeNode{nullptr, {VoidableDatatype, ""}, vector<TreeNode>{
                 TreeNode{nullptr, {Datatype, ""}, vector<TreeNode>{
                     TreeNode{nullptr, {INT64, "int64"}, vector<TreeNode>{}}
@@ -55,7 +55,7 @@ const TreeNode expected_1 = {
                 }},
                 TreeNode{nullptr, {CLOSE_BRACE, "}"}, vector<TreeNode>{}}
             }},
-            TreeNode{nullptr, {FunctionSequence, ""}, vector<TreeNode>{
+            TreeNode{nullptr, {FunctionDeclaration, ""}, vector<TreeNode>{
                 
             }},
         }},

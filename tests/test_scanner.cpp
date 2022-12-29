@@ -96,6 +96,7 @@ TEST_CASE("[3|SCN] All tokens") {
 
         {AND, "and"},
         {BREAK, "break"},
+        {CALL, "call"},
         {CASE, "case"},
         {CONTINUE, "continue"},
         {CONST, "const"},

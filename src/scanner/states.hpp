@@ -219,7 +219,9 @@ const vector<unordered_map<char, int>> transitions {
     lowercaseAndNumberTransitions,
     Transition_LowercaseAZorNumber('r', 42),
     lowercaseAndNumberTransitions,
-    Transition_LowercaseAZorNumber('s', 41),
+    Transition_LowercaseAZorNumber(unordered_map<char, int> {
+        {'s', 41},
+        {'l', 132}}),
     Transition_LowercaseAZorNumber('e', 123),
     Transition_LowercaseAZorNumber('e', 43),
     Transition_LowercaseAZorNumber('a', 44),
@@ -392,7 +394,9 @@ const vector<unordered_map<char, int>> transitions {
     Transition_LowercaseAZorNumber('h', 129),
     lowercaseAndNumberTransitions,
     {{'=', 131}},
-    {}
+    {},
+    Transition_LowercaseAZorNumber('l', 133),
+    lowercaseAndNumberTransitions
 };
 
 // The state here is indicated by the index of the element
@@ -530,5 +534,7 @@ const vector<Terminal> finalStates {
     IDENTIFIER,
     SWITCH,
     NOT,
-    NOT_EQUALS
+    NOT_EQUALS,
+    IDENTIFIER,
+    CALL
 };

@@ -43,8 +43,12 @@ enum NonTerminal {
 
     Reference,
     Dereference,
-    IdentifierOperation,
+    ListIndex,
+
+    Value,
     Variable,
+    IdentifierSuffix,
+
     Literal,
 
     InputTerm,
@@ -57,7 +61,6 @@ enum NonTerminal {
     NonConstDeclaration_0,
     NonConstDeclaration,
 
-    VariableSuffix,
     SimpleStatement,
     ForSequence,
     For,
@@ -94,13 +97,12 @@ enum NonTerminal {
     ParameterList_0,
     ParameterList_1,
 
-    FunctionSequence,
+    FunctionDeclaration,
 
     NextArgument,
     ArgumentList_0,
     ArgumentList_1,
     FunctionCall,
-    FunctionCallSuffix,
 
     ReturnContents,
 

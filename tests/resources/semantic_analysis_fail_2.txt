@@ -1,0 +1,8 @@
+int64 death() {
+    return 56;
+}
+
+void main() {
+    call death();
+    death += 1;
+}

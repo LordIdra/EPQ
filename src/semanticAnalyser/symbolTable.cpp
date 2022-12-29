@@ -1,10 +1,11 @@
+#include <iostream>
 #include <semanticAnalyser/symbolTable.hpp>
 
 
 
 auto symbolTable::SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) -> IdentifierSymbol {
     // If there are no tables to search, the name does not exist
-    if (stack.size() == 0) {
+    if (stack.empty()) {
         return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR};
     }
 
@@ -21,6 +22,10 @@ auto symbolTable::SearchStack(std::stack<unordered_map<string, IdentifierSymbol>
     return SearchStack(stack, name);
 }
 
+symbolTable::symbolTable() {
+    EnterScope();
+}
+
 auto symbolTable::EnterScope() -> void {
     stack.push(unordered_map<string, IdentifierSymbol>{});
 }
@@ -33,11 +38,11 @@ auto symbolTable::ExitScope() -> void {
 auto symbolTable::CurrentScopeLevel() -> SymbolScope {
     if (stack.size() == 1) {
         return SCOPE_GLOBAL;
-    } else if (stack.size() == 2) {
-        return SCOPE_PARAMETER;
-    } else {
-        return SCOPE_LOCAL;
     }
+    if (stack.size() == 2) {
+        return SCOPE_PARAMETER;
+    }
+    return SCOPE_LOCAL;
 }
 
 auto symbolTable::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
@@ -50,7 +55,7 @@ auto symbolTable::LookupAllScopes(const string &name) -> IdentifierSymbol {
 
 auto symbolTable::LookupScopes(const string &name) -> IdentifierSymbol {
     // If there is no table to search, the symbol obviously does not exist
-    if (stack.size() == 0) {
+    if (stack.empty()) {
         return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR};
     }
 

@@ -96,7 +96,7 @@ namespace parser {
             }
 
             for (const int symbol : tableProduction) {
-                Token newToken = Token{symbol, ""};
+                Token newToken = Token{symbol, "", currentLine};
                 const TreeNode newNode = TreeNode{currentNode, newToken, vector<TreeNode>()};
                 currentNode->children.push_back(newNode);
             }

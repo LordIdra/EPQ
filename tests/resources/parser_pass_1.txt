@@ -13,5 +13,5 @@ void main() {
     if (a) {
        x /= z;
     }
-    output Factorial(x);
+    output call Factorial(x);
 }
