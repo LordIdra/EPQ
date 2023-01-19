@@ -15,32 +15,44 @@ enum SymbolScope {
 enum SymbolType {
     TYPE_ERROR,
     TYPE_FUNCTION,
-    TYPE_INT
+    TYPE_INT,
 };
 
+inline auto IsInt(const SymbolType type) -> bool {
+    return type == TYPE_INT;
+}
 
+enum StackOperation {
+    PUSH,
+    POP
+};
 
 struct IdentifierSymbol {
     const SymbolScope scope;
     const SymbolType type;
+    const int address;
 };
 
 
 
-class symbolTable {
+class SymbolTable {
 private:
+    vector<unordered_map<string, IdentifierSymbol>> savedTables;
+    vector<StackOperation> savedStackOperations;
     std::stack<unordered_map<string, IdentifierSymbol>> stack;
 
-    auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) -> IdentifierSymbol;
+    int savedTableIndex = 0;
+    int stackOperationIndex = 0;
 
 public:
-    symbolTable();
-    
-    auto EnterScope() -> void;
-    auto ExitScope() -> void;
-    auto CurrentScopeLevel() -> SymbolScope;
-
+    auto Push() -> void;
+    auto Pop() -> void;
     auto AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void;
-    auto LookupAllScopes(const string &name) -> IdentifierSymbol;
-    auto LookupScopes(const string &name) -> IdentifierSymbol;
+
+    auto GetSavedTables() const -> vector<unordered_map<string, IdentifierSymbol>>;
+    auto GetSavedStackOperations() const -> vector<StackOperation>;
+    auto GetStack() const -> std::stack<unordered_map<string, IdentifierSymbol>>;
+
+    auto Next() -> void;
+    auto LookupAllScopes(const string &identifier) -> IdentifierSymbol;
 };

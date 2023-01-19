@@ -1,69 +1,46 @@
+#include "semanticAnalyser/symbolTableGenerator.hpp"
+#include "util/errors.hpp"
 #include <iostream>
 #include <semanticAnalyser/symbolTable.hpp>
 
 
 
-auto symbolTable::SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) -> IdentifierSymbol {
-    // If there are no tables to search, the name does not exist
-    if (stack.empty()) {
-        return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR};
+auto SymbolTable::Push() -> void {
+    savedTables.emplace_back(unordered_map<string, IdentifierSymbol>{});
+    savedStackOperations.push_back(PUSH);
+}
+
+auto SymbolTable::Pop() -> void {
+    savedStackOperations.push_back(POP);
+}
+
+auto SymbolTable::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
+    savedTables.at(savedTables.size()-1).insert(std::make_pair(name, symbol));
+}
+
+auto SymbolTable::GetSavedTables() const -> vector<unordered_map<string, IdentifierSymbol>> {
+    return savedTables;
+}
+
+auto SymbolTable::GetSavedStackOperations() const -> vector<StackOperation> {
+    return savedStackOperations;
+}
+
+auto SymbolTable::GetStack() const -> std::stack<unordered_map<string, IdentifierSymbol>> {
+    return stack;
+}
+
+auto SymbolTable::Next() -> void {
+    std::cout << colors::BOLD_GREEN << stackOperationIndex << colors::WHITE << "\n";
+    if (savedStackOperations.at(stackOperationIndex) == PUSH) {
+        stack.push(savedTables.at(savedTableIndex));
+        savedTableIndex++;
+    } else {
+        stack.pop();
     }
-
-    // Pop top table off the stack
-    unordered_map<string, IdentifierSymbol> table = stack.top();
-    stack.pop();
-    
-    // If the name exists in the table we just popped, return the IdentifierSymbol it maps to
-    if (table.count(name) != 0) {
-        return table.at(name);
-    }
-
-    // If not, continue searching the next table
-    return SearchStack(stack, name);
+    stackOperationIndex++;
 }
 
-symbolTable::symbolTable() {
-    EnterScope();
-}
-
-auto symbolTable::EnterScope() -> void {
-    stack.push(unordered_map<string, IdentifierSymbol>{});
-}
-
-auto symbolTable::ExitScope() -> void {
-    stack.pop();
-}
-
-
-auto symbolTable::CurrentScopeLevel() -> SymbolScope {
-    if (stack.size() == 1) {
-        return SCOPE_GLOBAL;
-    }
-    if (stack.size() == 2) {
-        return SCOPE_PARAMETER;
-    }
-    return SCOPE_LOCAL;
-}
-
-auto symbolTable::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
-    stack.top().insert(std::make_pair(name, symbol));
-}
-
-auto symbolTable::LookupAllScopes(const string &name) -> IdentifierSymbol {
-    return SearchStack(stack, name);
-}
-
-auto symbolTable::LookupScopes(const string &name) -> IdentifierSymbol {
-    // If there is no table to search, the symbol obviously does not exist
-    if (stack.empty()) {
-        return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR};
-    }
-
-    // If the name exists in the table we just popped, return the IdentifierSymbol it maps to
-    if (stack.top().count(name) != 0) {
-        return stack.top().at(name);
-    }
-
-    // The name does not exist in the top table
-    return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR};
+auto SymbolTable::LookupAllScopes(const string &identifier) -> IdentifierSymbol {
+    return SearchStack(stack, identifier);
 }

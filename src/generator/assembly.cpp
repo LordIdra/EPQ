@@ -1,6 +1,9 @@
+#include "generator/memory.hpp"
+#include "semanticAnalyser/symbolTable.hpp"
 #include <cstdlib>
 #include <generator/assembly.hpp>
 
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <util/types.hpp>
@@ -20,6 +23,13 @@ namespace assembly {
             a2 = div(address - (a1*256), 16).quot;
             a3 = address - (a1*256) - (a2*16);
         }
+
+        auto FormatRegister(const int x) -> string {
+            if (x <= 9) {
+                return "0" + std::to_string(x);
+            }
+            return std::to_string(x);
+        }
     }
 
     auto GenerateLabel(const string &identifier) -> string {
@@ -29,7 +39,37 @@ namespace assembly {
     }
 
     auto LabelLatestInstruction(const string &label) -> void {
-        labels.insert(std::make_pair(GenerateLabel(label), program.size() - 1));
+        labels.insert(std::make_pair(label, program.size() - 1));
+    }
+
+    auto ResolveLabels() -> void {
+        for (string &instruction : program) {
+
+            const int i1 = instruction.find('@');
+            const int i2 = instruction.find('%');
+            if (i1 != string::npos) {
+
+
+                const int valueType = std::stoi(instruction.substr(i1+1, 1));
+                const string identifier = instruction.substr(i1+2, i2-i1-2);
+                const int address = labels.at(identifier);
+                int value = 0;
+
+                if (valueType == 3) {
+                    value = div(address, 256).quot;
+                } else if (valueType == 2) {
+                    value = div(div(address, 256).rem, 16).quot;
+                } else if (valueType == 1) {
+                    value = div(div(address, 256).rem, 16).rem;
+                }
+
+                std::cout << valueType << " " << address << "\n";
+                
+                instruction = instruction.substr(0, i1)
+                            + FormatRegister(value)
+                            + instruction.substr(i2+1, instruction.size()-i2-1);
+            }
+        }
     }
 
     auto GetProgram() -> vector<string> {
@@ -37,78 +77,91 @@ namespace assembly {
     }
     
     auto NOP() -> void {
-        program.push_back("NOP");
+        program.emplace_back("NOP");
     }
 
-    auto LDA(const string &identifier) -> void {
-        program.push_back("LDA @" + identifier);
+    auto LDA(const int r1, const int r2, const int r3) -> void {
+        program.push_back("LDA " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
-    auto STA(const string &identifier) -> void {
-        program.push_back("STA @" + identifier);
+    auto STA(const int r1, const int r2, const int r3) -> void {
+        program.push_back("STA " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto ADD(const int r1, const int r2, const int r3) -> void {
-        program.push_back("ADD $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("ADD " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto ADC(const int r1, const int r2, const int r3) -> void {
-        program.push_back("ADC $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("ADC " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto SUB(const int r1, const int r2, const int r3) -> void {
-        program.push_back("SUB $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("SUB " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto SBC(const int r1, const int r2, const int r3) -> void {
-        program.push_back("SBC $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("SBC " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto AND(const int r1, const int r2, const int r3) -> void {
-        program.push_back("AND $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("AND " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto ORR(const int r1, const int r2, const int r3) -> void {
-        program.push_back("ORR $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("ORR " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto XOR(const int r1, const int r2, const int r3) -> void {
-        program.push_back("XOR $" + std::to_string(r1) + " $" + std::to_string(r2) + " $" + std::to_string(r3));
+        program.push_back("XOR " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
     auto NOT(const int r1, const int r2) -> void {
-        program.push_back("NOT $" + std::to_string(r1) + " $" + std::to_string(r2));
+        program.push_back("NOT " + FormatRegister(r1) + " " + FormatRegister(r2));
     }
 
     auto PSH() -> void {
-        program.push_back("PSH");
+        program.emplace_back("PSH");
     }
 
     auto POP() -> void {
-        program.push_back("POP");
+        program.emplace_back("POP");
     }
 
     auto PPC(const int v1) -> void {
-        program.push_back("PPC #" + std::to_string(v1));
+        program.push_back("PPC " + FormatRegister(v1));
     }
 
     auto RET() -> void {
-        program.push_back("RET");
+        program.emplace_back("RET");
     }
 
-    auto BRA(const string &label) -> void {
-        program.push_back("BRA @" + label);
+    auto BRA(const int r1, const int r2, const int r3) -> void {
+        program.push_back("BRA " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3));
     }
 
-    auto BRP(const string &label, const int r1) -> void {
-        program.push_back("BRP @" + label + " #" + std::to_string(r1));
+    auto BRP(const int r1, const int r2, const int r3, const int r4) -> void {
+        program.push_back("BRP " + FormatRegister(r1) + " " + FormatRegister(r2) + " " + FormatRegister(r3) + " " + FormatRegister(r4));
     }
 
     auto MOV(const int r1, const int r2) -> void {
-        program.push_back("MOV $" + std::to_string(r1) + " $" + std::to_string(r2));
+        program.push_back("MOV " + FormatRegister(r1) + " " + FormatRegister(r2));
     }
 
     auto SET(const int v1, const int r1) -> void {
-        program.push_back("SET #" + std::to_string(v1) + " $" + std::to_string(r1));
+        program.push_back("SET " + FormatRegister(v1) + " " + FormatRegister(r1));
+    }
+
+    auto SET(const string &identifier, const int r1) -> void {
+        program.push_back("SET " "@" + identifier + "%" + " " + FormatRegister(r1));
+    }
+
+    auto Comment(const string &comment) -> void {
+        if (!program.empty()) {
+            if (program.at(program.size() - 1).at(0) == ';') {
+                program.pop_back();
+            }
+        }
+        program.push_back(";" + comment);
     }
 }

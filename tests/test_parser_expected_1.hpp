@@ -35,11 +35,11 @@ const TreeNode expected_1 = {
                 TreeNode{nullptr, {OPEN_BRACE, "{"}, vector<TreeNode>{}},
                 TreeNode{nullptr, {N_Block_0, ""}, vector<TreeNode>{
                     TreeNode{nullptr, {SimpleStatement, ""}, vector<TreeNode>{
-                        TreeNode{nullptr, {NonConstDeclaration}, vector<TreeNode>{
+                        TreeNode{nullptr, {Declaration}, vector<TreeNode>{
                             TreeNode{nullptr, {Datatype}, vector<TreeNode>{
                                 TreeNode{nullptr, {INT16, "int16"}, vector<TreeNode>{}}
                             }},
-                            TreeNode{nullptr, {NonConstDeclaration_0, ""}, vector<TreeNode>{
+                            TreeNode{nullptr, {Declaration_0, ""}, vector<TreeNode>{
                                 {nullptr, {IDENTIFIER, "y"}, vector<TreeNode>{}},
                                 {nullptr, {ASSIGN, "="}, vector<TreeNode>{}},
                                 {nullptr, {InputTerm, ""}, vector<TreeNode>{
@@ -55,9 +55,7 @@ const TreeNode expected_1 = {
                 }},
                 TreeNode{nullptr, {CLOSE_BRACE, "}"}, vector<TreeNode>{}}
             }},
-            TreeNode{nullptr, {FunctionDeclaration, ""}, vector<TreeNode>{
-                
-            }},
+            TreeNode{nullptr, {FunctionDeclaration, ""}, vector<TreeNode>{}},
         }},
     }},
 };

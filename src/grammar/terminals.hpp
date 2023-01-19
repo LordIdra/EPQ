@@ -68,7 +68,6 @@ enum Terminal {
     NOT,
     OR,
     AND,
-    CONST,
     IF,
     ELSE,
     ELSEIF,

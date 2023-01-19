@@ -56,12 +56,11 @@ enum NonTerminal {
     AssignmentOperation,
     Assignment,
 
-    ConstDeclaration,
-
-    NonConstDeclaration_0,
-    NonConstDeclaration,
+    Declaration_0,
+    Declaration,
 
     SimpleStatement,
+    LoopCondition,
     ForSequence,
     For,
     While,
@@ -99,7 +98,7 @@ enum NonTerminal {
 
     FunctionDeclaration,
 
-    NextArgument,
+    Argument,
     ArgumentList_0,
     ArgumentList_1,
     FunctionCall,

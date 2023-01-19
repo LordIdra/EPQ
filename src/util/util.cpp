@@ -64,6 +64,6 @@ auto FileExists(const string &path) -> bool {
     return bool(file);
 }
 
-auto Contains(const vector<int> container, const int target) -> bool {
+auto Contains(const vector<int> &container, const int target) -> bool {
     return std::count(container.begin(), container.end(), target) != 0;
 }

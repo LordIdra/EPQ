@@ -1,5 +1,6 @@
 #pragma once
 
+#include "semanticAnalyser/symbolTable.hpp"
 #include <util/types.hpp>
 
 
@@ -7,12 +8,13 @@
 namespace assembly {
     auto GenerateLabel(const string &identifier) -> string;
     auto LabelLatestInstruction(const string &label) -> void;
+    auto ResolveLabels() -> void;
     auto GetProgram() -> vector<string>;
 
     auto NOP() -> void;
 
-    auto LDA(const string label) -> void;
-    auto STA(const string label) -> void;
+    auto LDA(const int r1, const int r2, const int r3) -> void;
+    auto STA(const int r1, const int r2, const int r3) -> void;
 
     auto ADD(const int r1, const int r2, const int r3) -> void;
     auto ADC(const int r1, const int r2, const int r3) -> void;
@@ -30,9 +32,12 @@ namespace assembly {
     auto PPC(const int v1) -> void;
     auto RET() -> void;
 
-    auto BRA(const string label) -> void;
-    auto BRP(const string label, const int r1) -> void;
+    auto BRA(const int r1, const int r2, const int r3) -> void;
+    auto BRP(const int r1, const int r2, const int r3, const int r4) -> void;
 
     auto MOV(const int r1, const int r2) -> void;
     auto SET(const int v1, const int r1) -> void;
+    auto SET(const string &identifier, const int r1) -> void;
+
+    auto Comment(const string &comment) -> void;
 }

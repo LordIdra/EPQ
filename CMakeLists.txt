@@ -20,9 +20,14 @@ SET(SOURCE_FILES
     "parser/parser.cpp"
     "parser/table.cpp"
     "semanticAnalyser/symbolTable.cpp"
+    "semanticAnalyser/symbolTableGenerator.cpp"
     "semanticAnalyser/semanticAnalyser.cpp"
-    "treeReducer/treeReducer.cpp"
     "assembler/assembler.cpp"
+    "generator/assembly.cpp"
+    "generator/generator.cpp"
+    "generator/memory.cpp"
+    "generator/registers.cpp"
+    "simulator/simulator.cpp"
 )
 
 # Test files
@@ -34,7 +39,7 @@ SET(TEST_FILES
     "test_semanticAnalyser.cpp"
     "test_grammar.cpp"
     "test_assembler.cpp"
-    "test_treeReducer.cpp"
+    "test_generator.cpp"
     "treesIdentical.cpp"
 )
 

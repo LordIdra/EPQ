@@ -182,35 +182,34 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
 
 
     /* Declaration */
-    {ConstDeclaration, {
-        {CONST, Datatype, IDENTIFIER, ASSIGN, Literal}}},
-
-    {NonConstDeclaration_0, {
+    {Declaration_0, {
         {OPEN_SQUARE_BRACKET, NUMBER, CLOSE_SQUARE_BRACKET, IDENTIFIER},
         {POINTER, IDENTIFIER, ASSIGN, Reference},
         {IDENTIFIER, ASSIGN, InputTerm}}},
 
-    {NonConstDeclaration, {
-        {Datatype, NonConstDeclaration_0}}},
+    {Declaration, {
+        {Datatype, Declaration_0}}},
     
 
     /* Statements */
     {SimpleStatement, {
         {Assignment, SEMICOLON},
         {FunctionCall, SEMICOLON},
-        {ConstDeclaration, SEMICOLON},
-        {NonConstDeclaration, SEMICOLON},
+        {Declaration, SEMICOLON},
         {OUTPUT, Term, SEMICOLON}}},
+
+    {LoopCondition, {
+        {Term}}},
     
     {ForSequence, {
-        {NonConstDeclaration, SEMICOLON, Term, SEMICOLON, Assignment}}},
+        {Declaration, SEMICOLON, LoopCondition, SEMICOLON, Assignment}}},
     
-    {While, {
-        {WHILE, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS, L_Block}}},
 
     {For, {
         {FOR, OPEN_PARENTHESIS, ForSequence, CLOSE_PARENTHESIS, L_Block}}},
 
+    {While, {
+        {WHILE, OPEN_PARENTHESIS, LoopCondition, CLOSE_PARENTHESIS, L_Block}}},
 
     /* If-else*/
     {If, {
@@ -288,8 +287,7 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
 
     /* Function definitions */
     {Parameter, {
-        {Datatype, IDENTIFIER},
-        {CONST, Datatype, IDENTIFIER}}},
+        {Datatype, IDENTIFIER}}},
 
     {NextParameter, {
         {NONE},
@@ -308,13 +306,13 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
 
     
     /* Function calls */
-    {NextArgument, {
+    {Argument, {
         {NONE},
-        {COMMA, IDENTIFIER, NextArgument}}},
+        {COMMA, Term, Argument}}},
 
     {ArgumentList_0, {
         {NONE},
-        {IDENTIFIER, NextArgument}}},
+        {Term, Argument}}},
 
     {ArgumentList_1, {
         {OPEN_PARENTHESIS, ArgumentList_0, CLOSE_PARENTHESIS}}},
