@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using std::ifstream;
 
@@ -66,4 +67,24 @@ auto FileExists(const string &path) -> bool {
 
 auto Contains(const vector<int> &container, const int target) -> bool {
     return std::count(container.begin(), container.end(), target) != 0;
+}
+
+auto FormatValue(int x) -> string {
+    if (x <= 9) {
+        return "0" + std::to_string(x);
+    } else {
+        return std::to_string(x);
+    }
+}
+
+auto FormatAddress(int x) -> string {
+    if (x <= 9) {
+        return "000" + std::to_string(x);
+    } else if (x <= 99) {
+        return "00" + std::to_string(x);
+    } else if (x <= 999) {
+        return "0" + std::to_string(x);
+    } else {
+        return std::to_string(x);
+    }
 }

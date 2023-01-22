@@ -12,7 +12,6 @@
 #include <generator/assembly.hpp>
 #include <iostream>
 #include <stack>
-#include <unordered_map>
 #include <util/types.hpp>
 
 
@@ -26,8 +25,6 @@ namespace generator {
         std::stack<string> loopEndStack;
         SymbolTable symbolTable;
 
-        bool debugMode;
-
         auto GetChildType(const int i) -> int {
             return node->children.at(i).token.type;
         }
@@ -37,9 +34,7 @@ namespace generator {
         }
 
         auto PopRegister() -> int {
-            if (debugMode) {
-                std::cout << colors::CYAN << symbolNames.at(node->token.type) << colors::AMBER << " popped" << colors::WHITE << "\n";
-            }
+            std::cout << colors::CYAN << symbolNames.at(node->token.type) << colors::AMBER << " popped" << colors::WHITE << "\n";
             if (registerStack.empty()) {
                 std::cout << colors::RED << "Attempt to pop off empty register stack" << colors::WHITE << "\n";
                 return -1;
@@ -51,9 +46,7 @@ namespace generator {
         }
 
         auto PushRegister(const int r) -> void {
-            if (debugMode) {
-                std::cout << colors::CYAN << symbolNames.at(node->token.type) << colors::AMBER << " pushed" << colors::WHITE << "\n";
-            }
+            std::cout << colors::CYAN << symbolNames.at(node->token.type) << colors::AMBER << " pushed" << colors::WHITE << "\n";
             if (registerStack.size() >= 9) {
                 std::cout << colors::RED << "Attempt to push to full register stack" << colors::WHITE << "\n";
                 return;
@@ -99,36 +92,6 @@ namespace generator {
 
             namespace Term_EQUALS {
                 auto Last() -> void {
-                    /* OLD ALGORITHM (doesn't really work) */
-                        //assembly::SUB(r1, r2, r3);
-                        //assembly::SET("1" + labelNext, r5);
-                        //assembly::SET("2" + labelNext, r6);
-                        //assembly::SET("3" + labelNext, r7);
-                        //assembly::Comment("branch to " + labelNext);
-                        //assembly::BRP(r5, r6, r7, r3);           // Branch to labelNext if MSB(r1) > MSB(r2)
-                        //assembly::SET(registers::FALSE, r4);
-
-                        //assembly::SUB(r2, r1, r3);
-                        //assembly::LabelLatestInstruction(labelNext);
-                        //assembly::SET("1" + labelTrue, r5);
-                        //assembly::SET("2" + labelTrue, r6);
-                        //assembly::SET("3" + labelTrue, r7);
-                        //assembly::Comment("branch to " + labelTrue);
-                        //assembly::BRP(r5, r6, r7, r3);
-                        //assembly::SET(registers::FALSE, r4);
-                        //assembly::SET("1" + labelEnd, r5);
-                        //assembly::SET("2" + labelEnd, r6);
-                        //assembly::SET("3" + labelEnd, r7);
-                        //assembly::Comment("branch to " + labelEnd);
-                        //assembly::BRA(r5, r6, r7);
-
-                        //assembly::SET(registers::TRUE, r4);
-                        //assembly::LabelLatestInstruction(labelTrue);
-
-                        //assembly::NOP();
-                        //assembly::LabelLatestInstruction(labelEnd);
-                    /* END */
-
                     // Term_EQUALS -> NONE
                     if (node->children.size() == 1) { return; }
 
@@ -144,63 +107,41 @@ namespace generator {
                     const int r1 = PopRegister();
                     const int r2 = PopRegister();
                     
-                    const string labelMSBTheSame = assembly::GenerateLabel("IsEqual_MSBTheSame");
-                    const string labelNotEqual   = assembly::GenerateLabel("IsEqual_NotEqual");
-                    const string labelEqual      = assembly::GenerateLabel("IsEqual_Equal");
-                    const string labelEnd        = assembly::GenerateLabel("IsEqual_End");
+                    const string labelNext = assembly::GenerateLabel("IsEqual_Next");
+                    const string labelTrue = assembly::GenerateLabel("IsEqual_True");
+                    const string labelEnd  = assembly::GenerateLabel("IsEqual_End");
 
-                    // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
-                    assembly::XOR(r1, r2, r3);
-                    assembly::SET("1" + labelMSBTheSame, r5);
-                    assembly::SET("2" + labelMSBTheSame, r6);
-                    assembly::SET("3" + labelMSBTheSame, r7);
-                    assembly::Comment("branch to " + labelMSBTheSame);
-                    assembly::BRP(r5, r6, r7, r3);
-
-                    // We haven't branched, so MSBs are different, so they are not equal
-                    assembly::SET("1" + labelNotEqual, r5);
-                    assembly::SET("2" + labelNotEqual, r6);
-                    assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
-                    assembly::BRA(r5, r6, r7);
-
-                    // MSBs are the same
-                    // First, subtract r2 from r1
-                    assembly::LabelLatestInstruction(labelMSBTheSame);
                     assembly::SUB(r1, r2, r3);
-                    // We know that if they are equal, they will either be 1000 or 0000
-                    // Let's first set the MSB to 0 by running and AND operation with 0111
-                    assembly::SET(7, r4);
-                    assembly::AND(r3, r4, r3);
-                    assembly::SET(1, r4);
-                    // Now, if we subtract 0001, the result will only be negative if we started with 0000
-                    assembly::SUB(r3, r4, r3);
-                    // If the result is positive, they are not equal
-                    assembly::SET("1" + labelNotEqual, r5);
-                    assembly::SET("2" + labelNotEqual, r6);
-                    assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
+                    assembly::SET("1" + labelNext, r5);
+                    assembly::SET("2" + labelNext, r6);
+                    assembly::SET("3" + labelNext, r7);
+                    assembly::Comment("branch to " + labelNext);
                     assembly::BRP(r5, r6, r7, r3);
+                    assembly::SET(registers::FALSE, r4);
 
-                    // We haven't branched, so they are equal
-                    assembly::SET(registers::TRUE, r3);
+                    assembly::SUB(r2, r1, r3);
+                    assembly::LabelLatestInstruction(labelNext);
+                    assembly::SET("1" + labelTrue, r5);
+                    assembly::SET("2" + labelTrue, r6);
+                    assembly::SET("3" + labelTrue, r7);
+                    assembly::Comment("branch to " + labelTrue);
+                    assembly::BRP(r5, r6, r7, r3);
+                    assembly::SET(registers::FALSE, r4);
                     assembly::SET("1" + labelEnd, r5);
                     assembly::SET("2" + labelEnd, r6);
                     assembly::SET("3" + labelEnd, r7);
                     assembly::Comment("branch to " + labelEnd);
-                    assembly::BRA(r5, r6, r7);
+                    assembly::BRA(r5, r6, 7);
 
-                    // This is where we branch to if they are not equal
-                    assembly::LabelLatestInstruction(labelNotEqual);
-                    assembly::SET(registers::FALSE, r3);
+                    assembly::SET(registers::TRUE, r4);
+                    assembly::LabelLatestInstruction(labelTrue);
 
-                    // And this is the end of the whole thing
-                    assembly::LabelLatestInstruction(labelEnd);
                     assembly::NOP();
+                    assembly::LabelLatestInstruction(labelEnd);
 
-                    PushRegister(r3);
+                    PushRegister(r4);
 
-                    registers::Free(r4);
+                    registers::Free(r3);
                     registers::Free(r5);
                     registers::Free(r6);
                     registers::Free(r7);
@@ -224,63 +165,40 @@ namespace generator {
                     const int r1 = PopRegister();
                     const int r2 = PopRegister();
 
-                    const string labelMSBTheSame = assembly::GenerateLabel("IsEqual_MSBTheSame");
-                    const string labelNotEqual   = assembly::GenerateLabel("IsEqual_NotEqual");
-                    const string labelEqual      = assembly::GenerateLabel("IsEqual_Equal");
-                    const string labelEnd        = assembly::GenerateLabel("IsEqual_End");
+                    const string labelNext = assembly::GenerateLabel("IsNotEqual_Next");
+                    const string labelTrue = assembly::GenerateLabel("IsNotEqual_True");
+                    const string labelEnd  = assembly::GenerateLabel("IsNotEqual_End");
 
-                    // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
-                    assembly::XOR(r1, r2, r3);
-                    assembly::SET("1" + labelMSBTheSame, r5);
-                    assembly::SET("2" + labelMSBTheSame, r6);
-                    assembly::SET("3" + labelMSBTheSame, r7);
-                    assembly::Comment("branch to " + labelMSBTheSame);
-                    assembly::BRP(r5, r6, r7, r3);
-
-                    // We haven't branched, so MSBs are different, so they are not equal
-                    assembly::SET("1" + labelNotEqual, r5);
-                    assembly::SET("2" + labelNotEqual, r6);
-                    assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
-                    assembly::BRA(r5, r6, r7);
-
-                    // MSBs are the same
-                    // First, subtract r2 from r1
-                    assembly::LabelLatestInstruction(labelMSBTheSame);
                     assembly::SUB(r1, r2, r3);
-                    // We know that if they are equal, they will either be 1000 or 0000
-                    // Let's first set the MSB to 0 by running and AND operation with 0111
-                    assembly::SET(7, r4);
-                    assembly::AND(r3, r4, r3);
-                    assembly::SET(1, r4);
-                    // Now, if we subtract 0001, the result will only be negative if we started with 0000
-                    assembly::SUB(r3, r4, r3);
-                    // If the result is positive, they are not equal
-                    assembly::SET("1" + labelNotEqual, r5);
-                    assembly::SET("2" + labelNotEqual, r6);
-                    assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
+                    assembly::SET("1" + labelNext, r5);
+                    assembly::SET("2" + labelNext, r6);
+                    assembly::SET("3" + labelNext, r7);
+                    assembly::Comment("branch to " + labelNext);
                     assembly::BRP(r5, r6, r7, r3);
+                    assembly::SET(registers::TRUE, r4);
 
-                    // We haven't branched, so they are equal
-                    assembly::SET(registers::FALSE, r3);
+                    assembly::SUB(r2, r1, r3);
+                    assembly::LabelLatestInstruction(labelNext);
+                    assembly::SET("1" + labelTrue, r5);
+                    assembly::SET("2" + labelTrue, r6);
+                    assembly::SET("3" + labelTrue, r7);
+                    assembly::Comment("branch to " + labelTrue);
+                    assembly::BRP(r5, r6, r7, r3);
+                    assembly::SET(registers::TRUE, r4);
                     assembly::SET("1" + labelEnd, r5);
                     assembly::SET("2" + labelEnd, r6);
                     assembly::SET("3" + labelEnd, r7);
                     assembly::Comment("branch to " + labelEnd);
                     assembly::BRA(r5, r6, r7);
 
-                    // This is where we branch to if they are not equal
-                    assembly::LabelLatestInstruction(labelNotEqual);
-                    assembly::SET(registers::TRUE, r3);
-
-                    // And this is the end of the whole thing
-                    assembly::LabelLatestInstruction(labelEnd);
+                    assembly::SET(registers::FALSE, r4);
+                    assembly::LabelLatestInstruction(labelTrue);
                     assembly::NOP();
+                    assembly::LabelLatestInstruction(labelEnd);
 
-                    PushRegister(r3);
+                    PushRegister(r4);
 
-                    registers::Free(r4);
+                    registers::Free(r3);
                     registers::Free(r5);
                     registers::Free(r6);
                     registers::Free(r7);
@@ -292,36 +210,7 @@ namespace generator {
                     // Term_GREATER -> NONE
                     if (node->children.size() == 1) { return; }
 
-                    const int r3 = registers::Allocate();
-                    const int r4 = registers::Allocate();
-
-                    const int r5 = registers::Allocate();
-                    const int r6 = registers::Allocate();
-                    const int r7 = registers::Allocate();
-
-                    const int r1 = PopRegister();
-                    const int r2 = PopRegister();
-
-                    const string labelMSBTheSame    = assembly::GenerateLabel("IsEqual_MSBTheSame");
-                    const string labelMSBOfR1Bigger = assembly::GenerateLabel("IsEqual_MSBOfR1Bigger");
-                    const string labelEnd  = assembly::GenerateLabel("IsEqual_End");
-
-                    // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
-                    // 
-                    assembly::XOR(r1, r2, r3);
-                    assembly::SET("1" + labelMSBTheSame, r5);
-                    assembly::SET("2" + labelMSBTheSame, r6);
-                    assembly::SET("3" + labelMSBTheSame, r7);
-                    assembly::BRP(r5, r6, r7, r3);
-
-                    // We haven't branched, so MSBs are different
-                    assembly::SET("1" + labelMSBOfR1Bigger, r5);
-                    assembly::SET("2" + labelMSBOfR1Bigger, r6);
-                    assembly::SET("3" + labelMSBOfR1Bigger, r7);
-                    assembly::BRP(r5, r6, r7, r1);
-
-                    // We again haven't branched, so r1 is negative, so r1 < r2
-                    assembly::SET(registers::TRUE, r3);
+                    // TODO (algorithm)
                 }
             }
 
@@ -527,7 +416,7 @@ namespace generator {
                             assembly::SET(a2, r2);
                             assembly::SET(a3, r3);
 
-                            assembly::Comment("load " + identifier);
+                            assembly::Comment(" load " + identifier);
                             assembly::LDA(r1, r2, r3);
                             assembly::MOV(registers::MDR1, r4);
 
@@ -582,7 +471,7 @@ namespace generator {
 
                     // Literal -> INPUT
                     if (GetChildType(0) == INPUT) {
-                        // TODO (new CPU section)
+                        // todo (new CPU section)
                     }
                 }
             }
@@ -659,7 +548,7 @@ namespace generator {
                             assembly::SET(a3, r3);
 
                             assembly::MOV(r4, registers::MDR1);
-                            assembly::Comment("store " + identifier);
+                            assembly::Comment(" store " + identifier);
                             assembly::STA(r1, r2, r3);
 
                             registers::Free(r1);
@@ -685,7 +574,7 @@ namespace generator {
                         // Declaration_0 -> OPEN_SQUARE_BRACKET NUMBER CLOSE_SQUARE_BRACKET IDENTIFIER
                         // Declaration -> Datatype OPEN_SQUARE_BRACKET NUMBER CLOSE_SQUARE_BRACKET IDENTIFIER
                         if (node->children.at(1).children.at(0).token.type == OPEN_SQUARE_BRACKET) {
-                            // TODO (lists)
+                            // TODO (list implementation)
                         }
 
                         // Declaration_0 -> POINTER IDENTIFIER ASSIGN Reference
@@ -716,7 +605,7 @@ namespace generator {
                             assembly::SET(a3, r3);
 
                             assembly::MOV(r4, registers::MDR1);
-                            assembly::Comment("store " + identifier);
+                            assembly::Comment(" store " + identifier);
                             assembly::STA(r1, r2, r3);
 
                             registers::Free(r1);
@@ -831,7 +720,7 @@ namespace generator {
                     assembly::SET(a3, r3);
 
                     assembly::POP();
-                    assembly::Comment("load " + identifier);
+                    assembly::Comment(" load " + identifier);
                     assembly::LDA(r1, r2, r3);
 
                     registers::Free(r1);
@@ -877,6 +766,7 @@ namespace generator {
 
             namespace FunctionCall {
                 auto Last() -> void {
+                    // TODO (pipelining)
                     const int IHaveNoIdea = 0;
                     assembly::PPC(IHaveNoIdea);
                 }
@@ -918,19 +808,10 @@ namespace generator {
                     const int r2 = registers::Allocate();
                     const int r3 = registers::Allocate();
 
-                    const int IHaveNoIdea = 4;
-                    
-                    assembly::Comment("branch to main");
-                    assembly::PPC(IHaveNoIdea);
                     assembly::SET("1" "main", r1);
                     assembly::SET("2" "main", r2);
                     assembly::SET("3" "main", r3);
-                    assembly::BRA(r1, r2, r3);
-
-                    assembly::Comment("branch to end of program");
-                    assembly::SET(14, r1);
-                    assembly::SET(15, r2);
-                    assembly::SET(7, r3);
+                    assembly::Comment("branch to main");
                     assembly::BRA(r1, r2, r3);
 
                     registers::Free(r1);
@@ -1045,108 +926,38 @@ namespace generator {
             {L_Block_0, generate::L_Block_0::Last}
         };
 
-        auto RecursiveGenerate(parser::TreeNode &_node) -> void;
-
-        auto RecursiveGenerateFunctionDeclaration(parser::TreeNode &node) -> void {
-            if (node.children.empty()) {
-                return;
-            }
-            RecursiveGenerate(node.children.at(0));
-            RecursiveGenerate(node.children.at(1));
-            symbolTable.Next();
-            RecursiveGenerate(node.children.at(2));
-            RecursiveGenerate(node.children.at(3));
-            symbolTable.Next();
-            RecursiveGenerate(node.children.at(4));
-        }
-
-        auto RecursiveGenerateBlock(parser::TreeNode &node) -> void {
-            if (node.children.empty()) {
-                return;
-            }
-            symbolTable.Next();
-            RecursiveGenerate(node.children.at(0));
-            RecursiveGenerate(node.children.at(1));
-            RecursiveGenerate(node.children.at(2));
-            symbolTable.Next();
-        }
-
-        auto RecursiveGenerateBlockWithoutEnteringScope(parser::TreeNode &node) -> void {
-            if (node.children.empty()) {
-                return;
-            }
-            RecursiveGenerate(node.children.at(0));
-            RecursiveGenerate(node.children.at(1));
-            RecursiveGenerate(node.children.at(2));
-        }
-
-        auto RecursiveGenerateFor(parser::TreeNode &node) -> void {
-            symbolTable.Next();
-            RecursiveGenerate(node.children.at(0));
-            RecursiveGenerate(node.children.at(1));
-            RecursiveGenerate(node.children.at(2));
-            RecursiveGenerate(node.children.at(3));
-            RecursiveGenerateBlockWithoutEnteringScope(node.children.at(4));
-            symbolTable.Next();
-        }
-
-        auto RecursiveGenerateWhile(parser::TreeNode &node) -> void {
-            symbolTable.Next();
-            RecursiveGenerate(node.children.at(0));
-            RecursiveGenerate(node.children.at(1));
-            RecursiveGenerate(node.children.at(2));
-            RecursiveGenerate(node.children.at(3));
-            RecursiveGenerateBlockWithoutEnteringScope(node.children.at(4));
-            symbolTable.Next();
-        }
-
         auto RecursiveGenerate(parser::TreeNode &_node) -> void {
+            //std::cout << colors::CYAN << symbolNames.at(_node.token.type) << " START" << "\n";
+
             node = &_node;
             if (firstGeneratorFunctions.count(node->token.type) != 0) {
+                //assembly::Comment(symbolNames.at(node->token.type) + " (first)");
                 (firstGeneratorFunctions.at(node->token.type))();
             }
 
-            if ((node->token.type == N_Block) || (node->token.type == L_Block)) {
-                RecursiveGenerateBlock(_node);
-            } else if (node->token.type == FunctionDeclaration) {
-                RecursiveGenerateFunctionDeclaration(_node);
-            } else if (node->token.type == For) {
-                RecursiveGenerateFor(_node);
-            } else if (node->token.type == While) {
-                RecursiveGenerateWhile(_node);
-            } else {
-                for (parser::TreeNode &child : node->children) {
-                    RecursiveGenerate(child);
-                }
+            //std::cout << colors::CYAN << symbolNames.at(node->token.type) << " FIRST" << "\n";
+
+            for (parser::TreeNode &child : node->children) {
+                //std::cout << colors::AMBER << symbolNames.at(node->token.type) << "\n";
+                RecursiveGenerate(child);
             }
 
             node = &_node;
             if (lastGeneratorFunctions.count(node->token.type) != 0) {
+                //assembly::Comment(symbolNames.at(node->token.type) + " (last)");
                 (lastGeneratorFunctions.at(node->token.type))();
             }
+
+            //std::cout << colors::CYAN << symbolNames.at(node->token.type) << " LAST" << "\n";
         }
     }
 
-    auto Reset() -> void {
-        node = nullptr;
-        while (!registerStack.empty())  { registerStack.pop();  };
-        while (!loopStartStack.empty()) { loopStartStack.pop(); };
-        while (!loopEndStack.empty())   { loopEndStack.pop();   };
-    }
-
-    auto Generate(parser::TreeNode &_node, const SymbolTable &_symbolTable, const bool _debugMode) -> std::pair<vector<string>, unordered_map<int, string>> {
-        debugMode = _debugMode;
-        symbolTable = _symbolTable;
-        symbolTable.Next(); // push global scope
+    auto Generate(parser::TreeNode &_node) -> vector<string> {
         RecursiveGenerate(_node);
-        symbolTable.Next(); // pop global scope
-
         if (!registerStack.empty()) {
             std::cout << colors::CYAN << registerStack.size() << colors::RED << " registers remaining on register stack" << colors::WHITE << "\n";
         }
-
         assembly::ResolveLabels();
-
-        return std::make_pair(assembly::GetProgram(), assembly::GetComments());
+        return assembly::GetProgram();
     }
 }

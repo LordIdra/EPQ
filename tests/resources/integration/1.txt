@@ -1,0 +1,4 @@
+void main() {
+    int4 x = 4;
+    int4 TEST_OUTPUT = 5 + x;
+}

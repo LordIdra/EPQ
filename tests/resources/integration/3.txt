@@ -1,0 +1,5 @@
+void main() {
+    int4 TEST_OUTPUT_1 = 4 * 5; # 20 -> 4
+    int4 TEST_OUTPUT_2 = 5 * 2; # 10
+    int4 TEST_OUTPUT_3 = 1 * 1; # 1
+}

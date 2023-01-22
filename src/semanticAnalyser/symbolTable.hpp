@@ -55,4 +55,5 @@ public:
 
     auto Next() -> void;
     auto LookupAllScopes(const string &identifier) -> IdentifierSymbol;
+    auto SearchAllSavedTables(const string &identifier) const -> IdentifierSymbol;
 };

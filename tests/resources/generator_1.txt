@@ -1,5 +1,0 @@
-void main() {
-    int4 x = 2;
-    int4 y = 5;
-    x = 3 * x;
-}

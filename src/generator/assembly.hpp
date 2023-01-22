@@ -6,10 +6,13 @@
 
 
 namespace assembly {
+    auto Reset() -> void;
+    
     auto GenerateLabel(const string &identifier) -> string;
     auto LabelLatestInstruction(const string &label) -> void;
     auto ResolveLabels() -> void;
     auto GetProgram() -> vector<string>;
+    auto GetComments() -> unordered_map<int, string>;
 
     auto NOP() -> void;
 

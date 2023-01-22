@@ -2,7 +2,8 @@
 #include <iostream>
 #include <simulator/simulator.hpp>
 #include <stack>
-
+#include <unordered_map>
+#include <util/util.hpp>
 
 
 namespace simulator {
@@ -10,7 +11,7 @@ namespace simulator {
         const int REGISTER_SIZE = 10;
         const int MEMORY_SIZE = 2048;
         const int STACK_SIZE = 2048;
-        const char COMMENT_CHARACTER = ';';
+        const int FINAL_INSTRUCTION = 2047;
 
         int programCounter = 0;
         int carry1 = 0;
@@ -19,6 +20,9 @@ namespace simulator {
         array<int, REGISTER_SIZE> registers;
         array<std::pair<int, int>, MEMORY_SIZE> memory;
         std::stack<std::pair<int, int>> stack;
+
+        vector<string> instructions;
+        std::unordered_map<int, string> comments;
 
         auto GetArg1(const string &instruction) -> int {
             return std::stoi(instruction.substr(4, 2));
@@ -38,6 +42,7 @@ namespace simulator {
 
         auto Assign(const int r, int v) -> void {
             while (v >= 16) { v -= 16; }
+            while (v < 0) { v += 16; }
             registers.at(r) = v;
         }
 
@@ -136,19 +141,19 @@ namespace simulator {
         
         auto PPC(const string &instruction) -> void {
             const int r1 = GetArg1(instruction);
-            programCounter += r1;
+            const int newprogramCounter = programCounter + r1;
 
             const int v1 = div(programCounter, 256).quot;
-            const int v2 = div(div(programCounter, 256).rem, 16).quot;
-            const int v3 = div(div(programCounter, 256).rem, 16).rem;
+            const int v2 = div(div(newprogramCounter, 256).rem, 16).quot;
+            const int v3 = div(div(newprogramCounter, 256).rem, 16).rem;
 
             stack.push(std::make_pair(v2, v1));
             stack.push(std::make_pair(0, v3));
         }
 
         auto RET() -> void {
-            const int v1 = stack.top().first;
-            const int v2 = stack.top().second;
+            const int v1 = stack.top().second;
+            const int v2 = stack.top().first;
             stack.pop();
             const int v3 = stack.top().second;
             programCounter = v3*256 + v2*16 + v1;
@@ -166,7 +171,7 @@ namespace simulator {
             const int r2 = GetArg2(instruction);
             const int r3 = GetArg3(instruction);
             const int r4 = GetArg4(instruction);
-            if (registers.at(r4) >= 8) {
+            if (registers.at(r4) < 8) {
                 programCounter = registers.at(r3)*256 + registers.at(r2)*16 + registers.at(r1);
             }
         }
@@ -183,11 +188,27 @@ namespace simulator {
             registers.at(r1) = v1;
         }
 
-        auto DebugCycle() -> void {
-            std::cout << "\n";
+        auto FormatInstruction(string instruction) -> string {
+            while (instruction.size() < 17) {
+                instruction += " ";
+            }
+            return instruction;
+        }
+
+        auto DebugCycle(const string &instruction) -> void {
+            if (comments.find(programCounter) != comments.end()) {
+                std::cout << colors::WHITE << comments.at(programCounter) << "\n";
+            }
+            std::cout << colors::WHITE << FormatInstruction(instruction);
+            for (int i = 0; i < registers.size(); i++) {
+                std::cout << colors::CYAN << "R" << i << " " << colors::AMBER << FormatValue(registers.at(i));
+                std::cout << colors::WHITE << "|";
+            }
             std::cout << 
-                colors::CYAN << "PC"     << colors::AMBER << programCounter << 
-                colors::CYAN << " | SP " << colors::AMBER << stack.size() << "\n";
+                colors::CYAN  << "SP " << colors::AMBER << FormatAddress(stack.size()) <<
+                colors::WHITE << "|"  << 
+                colors::CYAN  << "PC " << colors::AMBER << FormatAddress(programCounter);
+            std::cout << "\n";
         }
     }
 
@@ -203,32 +224,27 @@ namespace simulator {
         while (!stack.empty()) {
             stack.pop();
         }
+
+        instructions.clear();
+        comments.clear();
+
+        programCounter = 0;
+        carry1 = 0;
+        carry2 = 0;
     }
 
-    auto Run(vector<string> instructions, const bool debugMode) -> void {
-        for (int i = 0; i < instructions.size(); i++) {
-            if (instructions.at(i).empty()) {
-                instructions.erase(instructions.begin() + i);
-                continue;
-            }
+    auto Run(std::pair<vector<string>, std::unordered_map<int, string>> input, const bool debugMode) -> void {
+        instructions = input.first;
+        comments = input.second;
 
-            if (instructions.at(i).at(0) == COMMENT_CHARACTER) {
-                instructions.erase(instructions.begin() + i);
-                continue;
-            }
-        }
-
-        while (programCounter != 2047) {
+        while (programCounter != FINAL_INSTRUCTION) {
             const string instruction = instructions.at(programCounter);
-            if (instruction.empty()) {
-                continue;
-            }
-
-            if (instruction.at(0) == COMMENT_CHARACTER) {
-                continue;
-            }
-
             const string opcode = instruction.substr(0, 3);
+
+            if (debugMode) {
+                DebugCycle(instruction);
+            }
+
             if      (opcode == "NOP") { NOP(instruction); }
 
             else if (opcode == "LDA") { LDA(instruction); }
@@ -259,14 +275,15 @@ namespace simulator {
             carry1 = 0;
             programCounter++;
 
-            if (debugMode) {
-                DebugCycle();
-            }
         }
 
     }
 
     auto GetRegister(const int x) -> int {
         return registers.at(x);
+    }
+
+    auto GetData(const int x) -> std::pair<int, int> {
+        return memory.at(x);
     }
 }

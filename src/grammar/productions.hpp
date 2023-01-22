@@ -47,13 +47,13 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {NONE},
         {LESS_OR_EQUAL, Term_8, Term_LESS_OR_EQUAL}}},
 
-    {Term_SUB, {
-        {NONE},
-        {SUBTRACT, Term_9, Term_SUB}}},
-
     {Term_ADD, {
         {NONE},
-        {ADD, Term_10, Term_ADD}}},
+        {ADD, Term_9, Term_ADD}}},
+
+    {Term_SUB, {
+        {NONE},
+        {SUBTRACT, Term_10, Term_SUB}}},
 
     {Term_MULTIPLY, {
         {NONE},
@@ -97,10 +97,10 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {Term_8, Term_LESS_OR_EQUAL}}},
     
     {Term_8, {
-        {Term_9, Term_SUB}}},
+        {Term_9, Term_ADD}}},
     
     {Term_9, {
-        {Term_10, Term_ADD}}},
+        {Term_10, Term_SUB}}},
     
     {Term_10, {
         {Term_11, Term_MULTIPLY}}},

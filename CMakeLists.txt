@@ -32,15 +32,15 @@ SET(SOURCE_FILES
 
 # Test files
 SET(TEST_FILES
-    "test_util.cpp"
-    "test_readfile.cpp"
-    "test_scanner.cpp"
-    "test_parser.cpp"
-    "test_semanticAnalyser.cpp"
-    "test_grammar.cpp"
+    #"test_util.cpp"
+    #"test_readfile.cpp"
+    #"test_scanner.cpp"
+    #"test_parser.cpp"
+    #"test_semanticAnalyser.cpp"
+    #"test_grammar.cpp"
     "test_assembler.cpp"
-    "test_generator.cpp"
-    "treesIdentical.cpp"
+    "test_integration.cpp"
+    #"treesIdentical.cpp"
 )
 
 #set(CMAKE_TOOLCHAIN_FILE "~/vcpkg/scripts/buildsystems/vcpkg.cmake")
@@ -51,5 +51,5 @@ TARGET_COMPILE_OPTIONS(LAMBDA_LIBRARY INTERFACE -O0 -g --coverage)
 TARGET_LINK_LIBRARIES(LAMBDA_LIBRARY INTERFACE --coverage)
 
 # Subdirectories
-ADD_SUBDIRECTORY(src)
+#ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)

@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include <util/types.hpp>
+#include <util/util.hpp>
 
 #include <generator/registers.hpp>
 
@@ -14,9 +15,11 @@
 namespace assembly {
     namespace {
         std::unordered_map<string, int> labels;
+        std::unordered_map<string, int> labelCount;
+        std::unordered_map<int, string> comments;
         vector<string> program;
 
-        std::unordered_map<string, int> labelCount;
+        const char COMMENT_CHARACTER = ';';
 
         auto SplitAddress(const int address, int &a1, int &a2, int &a3) -> void {
             a1 = div(address, 256).quot;
@@ -30,6 +33,13 @@ namespace assembly {
             }
             return std::to_string(x);
         }
+    }
+
+    auto Reset() -> void {
+        labels.clear();
+        labelCount.clear();
+        comments.clear();
+        program.clear();
     }
 
     auto GenerateLabel(const string &identifier) -> string {
@@ -49,7 +59,6 @@ namespace assembly {
             const int i2 = instruction.find('%');
             if (i1 != string::npos) {
 
-
                 const int valueType = std::stoi(instruction.substr(i1+1, 1));
                 const string identifier = instruction.substr(i1+2, i2-i1-2);
                 const int address = labels.at(identifier);
@@ -62,8 +71,6 @@ namespace assembly {
                 } else if (valueType == 1) {
                     value = div(div(address, 256).rem, 16).rem;
                 }
-
-                std::cout << valueType << " " << address << "\n";
                 
                 instruction = instruction.substr(0, i1)
                             + FormatRegister(value)
@@ -74,6 +81,10 @@ namespace assembly {
 
     auto GetProgram() -> vector<string> {
         return program;
+    }
+
+    auto GetComments() -> unordered_map<int, string> {
+        return comments;
     }
     
     auto NOP() -> void {
@@ -157,11 +168,6 @@ namespace assembly {
     }
 
     auto Comment(const string &comment) -> void {
-        if (!program.empty()) {
-            if (program.at(program.size() - 1).at(0) == ';') {
-                program.pop_back();
-            }
-        }
-        program.push_back(";" + comment);
+        comments.insert(std::make_pair(program.size(),  ";" + comment));
     }
 }

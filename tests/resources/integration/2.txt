@@ -1,0 +1,4 @@
+void main() {
+    int4 y = 2 + 7 + 3;             # 12
+    int4 TEST_OUTPUT = y - 5 + 1;   # 8
+}

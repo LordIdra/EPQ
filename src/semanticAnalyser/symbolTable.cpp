@@ -2,6 +2,7 @@
 #include "util/errors.hpp"
 #include <iostream>
 #include <semanticAnalyser/symbolTable.hpp>
+#include <unordered_map>
 
 
 
@@ -31,7 +32,6 @@ auto SymbolTable::GetStack() const -> std::stack<unordered_map<string, Identifie
 }
 
 auto SymbolTable::Next() -> void {
-    std::cout << colors::BOLD_GREEN << stackOperationIndex << colors::WHITE << "\n";
     if (savedStackOperations.at(stackOperationIndex) == PUSH) {
         stack.push(savedTables.at(savedTableIndex));
         savedTableIndex++;
@@ -43,4 +43,14 @@ auto SymbolTable::Next() -> void {
 
 auto SymbolTable::LookupAllScopes(const string &identifier) -> IdentifierSymbol {
     return SearchStack(stack, identifier);
+}
+
+auto SymbolTable::SearchAllSavedTables(const string &identifier) const -> IdentifierSymbol {
+    for (unordered_map<string, IdentifierSymbol> table : savedTables) {
+        if (table.find(identifier) != table.end()) {
+            return table.at(identifier);
+        }
+    }
+    std::cout << colors::RED << "Identifier " << colors::CYAN << identifier << colors::RED << " does not have a memory address" << "\n";
+    return IdentifierSymbol{};
 }

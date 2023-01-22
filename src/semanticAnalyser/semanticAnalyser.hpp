@@ -7,6 +7,7 @@
 
 
 namespace semanticAnalyser {
+    auto Reset() -> void;
     auto Analyse(const parser::TreeNode &abstractSyntaxTree) -> SymbolTable;
     auto FreeAddresses(int count) -> void;
 }

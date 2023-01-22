@@ -6,7 +6,7 @@
         {
             "label": "Run tests and generate code coverage",
             "type": "shell",
-            "command": "find . -name \"*.gcda\" -type f -delete; ./build/tests/LAMBDA_TESTS; lcov -q --directory . --capture -o lcov.info",
+            "command": "cd build/tests && find . -name \"*.gcda\" -type f -delete; ./LAMBDA_TESTS; lcov -q --directory . --capture -o lcov.info",
             "group": "build",
             "presentation": {
                 "reveal": "silent",

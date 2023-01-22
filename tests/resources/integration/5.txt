@@ -1,0 +1,10 @@
+void main() {
+    int4 TEST_OUTPUT_1 = 0 == 3;
+    int4 TEST_OUTPUT_2 = 2 == 9;
+    int4 TEST_OUTPUT_3 = -3 == 5;
+    int4 TEST_OUTPUT_4 = -1 == -3;
+
+    int4 TEST_OUTPUT_5 = 5 == 5;
+    int4 TEST_OUTPUT_6 = 11 == 11;
+    int4 TEST_OUTPUT_7 = 0 == 0;
+}

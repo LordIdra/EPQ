@@ -186,6 +186,10 @@ namespace semanticAnalyser {
         }
     }
 
+    auto Reset() -> void {
+        nextFreeAddress = 1;
+    }
+
     auto Analyse(const parser::TreeNode &abstractSyntaxTree) -> SymbolTable {
         SymbolTableGenerator tableGenerator;
         tableGenerator.EnterScope();
