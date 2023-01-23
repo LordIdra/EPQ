@@ -144,24 +144,24 @@ namespace generator {
                     const int r1 = PopRegister();
                     const int r2 = PopRegister();
                     
-                    const string labelMSBTheSame = assembly::GenerateLabel("IsEqual_MSBTheSame");
-                    const string labelNotEqual   = assembly::GenerateLabel("IsEqual_NotEqual");
-                    const string labelEqual      = assembly::GenerateLabel("IsEqual_Equal");
-                    const string labelEnd        = assembly::GenerateLabel("IsEqual_End");
+                    const string labelMSBTheSame = assembly::GenerateLabel("MSBTheSame");
+                    const string labelNotEqual   = assembly::GenerateLabel("NotEqual");
+                    const string labelEqual      = assembly::GenerateLabel("Equal");
+                    const string labelEnd        = assembly::GenerateLabel("End");
 
                     // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
                     assembly::XOR(r1, r2, r3);
+                    assembly::Comment("branch to " + labelMSBTheSame);
                     assembly::SET("1" + labelMSBTheSame, r5);
                     assembly::SET("2" + labelMSBTheSame, r6);
                     assembly::SET("3" + labelMSBTheSame, r7);
-                    assembly::Comment("branch to " + labelMSBTheSame);
                     assembly::BRP(r5, r6, r7, r3);
 
                     // We haven't branched, so MSBs are different, so they are not equal
+                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::SET("1" + labelNotEqual, r5);
                     assembly::SET("2" + labelNotEqual, r6);
                     assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::BRA(r5, r6, r7);
 
                     // MSBs are the same
@@ -176,18 +176,18 @@ namespace generator {
                     // Now, if we subtract 0001, the result will only be negative if we started with 0000
                     assembly::SUB(r3, r4, r3);
                     // If the result is positive, they are not equal
+                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::SET("1" + labelNotEqual, r5);
                     assembly::SET("2" + labelNotEqual, r6);
                     assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::BRP(r5, r6, r7, r3);
 
                     // We haven't branched, so they are equal
                     assembly::SET(registers::TRUE, r3);
+                    assembly::Comment("branch to " + labelEnd);
                     assembly::SET("1" + labelEnd, r5);
                     assembly::SET("2" + labelEnd, r6);
                     assembly::SET("3" + labelEnd, r7);
-                    assembly::Comment("branch to " + labelEnd);
                     assembly::BRA(r5, r6, r7);
 
                     // This is where we branch to if they are not equal
@@ -224,24 +224,24 @@ namespace generator {
                     const int r1 = PopRegister();
                     const int r2 = PopRegister();
 
-                    const string labelMSBTheSame = assembly::GenerateLabel("IsEqual_MSBTheSame");
-                    const string labelNotEqual   = assembly::GenerateLabel("IsEqual_NotEqual");
-                    const string labelEqual      = assembly::GenerateLabel("IsEqual_Equal");
-                    const string labelEnd        = assembly::GenerateLabel("IsEqual_End");
+                    const string labelMSBTheSame = assembly::GenerateLabel("MSBTheSame");
+                    const string labelNotEqual   = assembly::GenerateLabel("NotEqual");
+                    const string labelEqual      = assembly::GenerateLabel("Equal");
+                    const string labelEnd        = assembly::GenerateLabel("End");
 
                     // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
                     assembly::XOR(r1, r2, r3);
+                    assembly::Comment("branch to " + labelMSBTheSame);
                     assembly::SET("1" + labelMSBTheSame, r5);
                     assembly::SET("2" + labelMSBTheSame, r6);
                     assembly::SET("3" + labelMSBTheSame, r7);
-                    assembly::Comment("branch to " + labelMSBTheSame);
                     assembly::BRP(r5, r6, r7, r3);
 
                     // We haven't branched, so MSBs are different, so they are not equal
+                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::SET("1" + labelNotEqual, r5);
                     assembly::SET("2" + labelNotEqual, r6);
                     assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::BRA(r5, r6, r7);
 
                     // MSBs are the same
@@ -252,22 +252,22 @@ namespace generator {
                     // Let's first set the MSB to 0 by running and AND operation with 0111
                     assembly::SET(7, r4);
                     assembly::AND(r3, r4, r3);
-                    assembly::SET(1, r4);
                     // Now, if we subtract 0001, the result will only be negative if we started with 0000
+                    assembly::SET(1, r4);
                     assembly::SUB(r3, r4, r3);
                     // If the result is positive, they are not equal
+                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::SET("1" + labelNotEqual, r5);
                     assembly::SET("2" + labelNotEqual, r6);
                     assembly::SET("3" + labelNotEqual, r7);
-                    assembly::Comment("branch to " + labelNotEqual);
                     assembly::BRP(r5, r6, r7, r3);
 
                     // We haven't branched, so they are equal
                     assembly::SET(registers::FALSE, r3);
+                    assembly::Comment("branch to " + labelEnd);
                     assembly::SET("1" + labelEnd, r5);
                     assembly::SET("2" + labelEnd, r6);
                     assembly::SET("3" + labelEnd, r7);
-                    assembly::Comment("branch to " + labelEnd);
                     assembly::BRA(r5, r6, r7);
 
                     // This is where we branch to if they are not equal
@@ -299,29 +299,87 @@ namespace generator {
                     const int r6 = registers::Allocate();
                     const int r7 = registers::Allocate();
 
-                    const int r1 = PopRegister();
+                    // We're checking if r1 > r2 but the order is inverted when we pop
                     const int r2 = PopRegister();
+                    const int r1 = PopRegister();
 
-                    const string labelMSBTheSame    = assembly::GenerateLabel("IsEqual_MSBTheSame");
-                    const string labelMSBOfR1Bigger = assembly::GenerateLabel("IsEqual_MSBOfR1Bigger");
-                    const string labelEnd  = assembly::GenerateLabel("IsEqual_End");
+                    const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
+                    const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
+                    const string labelR1Lower         = assembly::GenerateLabel("R1Lower");
+                    const string labelEnd             = assembly::GenerateLabel("End");
 
                     // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
-                    // 
                     assembly::XOR(r1, r2, r3);
+                    assembly::Comment("branch to " + labelMSBTheSame);
                     assembly::SET("1" + labelMSBTheSame, r5);
                     assembly::SET("2" + labelMSBTheSame, r6);
                     assembly::SET("3" + labelMSBTheSame, r7);
                     assembly::BRP(r5, r6, r7, r3);
 
                     // We haven't branched, so MSBs are different
-                    assembly::SET("1" + labelMSBOfR1Bigger, r5);
-                    assembly::SET("2" + labelMSBOfR1Bigger, r6);
-                    assembly::SET("3" + labelMSBOfR1Bigger, r7);
+                    // if r1 is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
                     assembly::BRP(r5, r6, r7, r1);
 
                     // We again haven't branched, so r1 is negative, so r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // MSBs are the same; let's compare the three remaining bits
+                    // Let's first set the MSB of both bits to 0 by running and AND operation with 0111
+                    assembly::LabelLatestInstruction(labelMSBTheSame);
+                    assembly::SET(7, r4);
+                    assembly::AND(r1, r4, r1);
+                    assembly::AND(r2, r4, r2);
+                    // Now let's subtract r2 from r1
+                    assembly::SUB(r1, r2, r1);
+                    // Subtract a further 1 so that the result is negative (false) if the two numbers are equal
+                    assembly::SET(1, r4);
+                    assembly::SUB(r1, r4, r1);
+
+                    // If the result is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // If the result is negative, r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 > r2
+                    assembly::LabelLatestInstruction(labelR1Greater);
                     assembly::SET(registers::TRUE, r3);
+                    assembly::Comment("branch to " + labelEnd);
+                    assembly::SET("1" + labelEnd, r5);
+                    assembly::SET("2" + labelEnd, r6);
+                    assembly::SET("3" + labelEnd, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 < r2
+                    assembly::LabelLatestInstruction(labelR1Lower);
+                    assembly::SET(registers::FALSE, r3);
+                    
+                    // end
+                    assembly::LabelLatestInstruction(labelEnd);
+                    assembly::NOP();
+
+                    PushRegister(r3);
+
+                    registers::Free(r4);
+                    registers::Free(r5);
+                    registers::Free(r6);
+                    registers::Free(r7);
                 }
             }
 
@@ -330,7 +388,91 @@ namespace generator {
                     // Term_GREATER_OR_EQUAL -> NONE
                     if (node->children.size() == 1) { return; }
 
-                    // TODO (algorithm)
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    const int r5 = registers::Allocate();
+                    const int r6 = registers::Allocate();
+                    const int r7 = registers::Allocate();
+
+                    // We're checking if r1 > r2 but the order is inverted when we pop
+                    const int r2 = PopRegister();
+                    const int r1 = PopRegister();
+
+                    const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
+                    const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
+                    const string labelR1Lower         = assembly::GenerateLabel("R1Lower");
+                    const string labelEnd             = assembly::GenerateLabel("End");
+
+                    // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
+                    assembly::XOR(r1, r2, r3);
+                    assembly::Comment("branch to " + labelMSBTheSame);
+                    assembly::SET("1" + labelMSBTheSame, r5);
+                    assembly::SET("2" + labelMSBTheSame, r6);
+                    assembly::SET("3" + labelMSBTheSame, r7);
+                    assembly::BRP(r5, r6, r7, r3);
+
+                    // We haven't branched, so MSBs are different
+                    // if r1 is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // We again haven't branched, so r1 is negative, so r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // MSBs are the same; let's compare the three remaining bits
+                    // Let's first set the MSB of both bits to 0 by running and AND operation with 0111
+                    assembly::LabelLatestInstruction(labelMSBTheSame);
+                    assembly::SET(7, r4);
+                    assembly::AND(r1, r4, r1);
+                    assembly::AND(r2, r4, r2);
+                    // Now let's subtract r2 from r1
+                    assembly::SUB(r1, r2, r1);
+
+                    // If the result is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // If the result is negative, r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 > r2
+                    assembly::LabelLatestInstruction(labelR1Greater);
+                    assembly::SET(registers::TRUE, r3);
+                    assembly::Comment("branch to " + labelEnd);
+                    assembly::SET("1" + labelEnd, r5);
+                    assembly::SET("2" + labelEnd, r6);
+                    assembly::SET("3" + labelEnd, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 < r2
+                    assembly::LabelLatestInstruction(labelR1Lower);
+                    assembly::SET(registers::FALSE, r3);
+
+                    // end
+                    assembly::LabelLatestInstruction(labelEnd);
+                    assembly::NOP();
+
+                    PushRegister(r3);
+
+                    registers::Free(r4);
+                    registers::Free(r5);
+                    registers::Free(r6);
+                    registers::Free(r7);
                 }
             }
 
@@ -339,7 +481,91 @@ namespace generator {
                     // Term_LESS -> NONE
                     if (node->children.size() == 1) { return; }
 
-                    // TODO (algorithm)
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    const int r5 = registers::Allocate();
+                    const int r6 = registers::Allocate();
+                    const int r7 = registers::Allocate();
+
+                    // We're checking if r1 > r2 but the order is inverted when we pop
+                    const int r2 = PopRegister();
+                    const int r1 = PopRegister();
+
+                    const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
+                    const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
+                    const string labelR1Lower         = assembly::GenerateLabel("R1Lower");
+                    const string labelEnd             = assembly::GenerateLabel("End");
+
+                    // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
+                    assembly::XOR(r1, r2, r3);
+                    assembly::Comment("branch to " + labelMSBTheSame);
+                    assembly::SET("1" + labelMSBTheSame, r5);
+                    assembly::SET("2" + labelMSBTheSame, r6);
+                    assembly::SET("3" + labelMSBTheSame, r7);
+                    assembly::BRP(r5, r6, r7, r3);
+
+                    // We haven't branched, so MSBs are different
+                    // if r1 is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // We again haven't branched, so r1 is negative, so r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // MSBs are the same; let's compare the three remaining bits
+                    // Let's first set the MSB of both bits to 0 by running and AND operation with 0111
+                    assembly::LabelLatestInstruction(labelMSBTheSame);
+                    assembly::SET(7, r4);
+                    assembly::AND(r1, r4, r1);
+                    assembly::AND(r2, r4, r2);
+                    // Now let's subtract r2 from r1
+                    assembly::SUB(r1, r2, r1);
+
+                    // If the result is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // If the result is negative, r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 > r2
+                    assembly::LabelLatestInstruction(labelR1Greater);
+                    assembly::SET(registers::FALSE, r3);
+                    assembly::Comment("branch to " + labelEnd);
+                    assembly::SET("1" + labelEnd, r5);
+                    assembly::SET("2" + labelEnd, r6);
+                    assembly::SET("3" + labelEnd, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 < r2
+                    assembly::LabelLatestInstruction(labelR1Lower);
+                    assembly::SET(registers::TRUE, r3);
+
+                    // end
+                    assembly::LabelLatestInstruction(labelEnd);
+                    assembly::NOP();
+
+                    PushRegister(r3);
+
+                    registers::Free(r4);
+                    registers::Free(r5);
+                    registers::Free(r6);
+                    registers::Free(r7);
                 }
             }
 
@@ -348,7 +574,94 @@ namespace generator {
                     // Term_LESS_OR_EQUAL -> NONE
                     if (node->children.size() == 1) { return; }
 
-                    // TODO (algorithm)
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    const int r5 = registers::Allocate();
+                    const int r6 = registers::Allocate();
+                    const int r7 = registers::Allocate();
+
+                    // We're checking if r1 > r2 but the order is inverted when we pop
+                    const int r2 = PopRegister();
+                    const int r1 = PopRegister();
+
+                    const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
+                    const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
+                    const string labelR1Lower         = assembly::GenerateLabel("R1Lower");
+                    const string labelEnd             = assembly::GenerateLabel("End");
+
+                    // If the MSB of both r2 and r3 are the same (result of XOR is positive), we can just focus on the 3 other bits
+                    assembly::XOR(r1, r2, r3);
+                    assembly::Comment("branch to " + labelMSBTheSame);
+                    assembly::SET("1" + labelMSBTheSame, r5);
+                    assembly::SET("2" + labelMSBTheSame, r6);
+                    assembly::SET("3" + labelMSBTheSame, r7);
+                    assembly::BRP(r5, r6, r7, r3);
+
+                    // We haven't branched, so MSBs are different
+                    // if r1 is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // We again haven't branched, so r1 is negative, so r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // MSBs are the same; let's compare the three remaining bits
+                    // Let's first set the MSB of both bits to 0 by running and AND operation with 0111
+                    assembly::LabelLatestInstruction(labelMSBTheSame);
+                    assembly::SET(7, r4);
+                    assembly::AND(r1, r4, r1);
+                    assembly::AND(r2, r4, r2);
+                    // Now let's subtract r2 from r1
+                    assembly::SUB(r1, r2, r1);
+                    // Subtract a further 1 so that the result is negative if the two numbers are equal
+                    assembly::SET(1, r4);
+                    assembly::SUB(r1, r4, r1);
+
+                    // If the result is positive, r1 > r2
+                    assembly::Comment("branch to " + labelR1Greater);
+                    assembly::SET("1" + labelR1Greater, r5);
+                    assembly::SET("2" + labelR1Greater, r6);
+                    assembly::SET("3" + labelR1Greater, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    // If the result is negative, r1 < r2
+                    assembly::Comment("branch to " + labelR1Lower);
+                    assembly::SET("1" + labelR1Lower, r5);
+                    assembly::SET("2" + labelR1Lower, r6);
+                    assembly::SET("3" + labelR1Lower, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 > r2
+                    assembly::LabelLatestInstruction(labelR1Greater);
+                    assembly::SET(registers::FALSE, r3);
+                    assembly::Comment("branch to " + labelEnd);
+                    assembly::SET("1" + labelEnd, r5);
+                    assembly::SET("2" + labelEnd, r6);
+                    assembly::SET("3" + labelEnd, r7);
+                    assembly::BRA(r5, r6, r7);
+
+                    // r1 < r2
+                    assembly::LabelLatestInstruction(labelR1Lower);
+                    assembly::SET(registers::TRUE, r3);
+
+                    // end
+                    assembly::LabelLatestInstruction(labelEnd);
+                    assembly::NOP();
+
+                    PushRegister(r3);
+
+                    registers::Free(r4);
+                    registers::Free(r5);
+                    registers::Free(r6);
+                    registers::Free(r7);
                 }
             }
 
@@ -392,44 +705,36 @@ namespace generator {
                     if (node->children.size() == 1) { return; }
 
                     // Term_MULTIPLY -> MULTIPLY Term_11 Term_MULTIPLY
-                    const string labelMultiplyLoop = assembly::GenerateLabel("labelMultiplyLoop");
+                    const string labelMultiplyLoop = assembly::GenerateLabel("multiplyLoop");
+
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    const int r5 = registers::Allocate();
+                    const int r6 = registers::Allocate();
+                    const int r7 = registers::Allocate();
 
                     const int r1 = PopRegister();
                     const int r2 = PopRegister();
 
-                    const int r3 = registers::Allocate();
-                    const int r4 = registers::Allocate();
-                    const int r5 = registers::Allocate();
-
-                    const int r6 = registers::Allocate();
-
-                    const int r7 = registers::Allocate();
-                    const int r8 = registers::Allocate();
-                    const int r9 = registers::Allocate();
-
-                    assembly::MOV(r1, r4);
-                    assembly::MOV(r2, r3);
-                    assembly::SET(1, r5);
-                    assembly::SET(0, r6);
-                    assembly::SUB(r3, r5, r3);
+                    assembly::SET(1, r3);
+                    assembly::SET(0, r4);
+                    assembly::SUB(r2, r3, r2);
                     assembly::LabelLatestInstruction(labelMultiplyLoop);
-                    assembly::SUB(r3, r5, r3);
-                    assembly::ADD(r6, r4, r6);
-                    assembly::SET("1" + labelMultiplyLoop, r7);
-                    assembly::SET("2" + labelMultiplyLoop, r8);
-                    assembly::SET("3" + labelMultiplyLoop, r9);
+                    assembly::SUB(r2, r3, r2);
+                    assembly::ADD(r4, r1, r4);
                     assembly::Comment("branch to " + labelMultiplyLoop);
-                    assembly::BRP(r7, r8, r9, r3);
+                    assembly::SET("1" + labelMultiplyLoop, r5);
+                    assembly::SET("2" + labelMultiplyLoop, r6);
+                    assembly::SET("3" + labelMultiplyLoop, r7);
+                    assembly::BRP(r5, r6, r7, r2);
 
-                    PushRegister(r6);
+                    PushRegister(r4);
 
                     registers::Free(r3);
-                    registers::Free(r4);
                     registers::Free(r5);
-
+                    registers::Free(r6);
                     registers::Free(r7);
-                    registers::Free(r8);
-                    registers::Free(r9);
                 }
             }
 
@@ -439,7 +744,37 @@ namespace generator {
                     if (node->children.size() == 1) { return; }
 
                     // Term_DIVIDE -> DIVIDE Term_12 Term_DIVIDE
-                    // TODO (algorithm)
+                    const string labelDivideLoop = assembly::GenerateLabel("divideLoop");
+
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    const int r5 = registers::Allocate();
+                    const int r6 = registers::Allocate();
+                    const int r7 = registers::Allocate();
+
+                    const int r2 = PopRegister();
+                    const int r1 = PopRegister();
+
+                    // r1 / r2
+                    assembly::SET(1, r3);
+                    assembly::SET(0, r4);
+                    assembly::SUB(r4, r3, r4);
+                    assembly::LabelLatestInstruction(labelDivideLoop);
+                    assembly::SUB(r1, r2, r1);
+                    assembly::ADD(r4, r3, r4);
+                    assembly::Comment("branch to " + labelDivideLoop);
+                    assembly::SET("1" + labelDivideLoop, r5);
+                    assembly::SET("2" + labelDivideLoop, r6);
+                    assembly::SET("3" + labelDivideLoop, r7);
+                    assembly::BRP(r5, r6, r7, r1);
+
+                    PushRegister(r4);
+
+                    registers::Free(r3);
+                    registers::Free(r5);
+                    registers::Free(r6);
+                    registers::Free(r7);
                 }
             }
 
@@ -559,7 +894,10 @@ namespace generator {
 
                     // Literal -> NUMBER
                     if (GetChildType(0) == NUMBER) {
-                        const int v1 = std::atoi(GetChildText(0).c_str());
+                        int v1 = std::atoi(GetChildText(0).c_str());
+                        if (v1 < 0) {
+                            v1 = 16 + v1;
+                        }
                         assembly::SET(v1, r1);
                     }
 
@@ -615,7 +953,37 @@ namespace generator {
 
                     // AssignmentOperation -> MULTIPLY_ASSIGN Term
                     if (GetChildType(0) == MULTIPLY_ASSIGN) {
-                        // TODO (algorithm)
+                        const string labelMultiplyLoop = assembly::GenerateLabel("multiplyLoop");
+
+                        const int r5 = registers::Allocate();
+                        const int r6 = registers::Allocate();
+
+                        const int r7 = registers::Allocate();
+                        const int r8 = registers::Allocate();
+                        const int r9 = registers::Allocate();
+
+                        const int assignFrom = PopRegister();
+                        const int assignTo = registerStack.top();
+
+                        assembly::SET(1, r5);
+                        assembly::SET(0, r6);
+                        assembly::SUB(assignTo, r5, assignTo);
+                        assembly::LabelLatestInstruction(labelMultiplyLoop);
+                        assembly::SUB(assignTo, r5, assignTo);
+                        assembly::ADD(r6, assignFrom, r6);
+                        assembly::Comment("branch to " + labelMultiplyLoop);
+                        assembly::SET("1" + labelMultiplyLoop, r7);
+                        assembly::SET("2" + labelMultiplyLoop, r8);
+                        assembly::SET("3" + labelMultiplyLoop, r9);
+                        assembly::BRP(r7, r8, r9, assignTo);
+                        assembly::MOV(r6, assignTo);
+
+                        registers::Free(r5);
+                        registers::Free(r6);
+                        registers::Free(r7);
+                        registers::Free(r8);
+                        registers::Free(r9);
+
                         return;
                     }
 

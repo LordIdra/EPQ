@@ -1,0 +1,7 @@
+void main() {
+    int4 x = 6;
+    int4 TEST_OUTPUT_1 = x / 3;
+    int4 TEST_OUTPUT_2 = 4 / 1;
+    int4 TEST_OUTPUT_3 = 5 / 2;
+    int4 TEST_OUTPUT_4 = -5 / 2;
+}
