@@ -706,28 +706,74 @@ namespace generator {
 
                     // Term_MULTIPLY -> MULTIPLY Term_11 Term_MULTIPLY
                     const string labelMultiplyLoop = assembly::GenerateLabel("multiplyLoop");
+                    const string labelFirstNumberPositive = assembly::GenerateLabel("firstNumberPositive");
+                    const string labelSecondNumberPositive = assembly::GenerateLabel("secondNumberPositive");
+                    const string labelResultPositive = assembly::GenerateLabel("resultPositive");
 
                     const int r3 = registers::Allocate();
                     const int r4 = registers::Allocate();
-
                     const int r5 = registers::Allocate();
+
                     const int r6 = registers::Allocate();
                     const int r7 = registers::Allocate();
+                    const int r8 = registers::Allocate();
 
                     const int r1 = PopRegister();
                     const int r2 = PopRegister();
 
+                    // Used to determine whether the result is negative later on
+                    assembly::XOR(r1, r2, r5);
+
+                    // Set input registers to both be positive
+                    assembly::SET(1, r3);
+
+                    assembly::Comment("branch to " + labelFirstNumberPositive);
+                    assembly::SET("1" + labelFirstNumberPositive, r6);
+                    assembly::SET("2" + labelFirstNumberPositive, r7);
+                    assembly::SET("3" + labelFirstNumberPositive, r8);
+                    assembly::BRP(r6, r7, r8, r1);
+                    assembly::NOT(r1, r1);
+                    assembly::ADD(r1, r3, r1);
+
+                    assembly::LabelLatestInstruction(labelFirstNumberPositive);                    
+
+                    assembly::Comment("branch to " + labelSecondNumberPositive);
+                    assembly::SET("1" + labelSecondNumberPositive, r6);
+                    assembly::SET("2" + labelSecondNumberPositive, r7);
+                    assembly::SET("3" + labelSecondNumberPositive, r8);
+                    assembly::BRP(r6, r7, r8, r2);
+                    assembly::NOT(r2, r2);
+                    assembly::ADD(r2, r3, r2);
+
+                    assembly::LabelLatestInstruction(labelSecondNumberPositive);
+
+                    // Set up registers
                     assembly::SET(1, r3);
                     assembly::SET(0, r4);
-                    assembly::SUB(r2, r3, r2);
+                    assembly::SUB(r4, r1, r4);
+
+                    // Standard multiplication loop
                     assembly::LabelLatestInstruction(labelMultiplyLoop);
                     assembly::SUB(r2, r3, r2);
                     assembly::ADD(r4, r1, r4);
                     assembly::Comment("branch to " + labelMultiplyLoop);
-                    assembly::SET("1" + labelMultiplyLoop, r5);
-                    assembly::SET("2" + labelMultiplyLoop, r6);
-                    assembly::SET("3" + labelMultiplyLoop, r7);
-                    assembly::BRP(r5, r6, r7, r2);
+                    assembly::SET("1" + labelMultiplyLoop, r6);
+                    assembly::SET("2" + labelMultiplyLoop, r7);
+                    assembly::SET("3" + labelMultiplyLoop, r8);
+                    assembly::BRP(r6, r7, r8, r2);
+
+                    // If only one register is negative, the result will be negative
+                    //assembly::XOR(r4, r5, r4);
+                    assembly::Comment("branch to " + labelResultPositive);
+                    assembly::SET("1" + labelResultPositive, r6);
+                    assembly::SET("2" + labelResultPositive, r7);
+                    assembly::SET("3" + labelResultPositive, r8);
+                    assembly::BRP(r6, r7, r8, r5);
+                    assembly::SET(1, r3);
+                    assembly::NOT(r4, r4);
+                    assembly::ADD(r4, r3, r4);
+
+                    assembly::LabelLatestInstruction(labelResultPositive);
 
                     PushRegister(r4);
 
@@ -735,6 +781,7 @@ namespace generator {
                     registers::Free(r5);
                     registers::Free(r6);
                     registers::Free(r7);
+                    registers::Free(r8);
                 }
             }
 
@@ -745,29 +792,74 @@ namespace generator {
 
                     // Term_DIVIDE -> DIVIDE Term_12 Term_DIVIDE
                     const string labelDivideLoop = assembly::GenerateLabel("divideLoop");
+                    const string labelFirstNumberPositive = assembly::GenerateLabel("firstNumberPositive");
+                    const string labelSecondNumberPositive = assembly::GenerateLabel("secondNumberPositive");
+                    const string labelResultPositive = assembly::GenerateLabel("resultPositive");
 
                     const int r3 = registers::Allocate();
                     const int r4 = registers::Allocate();
-
                     const int r5 = registers::Allocate();
+
                     const int r6 = registers::Allocate();
                     const int r7 = registers::Allocate();
+                    const int r8 = registers::Allocate();
 
                     const int r2 = PopRegister();
                     const int r1 = PopRegister();
 
-                    // r1 / r2
+                    // Used to determine whether the result is negative later on
+                    assembly::XOR(r1, r2, r5);
+
+                    // Set input registers to both be positive
+                    assembly::SET(1, r3);
+
+                    assembly::Comment("branch to " + labelFirstNumberPositive);
+                    assembly::SET("1" + labelFirstNumberPositive, r6);
+                    assembly::SET("2" + labelFirstNumberPositive, r7);
+                    assembly::SET("3" + labelFirstNumberPositive, r8);
+                    assembly::BRP(r6, r7, r8, r1);
+                    assembly::NOT(r1, r1);
+                    assembly::ADD(r1, r3, r1);
+
+                    assembly::LabelLatestInstruction(labelFirstNumberPositive);                    
+
+                    assembly::Comment("branch to " + labelSecondNumberPositive);
+                    assembly::SET("1" + labelSecondNumberPositive, r6);
+                    assembly::SET("2" + labelSecondNumberPositive, r7);
+                    assembly::SET("3" + labelSecondNumberPositive, r8);
+                    assembly::BRP(r6, r7, r8, r2);
+                    assembly::NOT(r2, r2);
+                    assembly::ADD(r2, r3, r2);
+
+                    assembly::LabelLatestInstruction(labelSecondNumberPositive);
+
+                    // Set up registers
                     assembly::SET(1, r3);
                     assembly::SET(0, r4);
                     assembly::SUB(r4, r3, r4);
+
+                    // Standard division loop (r1 / r2)
                     assembly::LabelLatestInstruction(labelDivideLoop);
                     assembly::SUB(r1, r2, r1);
                     assembly::ADD(r4, r3, r4);
                     assembly::Comment("branch to " + labelDivideLoop);
-                    assembly::SET("1" + labelDivideLoop, r5);
-                    assembly::SET("2" + labelDivideLoop, r6);
-                    assembly::SET("3" + labelDivideLoop, r7);
-                    assembly::BRP(r5, r6, r7, r1);
+                    assembly::SET("1" + labelDivideLoop, r6);
+                    assembly::SET("2" + labelDivideLoop, r7);
+                    assembly::SET("3" + labelDivideLoop, r8);
+                    assembly::BRP(r6, r7, r8, r1);
+
+                    // If only one register is negative, the result will be negative
+                    //assembly::XOR(r4, r5, r4);
+                    assembly::Comment("branch to " + labelResultPositive);
+                    assembly::SET("1" + labelResultPositive, r6);
+                    assembly::SET("2" + labelResultPositive, r7);
+                    assembly::SET("3" + labelResultPositive, r8);
+                    assembly::BRP(r6, r7, r8, r5);
+                    assembly::SET(1, r3);
+                    assembly::NOT(r4, r4);
+                    assembly::ADD(r4, r3, r4);
+
+                    assembly::LabelLatestInstruction(labelResultPositive);
 
                     PushRegister(r4);
 
@@ -775,6 +867,7 @@ namespace generator {
                     registers::Free(r5);
                     registers::Free(r6);
                     registers::Free(r7);
+                    registers::Free(r8);
                 }
             }
 
@@ -784,7 +877,87 @@ namespace generator {
                     if (node->children.size() == 1) { return; }
 
                     // Term_MODULUS -> MODULUS Term_12 Term_MODULUS
-                    // TODO (algorithm)
+                    const string labelModulusLoop = assembly::GenerateLabel("modulusLoop");
+                    const string labelFirstNumberPositive = assembly::GenerateLabel("firstNumberPositive");
+                    const string labelSecondNumberPositive = assembly::GenerateLabel("secondNumberPositive");
+                    const string labelResultPositive = assembly::GenerateLabel("resultPositive");
+
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+                    const int r5 = registers::Allocate();
+
+                    const int r6 = registers::Allocate();
+                    const int r7 = registers::Allocate();
+                    const int r8 = registers::Allocate();
+
+                    const int r2 = PopRegister();
+                    const int r1 = PopRegister();
+
+                    // Used to determine whether the result is negative later on
+                    assembly::XOR(r1, r2, r5);
+                    
+                    // Set input registers to both be positive
+                    assembly::SET(1, r3);
+
+                    assembly::Comment("branch to " + labelFirstNumberPositive);
+                    assembly::SET("1" + labelFirstNumberPositive, r6);
+                    assembly::SET("2" + labelFirstNumberPositive, r7);
+                    assembly::SET("3" + labelFirstNumberPositive, r8);
+                    assembly::BRP(r6, r7, r8, r1);
+                    assembly::NOT(r1, r1);
+                    assembly::ADD(r1, r3, r1);
+
+                    assembly::LabelLatestInstruction(labelFirstNumberPositive);
+
+                    assembly::Comment("branch to " + labelSecondNumberPositive);
+                    assembly::SET("1" + labelSecondNumberPositive, r6);
+                    assembly::SET("2" + labelSecondNumberPositive, r7);
+                    assembly::SET("3" + labelSecondNumberPositive, r8);
+                    assembly::BRP(r6, r7, r8, r2);
+                    assembly::NOT(r2, r2);
+                    assembly::ADD(r2, r3, r2);
+
+                    assembly::LabelLatestInstruction(labelSecondNumberPositive);
+
+                    // Set up registers
+                    assembly::SET(1, r3);
+                    assembly::SET(0, r4);
+                    assembly::SUB(r4, r3, r4);
+
+                    // Standard division loop (r1 / r2)
+                    assembly::LabelLatestInstruction(labelModulusLoop);
+                    assembly::SUB(r1, r2, r1);
+                    assembly::ADD(r4, r3, r4);
+                    assembly::Comment("branch to " + labelModulusLoop);
+                    assembly::SET("1" + labelModulusLoop, r6);
+                    assembly::SET("2" + labelModulusLoop, r7);
+                    assembly::SET("3" + labelModulusLoop, r8);
+                    assembly::BRP(r6, r7, r8, r1);
+
+                    // r1 is now 'r2' below the remainder, let's add r2 to counteract this
+                    //assembly::ADD(r1, r2, r1);
+
+                    // If only one register is negative, the result will be negative
+                    //assembly::XOR(r4, r5, r4);
+                    assembly::Comment("branch to " + labelResultPositive);
+                    assembly::SET("1" + labelResultPositive, r6);
+                    assembly::SET("2" + labelResultPositive, r7);
+                    assembly::SET("3" + labelResultPositive, r8);
+                    assembly::BRP(r6, r7, r8, r5);
+                    assembly::SET(1, r3);
+                    assembly::NOT(r1, r1);
+                    assembly::ADD(r1, r3, r1);
+
+                    assembly::LabelLatestInstruction(labelResultPositive);
+
+                    PushRegister(r1);
+
+                    registers::Free(r3);
+                    registers::Free(r4);
+                    registers::Free(r5);
+                    registers::Free(r6);
+                    registers::Free(r7);
+                    registers::Free(r8);
                 }
 
             }
@@ -953,43 +1126,13 @@ namespace generator {
 
                     // AssignmentOperation -> MULTIPLY_ASSIGN Term
                     if (GetChildType(0) == MULTIPLY_ASSIGN) {
-                        const string labelMultiplyLoop = assembly::GenerateLabel("multiplyLoop");
-
-                        const int r5 = registers::Allocate();
-                        const int r6 = registers::Allocate();
-
-                        const int r7 = registers::Allocate();
-                        const int r8 = registers::Allocate();
-                        const int r9 = registers::Allocate();
-
-                        const int assignFrom = PopRegister();
-                        const int assignTo = registerStack.top();
-
-                        assembly::SET(1, r5);
-                        assembly::SET(0, r6);
-                        assembly::SUB(assignTo, r5, assignTo);
-                        assembly::LabelLatestInstruction(labelMultiplyLoop);
-                        assembly::SUB(assignTo, r5, assignTo);
-                        assembly::ADD(r6, assignFrom, r6);
-                        assembly::Comment("branch to " + labelMultiplyLoop);
-                        assembly::SET("1" + labelMultiplyLoop, r7);
-                        assembly::SET("2" + labelMultiplyLoop, r8);
-                        assembly::SET("3" + labelMultiplyLoop, r9);
-                        assembly::BRP(r7, r8, r9, assignTo);
-                        assembly::MOV(r6, assignTo);
-
-                        registers::Free(r5);
-                        registers::Free(r6);
-                        registers::Free(r7);
-                        registers::Free(r8);
-                        registers::Free(r9);
-
+                        Term_MULTIPLY::Last();
                         return;
                     }
 
                     // AssignmentOperation -> DIVIDE_ASSIGN Term
                     if (GetChildType(0) == DIVIDE_ASSIGN) {
-                        // TODO (algorithm)
+                        Term_DIVIDE::Last();
                         return;
                     }
 

@@ -126,7 +126,7 @@ namespace simulator {
         auto NOT(const string &instruction) -> void {
             const int r1 = GetArg1(instruction);
             const int r2 = GetArg2(instruction);
-            Assign(r2, 16 - registers.at(r1));
+            Assign(r2, 15 - registers.at(r1));
         }
 
         auto PSH() -> void {

@@ -76,8 +76,8 @@ TEST_CASE("[7|INT] Integration 3") {
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_3").address).first == 1);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_4").address).first == 0);
 
-    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_5").address).first == -6);
-    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_6").address).first == -3);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_5").address).first == 10);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_6").address).first == 13);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_7").address).first == 3);
 }
 
@@ -200,10 +200,34 @@ TEST_CASE("[7|INT] Integration 13") {
 
 TEST_CASE("[7|INT] Integration 14") {
     const auto program = Compile("14");
-    simulator::Run(program, true);
+    simulator::Run(program, false);
 
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_1").address).first == 2);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_2").address).first == 4);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_3").address).first == 2);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_4").address).first == 14);
+}
+
+TEST_CASE("[7|INT] Integration 15") {
+    const auto program = Compile("15");
+    simulator::Run(program, false);
+
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT").address).first == 2);
+}
+
+TEST_CASE("[7|INT] Integration 16") {
+    const auto program = Compile("16");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_1").address).first == 0);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_2").address).first == 0);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_3").address).first == 2);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_4").address).first == 1);
+}
+
+TEST_CASE("[7|INT] Integration 17") {
+    const auto program = Compile("17");
+    simulator::Run(program, false);
+
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT").address).first == 1);
 }
