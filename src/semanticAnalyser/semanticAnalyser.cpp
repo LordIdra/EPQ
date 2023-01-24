@@ -2,8 +2,8 @@
 #include "grammar/symbolNames.hpp"
 #include "grammar/terminals.hpp"
 #include "parser/parser.hpp"
-#include "semanticAnalyser/symbolTable.hpp"
-#include "semanticAnalyser/symbolTableGenerator.hpp"
+#include "semanticAnalyser/scope.hpp"
+#include "semanticAnalyser/scopeManager.hpp"
 #include "util/errors.hpp"
 #include <iostream>
 #include <semanticAnalyser/semanticAnalyser.hpp>
@@ -28,7 +28,7 @@ namespace semanticAnalyser {
         
         int nextFreeAddress = 1;
 
-        auto AddIdentifier(SymbolTableGenerator &table, const parser::TreeNode &node, const SymbolType type) -> void {
+        auto AddIdentifier(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node, const SymbolType type) -> void {
             int address = 0;
             if (type == TYPE_FUNCTION) {
                 address = 0; // Determined during compile time
@@ -36,8 +36,8 @@ namespace semanticAnalyser {
                 address = nextFreeAddress;
                 nextFreeAddress++;
             }
-            table.AddIdentifier(node.token.text, IdentifierSymbol{
-                table.CurrentScopeLevel(), type, address});
+            treeGenerator.AddIdentifier(node.token.text, IdentifierSymbol{
+                treeGenerator.CurrentScopeLevel(), type, address});
         }
 
         auto UnknownIdentifier(const parser::TreeNode &node) -> void {
@@ -56,75 +56,75 @@ namespace semanticAnalyser {
         }
 
         // Forward declaration so the next few functions can have a circular dependency
-        auto Traverse(SymbolTableGenerator &table, const parser::TreeNode &node) -> void;
+        auto Traverse(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void;
 
-        auto TraverseFunctionDeclaration(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
+        auto TraverseFunctionDeclaration(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
             if (node.children.empty()) {
                 return;
             }
-            Traverse(table, node.children.at(0));
-            Traverse(table, node.children.at(1));
-            table.EnterScope();
-            Traverse(table, node.children.at(2));
-            Traverse(table, node.children.at(3));
-            table.ExitScope();
-            Traverse(table, node.children.at(4));
+            Traverse(treeGenerator, node.children.at(0));
+            Traverse(treeGenerator, node.children.at(1));
+            treeGenerator.EnterScope();
+            Traverse(treeGenerator, node.children.at(2));
+            Traverse(treeGenerator, node.children.at(3));
+            treeGenerator.ExitScope();
+            Traverse(treeGenerator, node.children.at(4));
         }
 
-        auto TraverseBlock(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
+        auto TraverseBlock(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
             if (node.children.empty()) {
                 return;
             }
-            table.EnterScope();
-            Traverse(table, node.children.at(0));
-            Traverse(table, node.children.at(1));
-            Traverse(table, node.children.at(2));
-            table.ExitScope();
+            treeGenerator.EnterScope();
+            Traverse(treeGenerator, node.children.at(0));
+            Traverse(treeGenerator, node.children.at(1));
+            Traverse(treeGenerator, node.children.at(2));
+            treeGenerator.ExitScope();
         }
 
-        auto TraverseBlockWithoutEnteringScope(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
+        auto TraverseBlockWithoutEnteringScope(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
             if (node.children.empty()) {
                 return;
             }
-            Traverse(table, node.children.at(0));
-            Traverse(table, node.children.at(1));
-            Traverse(table, node.children.at(2));
+            Traverse(treeGenerator, node.children.at(0));
+            Traverse(treeGenerator, node.children.at(1));
+            Traverse(treeGenerator, node.children.at(2));
         }
 
-        auto TraverseFor(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
-            table.EnterScope();
-            Traverse(table, node.children.at(0));
-            Traverse(table, node.children.at(1));
-            Traverse(table, node.children.at(2));
-            Traverse(table, node.children.at(3));
-            TraverseBlockWithoutEnteringScope(table, node.children.at(4));
-            table.ExitScope();
+        auto TraverseFor(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
+            treeGenerator.EnterScope();
+            Traverse(treeGenerator, node.children.at(0));
+            Traverse(treeGenerator, node.children.at(1));
+            Traverse(treeGenerator, node.children.at(2));
+            Traverse(treeGenerator, node.children.at(3));
+            TraverseBlockWithoutEnteringScope(treeGenerator, node.children.at(4));
+            treeGenerator.ExitScope();
         }
 
-        auto TraverseWhile(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
-            table.EnterScope();
-            Traverse(table, node.children.at(0));
-            Traverse(table, node.children.at(1));
-            Traverse(table, node.children.at(2));
-            Traverse(table, node.children.at(3));
-            TraverseBlockWithoutEnteringScope(table, node.children.at(4));
-            table.ExitScope();
+        auto TraverseWhile(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
+            treeGenerator.EnterScope();
+            Traverse(treeGenerator, node.children.at(0));
+            Traverse(treeGenerator, node.children.at(1));
+            Traverse(treeGenerator, node.children.at(2));
+            Traverse(treeGenerator, node.children.at(3));
+            TraverseBlockWithoutEnteringScope(treeGenerator, node.children.at(4));
+            treeGenerator.ExitScope();
         }
 
-        auto CheckIdentifierDeclaration(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
+        auto CheckIdentifierDeclaration(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
             if (nonTerminalIntDeclarations.count(node.parent->token.type) != 0) {
-                AddIdentifier(table, node, TYPE_INT);
+                AddIdentifier(treeGenerator, node, TYPE_INT);
                 return;
             }
 
             if (nonTerminalFunctionDeclarations.count(node.parent->token.type) != 0) {
-                AddIdentifier(table, node, TYPE_FUNCTION);
+                AddIdentifier(treeGenerator, node, TYPE_FUNCTION);
                 return;
             }
         }
 
-        auto CheckIntType(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
-            const IdentifierSymbol symbol = table.LookupAllScopes(node.token.text);
+        auto CheckIntType(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
+            const IdentifierSymbol symbol = treeGenerator.LookupAllScopes(node.token.text);
             if (symbol.type == TYPE_ERROR) {
                 UnknownIdentifier(node);
             } else if (symbol.type == TYPE_FUNCTION) {
@@ -132,8 +132,8 @@ namespace semanticAnalyser {
             }
         }
 
-        auto CheckFunctionType(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
-            const IdentifierSymbol symbol = table.LookupAllScopes(node.token.text);
+        auto CheckFunctionType(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
+            const IdentifierSymbol symbol = treeGenerator.LookupAllScopes(node.token.text);
             if (symbol.type == TYPE_ERROR) {
                 UnknownIdentifier(node);
             } else if (symbol.type == TYPE_INT) {
@@ -141,47 +141,47 @@ namespace semanticAnalyser {
             }
         }
 
-        auto CheckIdentifierUsages(SymbolTableGenerator &table, const parser::TreeNode &node) {
+        auto CheckIdentifierUsages(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) {
             // Usages
             if (nonTerminalIntAndConstIntUses.count(node.parent->token.type) != 0) {
-                CheckIntType(table, node);
+                CheckIntType(treeGenerator, node);
                 return;
             }
 
             if (nonTerminalFunctionUses.count(node.parent->token.type) != 0) {
-                CheckFunctionType(table, node);
+                CheckFunctionType(treeGenerator, node);
                 return;
             }
         }
 
-        auto Traverse(SymbolTableGenerator &table, const parser::TreeNode &node) -> void {
+        auto Traverse(SymbolTreeGenerator &treeGenerator, const parser::TreeNode &node) -> void {
             if ((node.token.type == N_Block) || (node.token.type == L_Block)) {
-                TraverseBlock(table, node);
+                TraverseBlock(treeGenerator, node);
                 return;
             }
 
             if (node.token.type == FunctionDeclaration) {
-                TraverseFunctionDeclaration(table, node);
+                TraverseFunctionDeclaration(treeGenerator, node);
                 return;
             }
 
             if (node.token.type == For) {
-                TraverseFor(table, node);
+                TraverseFor(treeGenerator, node);
                 return;
             }
 
             if (node.token.type == While) {
-                TraverseWhile(table, node);
+                TraverseWhile(treeGenerator, node);
                 return;
             }
 
             if (node.token.type == IDENTIFIER) {
-                CheckIdentifierDeclaration(table, node);
-                CheckIdentifierUsages(table, node);
+                CheckIdentifierDeclaration(treeGenerator, node);
+                CheckIdentifierUsages(treeGenerator, node);
             }
 
             for (const parser::TreeNode &child : node.children) {
-                Traverse(table, child);
+                Traverse(treeGenerator, child);
             }
         }
     }
@@ -190,12 +190,12 @@ namespace semanticAnalyser {
         nextFreeAddress = 1;
     }
 
-    auto Analyse(const parser::TreeNode &abstractSyntaxTree) -> SymbolTable {
-        SymbolTableGenerator tableGenerator;
-        tableGenerator.EnterScope();
-        Traverse(tableGenerator, abstractSyntaxTree);
-        tableGenerator.ExitScope();
-        return tableGenerator.GetTable();
+    auto Analyse(const parser::TreeNode &abstractSyntaxTree) -> Scope {
+        SymbolTreeGenerator treeGenerator;
+        treeGenerator.EnterScope();
+        Traverse(treeGenerator, abstractSyntaxTree);
+        treeGenerator.ExitScope();
+        return treeGenerator.GetTree();
     }
     
     auto FreeAddresses(int count) -> void {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <semanticAnalyser/symbolTable.hpp>
+#include "semanticAnalyser/scope.hpp"
 #include <stack>
 
 #include <util/types.hpp>
@@ -11,13 +11,13 @@ auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, cons
 
 
 
-class SymbolTableGenerator {
+class SymbolTreeGenerator {
 private:
     std::stack<unordered_map<string, IdentifierSymbol>> stack;
-    SymbolTable table;
+    Scope tree;
 
 public:
-    SymbolTableGenerator() = default;
+    SymbolTreeGenerator() = default;
     
     auto EnterScope() -> void;
     auto ExitScope() -> void;
@@ -27,5 +27,5 @@ public:
     auto LookupAllScopes(const string &name) -> IdentifierSymbol;
     auto LookupScopes(const string &name) -> IdentifierSymbol;
 
-    auto GetTable() -> SymbolTable;
+    auto GetTree() -> Scope;
 };

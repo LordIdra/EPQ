@@ -1,7 +1,8 @@
-#include "semanticAnalyser/semanticAnalyser.hpp"
-#include "semanticAnalyser/symbolTable.hpp"
+#include "semanticAnalyser/scopeManager.hpp"
+#include "semanticAnalyser/scope.hpp"
 #include <iostream>
-#include <semanticAnalyser/symbolTableGenerator.hpp>
+#include <semanticAnalyser/semanticAnalyser.hpp>
+#include <stack>
 
 
 
@@ -25,23 +26,23 @@ auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, cons
     return SearchStack(stack, name);
 }
 
-auto SymbolTableGenerator::EnterScope() -> void {
-    table.Push();
+auto SymbolTreeGenerator::EnterScope() -> void {
+    tree.EnterScope();
     stack.push(unordered_map<string, IdentifierSymbol>{});
 }
 
-auto SymbolTableGenerator::ExitScope() -> void {
+auto SymbolTreeGenerator::ExitScope() -> void {
     for (const auto &identifier : stack.top()) {
         if (IsInt(identifier.second.type)) {
             semanticAnalyser::FreeAddresses(1);
         }
     }
-    table.Pop();
+    tree.ExitScope();
     stack.pop();
 }
 
 
-auto SymbolTableGenerator::CurrentScopeLevel() -> SymbolScope {
+auto SymbolTreeGenerator::CurrentScopeLevel() -> SymbolScope {
     if (stack.size() == 1) {
         return SCOPE_GLOBAL;
     }
@@ -51,16 +52,16 @@ auto SymbolTableGenerator::CurrentScopeLevel() -> SymbolScope {
     return SCOPE_LOCAL;
 }
 
-auto SymbolTableGenerator::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
-    table.AddIdentifier(name, symbol);
+auto SymbolTreeGenerator::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
+    tree.AddIdentifier(name, symbol);
     stack.top().insert(std::make_pair(name, symbol));
 }
 
-auto SymbolTableGenerator::LookupAllScopes(const string &name) -> IdentifierSymbol {
+auto SymbolTreeGenerator::LookupAllScopes(const string &name) -> IdentifierSymbol {
     return SearchStack(stack, name);
 }
 
-auto SymbolTableGenerator::LookupScopes(const string &name) -> IdentifierSymbol {
+auto SymbolTreeGenerator::LookupScopes(const string &name) -> IdentifierSymbol {
     // If there is no table to search, the symbol obviously does not exist
     if (stack.empty()) {
         return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
@@ -75,6 +76,6 @@ auto SymbolTableGenerator::LookupScopes(const string &name) -> IdentifierSymbol 
     return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
 }
 
-auto SymbolTableGenerator::GetTable() -> SymbolTable {
-    return table;
+auto SymbolTreeGenerator::GetTree() -> Scope {
+    return tree;
 }
