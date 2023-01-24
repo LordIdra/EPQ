@@ -174,6 +174,7 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 2") {
                 expected.Push();
                     expected.AddIdentifier("i", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
                 expected.Pop();
+                expected.AddIdentifier("z", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
             expected.Pop();
         expected.Pop();
 

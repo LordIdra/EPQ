@@ -891,7 +891,7 @@ namespace generator {
                     const int r8 = registers::Allocate();
 
                     const int r2 = PopRegister();
-                    const int r1 = PopRegister();
+                    const int r1 = registerStack.top();
 
                     // Used to determine whether the result is negative later on
                     assembly::XOR(r1, r2, r5);
@@ -935,10 +935,9 @@ namespace generator {
                     assembly::BRP(r6, r7, r8, r1);
 
                     // r1 is now 'r2' below the remainder, let's add r2 to counteract this
-                    //assembly::ADD(r1, r2, r1);
+                    assembly::ADD(r1, r2, r1);
 
                     // If only one register is negative, the result will be negative
-                    //assembly::XOR(r4, r5, r4);
                     assembly::Comment("branch to " + labelResultPositive);
                     assembly::SET("1" + labelResultPositive, r6);
                     assembly::SET("2" + labelResultPositive, r7);
@@ -947,10 +946,11 @@ namespace generator {
                     assembly::SET(1, r3);
                     assembly::NOT(r1, r1);
                     assembly::ADD(r1, r3, r1);
+                    // Oh, if the result is negative, r1 is NOT r2 below the remainder as stated above
+                    // Therefore we'll need to undo that addition
+                    //assembly::SUB(r1, r2, r1);
 
                     assembly::LabelLatestInstruction(labelResultPositive);
-
-                    PushRegister(r1);
 
                     registers::Free(r3);
                     registers::Free(r4);
@@ -1138,7 +1138,7 @@ namespace generator {
 
                     // AssignmentOperation -> MODULUS_ASSIGN Term
                     if (GetChildType(0) == MODULUS_ASSIGN) {
-                        // TODO (algorithm)
+                        Term_MODULUS::Last();
                         return;
                     }
                 }
@@ -1222,12 +1222,12 @@ namespace generator {
                             const int a2 = div(div(address, 256).rem, 16).quot;
                             const int a3 = div(div(address, 256).rem, 16).rem;
                             
+                            assembly::Comment("store " + identifier);
                             assembly::SET(a1, r1);
                             assembly::SET(a2, r2);
                             assembly::SET(a3, r3);
 
                             assembly::MOV(r4, registers::MDR1);
-                            assembly::Comment("store " + identifier);
                             assembly::STA(r1, r2, r3);
 
                             registers::Free(r1);
@@ -1258,17 +1258,18 @@ namespace generator {
                 }
 
                 auto Last() -> void {
-                    const int r1 = PopRegister();
 
                     const int r2 = registers::Allocate();
                     const int r3 = registers::Allocate();
                     const int r4 = registers::Allocate();
 
+                    const int r1 = PopRegister();
+
                     assembly::NOT(r1, r1);
+                    assembly::Comment("branch to " + loopEndStack.top());
                     assembly::SET("1" + loopEndStack.top(), r2);
                     assembly::SET("2" + loopEndStack.top(), r3);
                     assembly::SET("3" + loopEndStack.top(), r4);
-                    assembly::Comment("branch to " + loopEndStack.top());
                     assembly::BRP(r2, r3, r4, r1);
 
                     registers::Free(r2);
@@ -1602,7 +1603,9 @@ namespace generator {
         }
 
         auto RecursiveGenerateWhile(parser::TreeNode &node) -> void {
+            std::cout << symbolTable.LookupAllScopes("TEST_OUTPUT").address << "\n";
             symbolTable.Next();
+            std::cout << symbolTable.LookupAllScopes("TEST_OUTPUT").address << "\n";
             RecursiveGenerate(node.children.at(0));
             RecursiveGenerate(node.children.at(1));
             RecursiveGenerate(node.children.at(2));
@@ -1613,6 +1616,8 @@ namespace generator {
 
         auto RecursiveGenerate(parser::TreeNode &_node) -> void {
             node = &_node;
+            //std::cout << symbolNames.at(node->token.type);
+            //std::cout << symbolTable.LookupAllScopes("TEST_OUTPUT").address << "\n";
             if (firstGeneratorFunctions.count(node->token.type) != 0) {
                 (firstGeneratorFunctions.at(node->token.type))();
             }

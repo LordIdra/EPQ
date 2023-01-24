@@ -1,0 +1,11 @@
+void main() {
+    int4 x = 0;
+    while (x < 3) {
+        x += 1;
+    }
+    int4 i = 0;
+    while (i < 6) {
+        i += 1;
+    }
+    int4 TEST_OUTPUT = i;
+}

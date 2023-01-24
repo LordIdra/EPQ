@@ -43,6 +43,7 @@ private:
 
     int savedTableIndex = 0;
     int stackOperationIndex = 0;
+    int operatingScope = 0;
 
 public:
     auto Push() -> void;

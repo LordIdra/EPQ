@@ -53,6 +53,19 @@ auto Compile(const string &file) -> std::pair<vector<string>, unordered_map<int,
     return generator::Generate(abstractSyntaxTree, symbolTable, false);
 }
 
+TEST_CASE("[7|INT] Integration 18") {
+    const auto program = Compile("18");
+    simulator::Run(program, true);
+
+    for (auto x : symbolTable.GetSavedTables()) {
+        for (auto y : x) {
+            std::cout << y.first << " " << y.second.address << "\n";
+        }
+    }
+    std::cout << symbolTable.SearchAllSavedTables("TEST_OUTPUT").address;
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT").address).first == 6);
+}
+
 TEST_CASE("[7|INT] Integration 1") {
     const auto program = Compile("1");
     simulator::Run(program, false);
@@ -217,12 +230,14 @@ TEST_CASE("[7|INT] Integration 15") {
 
 TEST_CASE("[7|INT] Integration 16") {
     const auto program = Compile("16");
-    simulator::Run(program, true);
+    simulator::Run(program, false);
 
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_1").address).first == 0);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_2").address).first == 0);
     REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_3").address).first == 2);
-    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_4").address).first == 1);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_4").address).first == 15);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_5").address).first == 15);
+    REQUIRE(simulator::GetData(symbolTable.SearchAllSavedTables("TEST_OUTPUT_6").address).first == 1);
 }
 
 TEST_CASE("[7|INT] Integration 17") {

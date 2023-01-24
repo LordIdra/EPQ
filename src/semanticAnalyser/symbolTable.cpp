@@ -7,16 +7,19 @@
 
 
 auto SymbolTable::Push() -> void {
+    // IMPORTANT next thing to do is disable debug messages and replace the queue system because it's getting ridiculous
     savedTables.emplace_back(unordered_map<string, IdentifierSymbol>{});
     savedStackOperations.push_back(PUSH);
+    operatingScope = savedTables.size()-1;
 }
 
 auto SymbolTable::Pop() -> void {
     savedStackOperations.push_back(POP);
+    operatingScope--;
 }
 
 auto SymbolTable::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
-    savedTables.at(savedTables.size()-1).insert(std::make_pair(name, symbol));
+    savedTables.at(operatingScope).insert(std::make_pair(name, symbol));
 }
 
 auto SymbolTable::GetSavedTables() const -> vector<unordered_map<string, IdentifierSymbol>> {
