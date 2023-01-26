@@ -26,8 +26,14 @@ auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, cons
     return SearchStack(stack, name);
 }
 
+SymbolTreeGenerator::SymbolTreeGenerator() {
+    root = Scope();
+    currentScope = &root;
+}
+
 auto SymbolTreeGenerator::EnterScope() -> void {
-    tree.NewScope();
+    currentScope->AddIdentifier("yoooo", IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0});
+    currentScope = currentScope->EnterScope();
     stack.push(unordered_map<string, IdentifierSymbol>{});
 }
 
@@ -37,7 +43,7 @@ auto SymbolTreeGenerator::ExitScope() -> void {
             semanticAnalyser::FreeAddresses(1);
         }
     }
-    tree.ExitScope();
+    currentScope = currentScope->ExitScope();
     stack.pop();
 }
 
@@ -53,7 +59,7 @@ auto SymbolTreeGenerator::CurrentScopeLevel() -> SymbolScope {
 }
 
 auto SymbolTreeGenerator::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
-    tree.AddIdentifier(name, symbol);
+    currentScope->AddIdentifier(name, symbol);
     stack.top().insert(std::make_pair(name, symbol));
 }
 
@@ -77,5 +83,5 @@ auto SymbolTreeGenerator::LookupScopes(const string &name) -> IdentifierSymbol {
 }
 
 auto SymbolTreeGenerator::GetTree() -> Scope {
-    return tree;
+    return root;
 }

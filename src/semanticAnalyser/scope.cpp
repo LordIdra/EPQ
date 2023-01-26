@@ -8,15 +8,20 @@
 // IMPORTANT next thing to do is disable debug messages and replace the queue system because it's getting ridiculous
 
 
-Scope::Scope() : parent(nullptr) {}
+Scope::Scope() : parent() {}
 Scope::Scope(Scope* parent) : parent(parent) {}
 
-auto Scope::NewScope() -> void {
+auto Scope::EnterScope() -> Scope* {
     children.push_back(Scope(this));
     // This iterator should point to first element while tree is being constructed
     if (children.size() == 1) {
         currentScope = children.begin();
     }
+    return &(*children.end());
+}
+
+auto Scope::ExitScope() -> Scope* {
+    return parent;
 }
 
 auto Scope::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
@@ -46,5 +51,5 @@ auto Scope::GetNextChild() -> Scope* {
 }
 
 auto Scope::HaveAllChildrenBeenTraversed() -> bool {
-    
+    return currentScope == children.end();
 }

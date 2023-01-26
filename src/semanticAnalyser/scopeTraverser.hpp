@@ -8,7 +8,6 @@ class ScopeTraverser {
 private:
     Scope *root;
     Scope *currentScope;
-    std::stack<int> indices;
 
     auto Lookup(Scope *scope, const string &identifier) -> IdentifierSymbol;
 

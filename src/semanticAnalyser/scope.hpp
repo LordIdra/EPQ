@@ -32,7 +32,7 @@ struct IdentifierSymbol {
 
 class Scope {
 private:
-    Scope* parent;
+    Scope& parent;
     list<Scope> children;
     list<Scope>::iterator currentScope;
     unordered_map<string, IdentifierSymbol> identifiers;
@@ -41,7 +41,8 @@ public:
     Scope();
     Scope(Scope* parent);
     
-    auto NewScope() -> void;
+    auto EnterScope() -> Scope*;
+    auto ExitScope() -> Scope*;
 
     auto AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void;
     auto ContainsIdentifier(const string &identifier) -> bool;
@@ -49,4 +50,5 @@ public:
 
     auto GetParent() -> Scope*;
     auto GetNextChild() -> Scope*;
+    auto HaveAllChildrenBeenTraversed() -> bool;
 };
