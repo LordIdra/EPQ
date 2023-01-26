@@ -22,11 +22,6 @@ inline auto IsInt(const SymbolType type) -> bool {
     return type == TYPE_INT;
 }
 
-enum StackOperation {
-    PUSH,
-    POP
-};
-
 struct IdentifierSymbol {
     const SymbolScope scope;
     const SymbolType type;
@@ -38,15 +33,20 @@ struct IdentifierSymbol {
 class Scope {
 private:
     Scope* parent;
-    vector<Scope> children;
+    list<Scope> children;
+    list<Scope>::iterator currentScope;
     unordered_map<string, IdentifierSymbol> identifiers;
 
 public:
-    auto EnterScope() -> void;
-    auto ExitScope() -> void;
-    auto AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void;
+    Scope();
+    Scope(Scope* parent);
+    
+    auto NewScope() -> void;
 
-    auto Next() -> void;
-    auto LookupCurrentScopes(const string &identifier) -> IdentifierSymbol;
-    auto LookupAllScopes(const string &identifier) const -> IdentifierSymbol;
+    auto AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void;
+    auto ContainsIdentifier(const string &identifier) -> bool;
+    auto GetIdentifier(const string &identifier) -> IdentifierSymbol;
+
+    auto GetParent() -> Scope*;
+    auto GetNextChild() -> Scope*;
 };

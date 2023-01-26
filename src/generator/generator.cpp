@@ -4,7 +4,8 @@
 #include "grammar/symbolNames.hpp"
 #include "grammar/terminals.hpp"
 #include "parser/parser.hpp"
-#include "semanticAnalyser/symbolTable.hpp"
+#include "semanticAnalyser/scope.hpp"
+#include "semanticAnalyser/scopeTraverser.hpp"
 #include "util/errors.hpp"
 #include <cstdlib>
 #include <generator/generator.hpp>
@@ -24,7 +25,7 @@ namespace generator {
         std::stack<int> registerStack;
         std::stack<string> loopStartStack;
         std::stack<string> loopEndStack;
-        SymbolTable symbolTable;
+        ScopeTraverser scopeTraverser;
 
         bool debugMode;
 
@@ -1019,7 +1020,7 @@ namespace generator {
                         if (node->children.at(1).children.at(0).token.type == NONE) {
                             const string identifier = GetChildText(0);
 
-                            const int address = symbolTable.LookupAllScopes(identifier).address;
+                            const int address = scopeTraverser.LocalLookup(identifier).address;
 
                             const int a1 = div(address, 256).quot;
                             const int a2 = div(div(address, 256).rem, 16).quot;
@@ -1159,7 +1160,7 @@ namespace generator {
 
                             const string identifier = node->children.at(0).children.at(0).token.text;
 
-                            const int address = symbolTable.LookupAllScopes(identifier).address;
+                            const int address = scopeTraverser.LocalLookup(identifier).address;
 
                             const int a1 = div(address, 256).quot;
                             const int a2 = div(div(address, 256).rem, 16).quot;
@@ -1216,7 +1217,7 @@ namespace generator {
                             
                             const string identifier = node->children.at(1).children.at(0).token.text;
 
-                            const int address = symbolTable.LookupAllScopes(identifier).address;
+                            const int address = scopeTraverser.LocalLookup(identifier).address;
 
                             const int a1 = div(address, 256).quot;
                             const int a2 = div(div(address, 256).rem, 16).quot;
@@ -1328,7 +1329,7 @@ namespace generator {
                 auto First() -> void {
                     const string identifier = node->children.at(1).token.text;
 
-                    const int address = symbolTable.LookupAllScopes(identifier).address;
+                    const int address = scopeTraverser.LocalLookup(identifier).address;
 
                     const int a1 = div(address, 256).quot;
                     const int a2 = div(div(address, 256).rem, 16).quot;
@@ -1565,10 +1566,10 @@ namespace generator {
             }
             RecursiveGenerate(node.children.at(0));
             RecursiveGenerate(node.children.at(1));
-            symbolTable.Next();
+            scopeTraverser.Next();
             RecursiveGenerate(node.children.at(2));
             RecursiveGenerate(node.children.at(3));
-            symbolTable.Next();
+            scopeTraverser.Next();
             RecursiveGenerate(node.children.at(4));
         }
 
@@ -1576,11 +1577,11 @@ namespace generator {
             if (node.children.empty()) {
                 return;
             }
-            symbolTable.Next();
+            scopeTraverser.Next();
             RecursiveGenerate(node.children.at(0));
             RecursiveGenerate(node.children.at(1));
             RecursiveGenerate(node.children.at(2));
-            symbolTable.Next();
+            scopeTraverser.Next();
         }
 
         auto RecursiveGenerateBlockWithoutEnteringScope(parser::TreeNode &node) -> void {
@@ -1593,25 +1594,23 @@ namespace generator {
         }
 
         auto RecursiveGenerateFor(parser::TreeNode &node) -> void {
-            symbolTable.Next();
+            scopeTraverser.Next();
             RecursiveGenerate(node.children.at(0));
             RecursiveGenerate(node.children.at(1));
             RecursiveGenerate(node.children.at(2));
             RecursiveGenerate(node.children.at(3));
             RecursiveGenerateBlockWithoutEnteringScope(node.children.at(4));
-            symbolTable.Next();
+            scopeTraverser.Next();
         }
 
         auto RecursiveGenerateWhile(parser::TreeNode &node) -> void {
-            std::cout << symbolTable.LookupAllScopes("TEST_OUTPUT").address << "\n";
-            symbolTable.Next();
-            std::cout << symbolTable.LookupAllScopes("TEST_OUTPUT").address << "\n";
+            scopeTraverser.Next();
             RecursiveGenerate(node.children.at(0));
             RecursiveGenerate(node.children.at(1));
             RecursiveGenerate(node.children.at(2));
             RecursiveGenerate(node.children.at(3));
             RecursiveGenerateBlockWithoutEnteringScope(node.children.at(4));
-            symbolTable.Next();
+            scopeTraverser.Next();
         }
 
         auto RecursiveGenerate(parser::TreeNode &_node) -> void {
@@ -1650,12 +1649,12 @@ namespace generator {
         while (!loopEndStack.empty())   { loopEndStack.pop();   };
     }
 
-    auto Generate(parser::TreeNode &_node, const SymbolTable &_symbolTable, const bool _debugMode) -> std::pair<vector<string>, unordered_map<int, string>> {
+    auto Generate(parser::TreeNode &_node, Scope &_scopeTree, const bool _debugMode) -> std::pair<vector<string>, unordered_map<int, string>> {
         debugMode = _debugMode;
-        symbolTable = _symbolTable;
-        symbolTable.Next(); // push global scope
+        scopeTraverser = ScopeTraverser(&_scopeTree);
+        scopeTraverser.Next(); // push global scope
         RecursiveGenerate(_node);
-        symbolTable.Next(); // pop global scope
+        scopeTraverser.Next(); // pop global scope
 
         if (!registerStack.empty()) {
             std::cout << colors::CYAN << registerStack.size() << colors::RED << " registers remaining on register stack" << colors::WHITE << "\n";

@@ -1,5 +1,4 @@
 #include "generator/memory.hpp"
-#include "semanticAnalyser/symbolTable.hpp"
 #include <cstdlib>
 #include <generator/assembly.hpp>
 

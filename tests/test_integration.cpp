@@ -1,5 +1,6 @@
 #include "generator/assembly.hpp"
 #include "generator/registers.hpp"
+#include "semanticAnalyser/scopeTraverser.hpp"
 #include "semanticAnalyser/symbolTable.hpp"
 #include "simulator/simulator.hpp"
 #include <catch2/catch_test_macros.hpp>
@@ -17,8 +18,6 @@
 #include <generator/generator.hpp>
 
 
-
-SymbolTable symbolTable;
 
 auto Reset() -> void {
     errors::Reset();

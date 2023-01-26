@@ -27,7 +27,7 @@ auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, cons
 }
 
 auto SymbolTreeGenerator::EnterScope() -> void {
-    tree.EnterScope();
+    tree.NewScope();
     stack.push(unordered_map<string, IdentifierSymbol>{});
 }
 

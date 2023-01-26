@@ -1,6 +1,5 @@
 #pragma once
 
-#include "semanticAnalyser/symbolTable.hpp"
 #include <util/types.hpp>
 
 
