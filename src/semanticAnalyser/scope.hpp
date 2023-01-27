@@ -32,7 +32,7 @@ struct IdentifierSymbol {
 
 class Scope {
 private:
-    Scope& parent;
+    Scope* parent;
     list<Scope> children;
     list<Scope>::iterator currentScope;
     unordered_map<string, IdentifierSymbol> identifiers;

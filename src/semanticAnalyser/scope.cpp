@@ -8,7 +8,7 @@
 // IMPORTANT next thing to do is disable debug messages and replace the queue system because it's getting ridiculous
 
 
-Scope::Scope() : parent() {}
+Scope::Scope() : parent(nullptr) {}
 Scope::Scope(Scope* parent) : parent(parent) {}
 
 auto Scope::EnterScope() -> Scope* {
