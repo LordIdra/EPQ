@@ -11,14 +11,14 @@ auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, cons
 
 
 
-class SymbolTreeGenerator {
+class ScopeManager {
 private:
     std::stack<unordered_map<string, IdentifierSymbol>> stack;
     Scope root;
     Scope* currentScope;
 
 public:
-    SymbolTreeGenerator();
+    ScopeManager();
     
     auto EnterScope() -> void;
     auto ExitScope() -> void;

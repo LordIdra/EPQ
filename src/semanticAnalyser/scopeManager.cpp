@@ -26,18 +26,18 @@ auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, cons
     return SearchStack(stack, name);
 }
 
-SymbolTreeGenerator::SymbolTreeGenerator() {
+ScopeManager::ScopeManager() {
     root = Scope();
     currentScope = &root;
 }
 
-auto SymbolTreeGenerator::EnterScope() -> void {
+auto ScopeManager::EnterScope() -> void {
     currentScope->AddIdentifier("yoooo", IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0});
     currentScope = currentScope->EnterScope();
     stack.push(unordered_map<string, IdentifierSymbol>{});
 }
 
-auto SymbolTreeGenerator::ExitScope() -> void {
+auto ScopeManager::ExitScope() -> void {
     for (const auto &identifier : stack.top()) {
         if (IsInt(identifier.second.type)) {
             semanticAnalyser::FreeAddresses(1);
@@ -48,7 +48,7 @@ auto SymbolTreeGenerator::ExitScope() -> void {
 }
 
 
-auto SymbolTreeGenerator::CurrentScopeLevel() -> SymbolScope {
+auto ScopeManager::CurrentScopeLevel() -> SymbolScope {
     if (stack.size() == 1) {
         return SCOPE_GLOBAL;
     }
@@ -58,16 +58,16 @@ auto SymbolTreeGenerator::CurrentScopeLevel() -> SymbolScope {
     return SCOPE_LOCAL;
 }
 
-auto SymbolTreeGenerator::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
+auto ScopeManager::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
     currentScope->AddIdentifier(name, symbol);
     stack.top().insert(std::make_pair(name, symbol));
 }
 
-auto SymbolTreeGenerator::LookupAllScopes(const string &name) -> IdentifierSymbol {
+auto ScopeManager::LookupAllScopes(const string &name) -> IdentifierSymbol {
     return SearchStack(stack, name);
 }
 
-auto SymbolTreeGenerator::LookupScopes(const string &name) -> IdentifierSymbol {
+auto ScopeManager::LookupScopes(const string &name) -> IdentifierSymbol {
     // If there is no table to search, the symbol obviously does not exist
     if (stack.empty()) {
         return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
@@ -82,6 +82,6 @@ auto SymbolTreeGenerator::LookupScopes(const string &name) -> IdentifierSymbol {
     return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
 }
 
-auto SymbolTreeGenerator::GetTree() -> Scope {
+auto ScopeManager::GetTree() -> Scope {
     return root;
 }

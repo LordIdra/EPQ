@@ -17,7 +17,7 @@ auto Scope::EnterScope() -> Scope* {
     if (children.size() == 1) {
         currentScope = children.begin();
     }
-    return &(*children.end());
+    return &children.back();
 }
 
 auto Scope::ExitScope() -> Scope* {
