@@ -1,15 +1,15 @@
-int64 Factorial(int32 x) {
+int32 Factorial(int32 x) {
    int16 y = 1;
-   for (int8 i = 0; i < x; i+=1) {
+   for (int32 i = 0; i < x; i+=1) {
        y *= i;
    }
    return y;
 }
 
 void main() {
-    int4 x = input;
+    int64 x = input;
     int4 z = -3;
-    int1 a = true;
+    int64 a = true;
     if (a) {
        x /= z;
     }

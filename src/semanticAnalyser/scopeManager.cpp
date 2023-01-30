@@ -9,8 +9,10 @@
 namespace ScopeManager {
     namespace {
         std::stack<unordered_map<string, IdentifierSymbol>> stack;
+        unordered_map<string, FunctionSymbol> functionSymbols;
         Scope root;
         Scope* currentScope;
+        string currentFunctionName;
 
         auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) ->  IdentifierSymbol {
             // If there are no tables to search, the name does not exist
@@ -64,9 +66,16 @@ namespace ScopeManager {
         return SCOPE_LOCAL;
     }
 
-    auto AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
+    auto AddIntIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
         currentScope->AddIdentifier(name, symbol);
         stack.top().insert(std::make_pair(name, symbol));
+    }
+
+    auto AddFunctionIdentifier(const string &name, const IdentifierSymbol identifierSymbol, const FunctionSymbol functionSymbol) -> void {
+        currentScope->AddIdentifier(name, identifierSymbol);
+        stack.top().insert(std::make_pair(name, identifierSymbol));
+        functionSymbols.insert(std::make_pair(name, functionSymbol));
+        currentFunctionName = name;
     }
 
     auto LookupAllScopes(const string &name) -> IdentifierSymbol {
@@ -86,6 +95,10 @@ namespace ScopeManager {
 
         // The name does not exist in the top table
         return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
+    }
+
+    auto GetCurrentFunctionSymbol() -> FunctionSymbol {
+        return functionSymbols.at(currentFunctionName);
     }
 
     auto GetTree() -> Scope& {

@@ -8,7 +8,7 @@ int64 Factorial(int32 x) {
     
 int4 x = input;
 int4 z = -3;
-int1 a = true;
+int12 a = true;
 if (a == true) {
    x /= z;
 }

@@ -87,7 +87,7 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     {Term_4, {
         {Term_5, Term_GREATER}}},
 
-    {Term_5, {
+    {Term_5, { // 6
         {Term_6, Term_GREATER_OR_EQUAL}}},
     
     {Term_6, {
@@ -122,10 +122,9 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
 
     /* Datatypes */
     {Datatype, {
-        {INT1},
-        {INT2},
         {INT4},
         {INT8},
+        {INT12},
         {INT16},
         {INT32},
         {INT64}}},

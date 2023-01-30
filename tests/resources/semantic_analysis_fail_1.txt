@@ -1,4 +1,4 @@
 void main() {
-    int2 x = 0;
+    int12 x = 0;
     call x();
 }

@@ -112,10 +112,9 @@ TEST_CASE("[3|SCN] All tokens") {
         {SEMICOLON, ";"},
         {NEWLINE, ""},
 
-        {INT1, "int1"},
-        {INT2, "int2"},
         {INT4, "int4"},
         {INT8, "int8"},
+        {INT12, "int12"},
         {INT16, "int16"},
         {INT32, "int32"},
         {INT64, "int64"},
@@ -230,7 +229,7 @@ TEST_CASE("[3|SCN] Valid program") {
         {SEMICOLON, ";"},
         {NEWLINE, ""},
 
-        {INT1, "int1"},
+        {INT12, "int12"},
         {IDENTIFIER, "a"},
         {ASSIGN, "="},
         {TRUE, "true"},

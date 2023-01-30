@@ -4,6 +4,6 @@
 *= /= %= >= <= <-
 and break call case continue;
 default else elseif for false input if;
-int1 int2 int4 int8 int16 int32 int64;
+int4 int8 int12 int16 int32 int64;
 not or output return switch true void while;
 identifiers Yes jUs KI skjnafionefne_AWFsanus_aWSngjeke jeamoieea_P _ PPPPP i jie n

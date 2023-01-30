@@ -39,7 +39,9 @@ namespace errors {
         NO_FREE_REGISTERS,
         FREE_UNALLOCATED_REGISTER,
         OUT_OF_MEMORY,
-        FREE_UNALLOCATED_MEMORY
+        FREE_UNALLOCATED_MEMORY,
+
+        INCORRECT_NUMBER_OF_ARGUMENTS
     };
     
     auto Reset() -> void;

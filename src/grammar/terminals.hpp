@@ -56,10 +56,9 @@ enum Terminal {
 
     // Datatypes
     VOID,
-    INT1,
-    INT2,
     INT4,
     INT8,
+    INT12,
     INT16,
     INT32,
     INT64,

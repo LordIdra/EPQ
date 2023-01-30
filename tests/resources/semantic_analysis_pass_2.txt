@@ -15,9 +15,9 @@ int64 Factorial(int32 x) {
 void main() {
     int4 x = input;
     int4 z = -3;
-    int1 a = true;
+    int12 a = true;
     if (a) {
-        int2 u = 3;
+        int8 u = 3;
         x /= z;
         x += u;
     }
