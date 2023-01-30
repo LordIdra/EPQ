@@ -1,0 +1,4 @@
+void main() {
+    int12 x = 0;
+    call x();
+}

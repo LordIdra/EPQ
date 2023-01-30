@@ -1,0 +1,4 @@
+void main() {
+    int4 address = 10;
+    int4 value = *address;
+}
