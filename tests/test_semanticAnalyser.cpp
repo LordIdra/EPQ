@@ -198,6 +198,25 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 9") {
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
+TEST_CASE("[6|SMA] Semantic Analyser invalid program 10") {
+    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_10.txt");
+    
+    errors::Reset();
+    parser::Reset();
+    scanner::Reset();
+    semanticAnalyser::Reset();
+
+    const vector<Token> scannedInput = scanner::Scan(input);
+
+    first::ComputeFirstSet();
+    follow::ComputeFollowSet();
+    table::GenerateTable();
+
+    const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+    semanticAnalyser::Analyse(abstractSyntaxTree);
+    REQUIRE(errors::GetErrorCode() == errors::REDECLARATION);
+}
+
 TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
     const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_pass_1.txt");
     

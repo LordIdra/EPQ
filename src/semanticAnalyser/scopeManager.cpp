@@ -78,11 +78,11 @@ namespace ScopeManager {
         currentFunctionName = name;
     }
 
-    auto LookupAllScopes(const string &name) -> IdentifierSymbol {
+    auto LookupScopes(const string &name) -> IdentifierSymbol {
         return SearchStack(stack, name);
     }
 
-    auto LookupScopes(const string &name) -> IdentifierSymbol {
+    auto LookupTopScope(const string &name) -> IdentifierSymbol {
         // If there is no table to search, the symbol obviously does not exist
         if (stack.empty()) {
             return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
@@ -95,6 +95,15 @@ namespace ScopeManager {
 
         // The name does not exist in the top table
         return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
+    }
+
+    auto ScopesContain(const string &name) -> bool {
+        IdentifierSymbol symbol = LookupScopes(name);
+        return (symbol.type != TYPE_ERROR) || (symbol.scope == SCOPE_ERROR);
+    }
+
+    auto GetFunctionSymbol(const string &name) -> FunctionSymbol {
+        return functionSymbols.at(name);
     }
 
     auto GetCurrentFunctionSymbol() -> FunctionSymbol {

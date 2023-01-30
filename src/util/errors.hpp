@@ -41,7 +41,8 @@ namespace errors {
         OUT_OF_MEMORY,
         FREE_UNALLOCATED_MEMORY,
 
-        INCORRECT_NUMBER_OF_ARGUMENTS
+        INCORRECT_NUMBER_OF_ARGUMENTS,
+        REDECLARATION
     };
     
     auto Reset() -> void;
