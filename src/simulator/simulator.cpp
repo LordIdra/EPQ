@@ -152,11 +152,12 @@ namespace simulator {
         }
 
         auto RET() -> void {
-            const int v1 = stack.top().second;
-            const int v2 = stack.top().first;
-            stack.pop();
             const int v3 = stack.top().second;
-            programCounter = v3*256 + v2*16 + v1;
+            stack.pop();
+            const int v2 = stack.top().first;
+            const int v1 = stack.top().second;
+            stack.pop();
+            programCounter = v1*256 + v2*16 + v3;
         }
 
         auto BRA(const string &instruction) -> void {

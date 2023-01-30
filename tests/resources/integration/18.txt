@@ -7,5 +7,6 @@ void main() {
     while (i < 6) {
         i += 1;
     }
-    int4 TEST_OUTPUT = i;
+    int4 TEST_OUTPUT_1 = x;
+    int4 TEST_OUTPUT_2 = i;
 }

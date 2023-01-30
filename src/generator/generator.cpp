@@ -1367,13 +1367,12 @@ namespace generator {
                         assembly::NOP();
                         assembly::LabelLatestInstruction(identifier);
                     }
+
+                    // RET is added in RecursiveGenerateFunctionDeclaration
                 }
 
                 auto Last() -> void {
-                    // FunctionDeclaration -> VoidableDatatype IDENTIFIER ParameterList_1 N_Block FunctionDeclaration
-                    if (node->children.size() == 5) {
-                        assembly::RET();
-                    }
+                    
                 }
             }
 
@@ -1389,29 +1388,63 @@ namespace generator {
             // ArgumentList_1
 
             namespace FunctionCall {
-                auto Last() -> void {
-                    const int IHaveNoIdea = 0;
+                auto First() -> void {
+                    const string identifier = node->children[1].token.text;
+                    const int IHaveNoIdea = 4;
+
+                    const int r1 = registers::Allocate();
+                    const int r2 = registers::Allocate();
+                    const int r3 = registers::Allocate();
+
+                    assembly::Comment("call " + identifier);
                     assembly::PPC(IHaveNoIdea);
+                    assembly::SET("1" + identifier, r1);
+                    assembly::SET("2" + identifier, r2);
+                    assembly::SET("3" + identifier, r3);
+                    assembly::BRA(r1, r2, r3);
+
+                    registers::Free(r1);
+                    registers::Free(r2);
+                    registers::Free(r3);
+                }
+
+                auto Last() -> void {
+                    
                 }
             }
 
             namespace ReturnContents {
                 auto Last() -> void {
 
-                    const int returnRegister = registers::Allocate();
-
                     // ReturnContents -> NONE
                     if (node->children.at(0).token.type == NONE) {
-                        assembly::SET(0, returnRegister);
+                        return;
                     }
 
                     // ReturnContents -> Term
-                    else {
-                        const int r1 = PopRegister();
-                        assembly::MOV(r1, returnRegister);
-                    }
-                    
-                    PushRegister(returnRegister);
+                    // Pop return address off stack
+                    const int returnAddress1b = registers::Allocate();
+                    const int returnAddress2a = registers::Allocate();
+                    const int returnAddress2b = registers::Allocate();
+
+                    assembly::POP();
+                    assembly::MOV(registers::MDR2, returnAddress1b);
+                    assembly::POP();
+                    assembly::MOV(registers::MDR1, returnAddress2a);
+                    assembly::POP();
+                    assembly::MOV(registers::MDR1, returnAddress2b);
+
+                    // Push return value to stack
+                    const int returnValue = PopRegister();
+                    assembly::MOV(returnValue, registers::MDR1);
+                    assembly::PSH();
+
+                    // Push return address back onto stack
+                    assembly::MOV(returnAddress2b, registers::MDR2);
+                    assembly::MOV(returnAddress2a, registers::MDR1);
+                    assembly::PSH();
+                    assembly::MOV(returnAddress1b, registers::MDR2);
+                    assembly::PSH();
                 }
             }
 
@@ -1490,6 +1523,8 @@ namespace generator {
             {Parameter, generate::Parameter::First},
             {FunctionDeclaration, generate::FunctionDeclaration::First},
 
+            {FunctionCall, generate::FunctionCall::First},
+
             {Argument, generate::Argument::First},
 
             {N_Block, generate::N_Block_0::First},
@@ -1551,8 +1586,6 @@ namespace generator {
 
             {FunctionDeclaration, generate::FunctionDeclaration::Last},
 
-            {FunctionCall, generate::FunctionCall::Last},
-
             {ReturnContents, generate::ReturnContents::Last},
             {N_Block_0, generate::N_Block_0::Last},
             {L_Block_0, generate::L_Block_0::Last}
@@ -1569,6 +1602,7 @@ namespace generator {
             scopeTraverser.Next();
             RecursiveGenerate(node.children.at(2));
             RecursiveGenerate(node.children.at(3));
+            assembly::RET();
             scopeTraverser.Next();
             RecursiveGenerate(node.children.at(4));
         }
@@ -1615,8 +1649,6 @@ namespace generator {
 
         auto RecursiveGenerate(parser::TreeNode &_node) -> void {
             node = &_node;
-            //std::cout << symbolNames.at(node->token.type);
-            //std::cout << symbolTable.LookupAllScopes("TEST_OUTPUT").address << "\n";
             if (firstGeneratorFunctions.count(node->token.type) != 0) {
                 (firstGeneratorFunctions.at(node->token.type))();
             }
@@ -1651,7 +1683,7 @@ namespace generator {
 
     auto Generate(parser::TreeNode &_node, Scope &_scopeTree, const bool _debugMode) -> std::pair<vector<string>, unordered_map<int, string>> {
         debugMode = _debugMode;
-        scopeTraverser = ScopeTraverser(&_scopeTree);
+        scopeTraverser = ScopeTraverser(_scopeTree);
         scopeTraverser.Next(); // push global scope
         RecursiveGenerate(_node);
         scopeTraverser.Next(); // pop global scope

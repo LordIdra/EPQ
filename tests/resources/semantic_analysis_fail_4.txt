@@ -1,0 +1,7 @@
+void DoTheThing() {
+    TEST_OUTPUT = 2;
+}
+
+void main() {
+    call DoTheThing();
+}

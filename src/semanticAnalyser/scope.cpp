@@ -14,9 +14,7 @@ Scope::Scope(Scope* parent) : parent(parent) {}
 auto Scope::EnterScope() -> Scope* {
     children.push_back(Scope(this));
     // This iterator should point to first element while tree is being constructed
-    if (children.size() == 1) {
-        currentScope = children.begin();
-    }
+    currentScope = children.begin();
     return &children.back();
 }
 
@@ -29,15 +27,15 @@ auto Scope::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> 
 }
 
 auto Scope::ContainsIdentifier(const string &identifier) -> bool {
-    std::cout << this->identifiers.size();
-    for (auto x : this->identifiers) {
-        std::cout << x.first << "\n";
-    }
     return identifiers.count(identifier) != 0;
 }
 
 auto Scope::GetIdentifier(const string &identifier) -> IdentifierSymbol {
     return identifiers.at(identifier);
+}
+
+auto Scope::GetIdentifiers() -> unordered_map<string, IdentifierSymbol> {
+    return identifiers;
 }
 
 auto Scope::GetParent() -> Scope* {
@@ -51,5 +49,9 @@ auto Scope::GetNextChild() -> Scope* {
 }
 
 auto Scope::HaveAllChildrenBeenTraversed() -> bool {
-    return currentScope == children.end();
+    return (currentScope == children.end()) || (children.empty());
+}
+
+auto Scope::ResetTraversalPointer() -> void {
+    currentScope = children.begin();
 }

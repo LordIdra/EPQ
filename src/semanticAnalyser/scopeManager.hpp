@@ -7,18 +7,8 @@
 
 
 
-auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) -> IdentifierSymbol;
-
-
-
-class ScopeManager {
-private:
-    std::stack<unordered_map<string, IdentifierSymbol>> stack;
-    Scope root;
-    Scope* currentScope;
-
-public:
-    ScopeManager();
+namespace ScopeManager {
+    auto Reset() -> void;
     
     auto EnterScope() -> void;
     auto ExitScope() -> void;
@@ -28,5 +18,5 @@ public:
     auto LookupAllScopes(const string &name) -> IdentifierSymbol;
     auto LookupScopes(const string &name) -> IdentifierSymbol;
 
-    auto GetTree() -> Scope;
+    auto GetTree() -> Scope&;
 };

@@ -10,5 +10,7 @@ namespace registers {
     const int MDR2 = 1;
     
     auto Allocate() -> int;
+    auto AllocateMDR1() -> int;
+    auto AllocateMDR2() -> int;
     auto Free(const int r) -> void;
 }

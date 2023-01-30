@@ -1,0 +1,7 @@
+void DoTheFirstThing() {
+    return;
+}
+
+void main() {
+    int4 x = call DoTheFirstThing();
+}

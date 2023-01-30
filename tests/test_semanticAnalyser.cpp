@@ -28,6 +28,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 1") {
     errors::Reset();
     parser::Reset();
     scanner::Reset();
+    semanticAnalyser::Reset();
 
     const vector<Token> scannedInput = scanner::Scan(input);
 
@@ -47,6 +48,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 2") {
     errors::Reset();
     parser::Reset();
     scanner::Reset();
+    semanticAnalyser::Reset();
 
     const vector<Token> scannedInput = scanner::Scan(input);
 
@@ -66,6 +68,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 3") {
     errors::Reset();
     parser::Reset();
     scanner::Reset();
+    semanticAnalyser::Reset();
 
     const vector<Token> scannedInput = scanner::Scan(input);
 
@@ -79,12 +82,72 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 3") {
     REQUIRE(errors::GetErrorCode() == errors::UNKNOWN_IDENTIFIER);
 }
 
+TEST_CASE("[6|SMA] Semantic Analyser invalid program 4") {
+    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_4.txt");
+    
+    errors::Reset();
+    parser::Reset();
+    scanner::Reset();
+    semanticAnalyser::Reset();
+
+    const vector<Token> scannedInput = scanner::Scan(input);
+
+    first::ComputeFirstSet();
+    follow::ComputeFollowSet();
+    table::GenerateTable();
+
+    const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+    semanticAnalyser::Analyse(abstractSyntaxTree);
+
+    REQUIRE(errors::GetErrorCode() == errors::UNKNOWN_IDENTIFIER);
+}
+
+TEST_CASE("[6|SMA] Semantic Analyser invalid program 5") {
+    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_5.txt");
+    
+    errors::Reset();
+    parser::Reset();
+    scanner::Reset();
+    semanticAnalyser::Reset();
+
+    const vector<Token> scannedInput = scanner::Scan(input);
+
+    first::ComputeFirstSet();
+    follow::ComputeFollowSet();
+    table::GenerateTable();
+
+    const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+    semanticAnalyser::Analyse(abstractSyntaxTree);
+
+    REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
+}
+
+TEST_CASE("[6|SMA] Semantic Analyser invalid program 6") {
+    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_6.txt");
+    
+    errors::Reset();
+    parser::Reset();
+    scanner::Reset();
+    semanticAnalyser::Reset();
+
+    const vector<Token> scannedInput = scanner::Scan(input);
+
+    first::ComputeFirstSet();
+    follow::ComputeFollowSet();
+    table::GenerateTable();
+
+    const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+    semanticAnalyser::Analyse(abstractSyntaxTree);
+    REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
+}
+
 TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
     const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_pass_1.txt");
     
     errors::Reset();
     parser::Reset();
     scanner::Reset();
+    semanticAnalyser::Reset();
 
     const vector<Token> scannedInput = scanner::Scan(input);
 
@@ -93,43 +156,48 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
     table::GenerateTable();
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
-    Scope scope = semanticAnalyser::Analyse(abstractSyntaxTree);
-    ScopeTraverser traverser = ScopeTraverser(&scope);
+    Scope& scope = semanticAnalyser::Analyse(abstractSyntaxTree);
+    ScopeTraverser traverser = ScopeTraverser(scope);
 
     errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::NONE);
 
     traverser.Next();
-        Expect(traverser.LocalLookup("Factorial"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0});
+        REQUIRE(Expect(traverser.LocalLookup("Factorial"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
         traverser.Next();
-            Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1});
+            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1}));
             traverser.Next();
-                Expect(traverser.LocalLookup("y"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2});
+                REQUIRE(Expect(traverser.LocalLookup("y"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2}));
                 traverser.Next();
-                    Expect(traverser.LocalLookup("i"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
+                    REQUIRE(Expect(traverser.LocalLookup("i"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
                 traverser.Next();
             traverser.Next();
         traverser.Next();
 
-        Expect(traverser.LocalLookup("main"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0});
+        REQUIRE(Expect(traverser.LocalLookup("main"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
         traverser.Next();
             traverser.Next();
-                Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 1});
-                Expect(traverser.LocalLookup("z"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2});
-                Expect(traverser.LocalLookup("a"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
+                REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 1}));
+                REQUIRE(Expect(traverser.LocalLookup("z"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2}));
+                REQUIRE(Expect(traverser.LocalLookup("a"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
                 traverser.Next();
                 traverser.Next();
             traverser.Next();
         traverser.Next();
     traverser.Next();
+
+    REQUIRE(Expect(traverser.GlobalLookup("Factorial"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
+    REQUIRE(Expect(traverser.GlobalLookup("i"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
+    REQUIRE(Expect(traverser.GlobalLookup("a"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
 }
 
-/*TEST_CASE("[6|SMA] Semantic Analyser valid program 2") {
+TEST_CASE("[6|SMA] Semantic Analyser valid program 2") {
     const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_pass_2.txt");
     
     errors::Reset();
     parser::Reset();
     scanner::Reset();
+    semanticAnalyser::Reset();
 
     const vector<Token> scannedInput = scanner::Scan(input);
 
@@ -138,66 +206,48 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
     table::GenerateTable();
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
-    const SymbolTable actual = semanticAnalyser::Analyse(abstractSyntaxTree);
-
-    SymbolTable expected;
-
-    expected.Push();
-        expected.AddIdentifier("literally_die", IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0});
-        expected.Push();
-            expected.AddIdentifier("x", IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1});
-            expected.Push();
-            expected.Pop();
-        expected.Pop();
-
-        expected.AddIdentifier("Factorial", IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0});
-        expected.Push();
-            expected.AddIdentifier("x", IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1});
-            expected.Push();
-                expected.AddIdentifier("y", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2});
-                expected.Push();
-                    expected.AddIdentifier("i", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
-                expected.Pop();
-                expected.AddIdentifier("z", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
-            expected.Pop();
-        expected.Pop();
-
-        expected.AddIdentifier("main", IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0});
-        expected.Push();
-            expected.Push();
-                expected.AddIdentifier("x", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 1});
-                expected.AddIdentifier("z", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2});
-                expected.AddIdentifier("a", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3});
-                expected.Push();
-                    expected.AddIdentifier("u", IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 4});
-                expected.Pop();
-            expected.Pop();
-        expected.Pop();
-    expected.Pop();
+    Scope& scope = semanticAnalyser::Analyse(abstractSyntaxTree);
+    ScopeTraverser traverser = ScopeTraverser(scope);
 
     errors::OutputErrors();
-
     REQUIRE(errors::GetErrorCode() == errors::NONE);
 
-    vector<StackOperation> actualStackOperations = actual.GetSavedStackOperations();
-    vector<StackOperation> expectedStackOperations = expected.GetSavedStackOperations();
+    traverser.Next();
+    REQUIRE(Expect(traverser.LocalLookup("literally_die"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
+        traverser.Next();
+            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1}));
+            traverser.Next();
+            traverser.Next();
+        traverser.Next();
 
-    vector<unordered_map<string, IdentifierSymbol>> actualTables = actual.GetSavedTables();
-    vector<unordered_map<string, IdentifierSymbol>> expectedTables = expected.GetSavedTables();
-    
-    REQUIRE(actual.GetSavedStackOperations().size() == expected.GetSavedStackOperations().size());
-    REQUIRE(actual.GetSavedTables().size() == expected.GetSavedTables().size());
+        REQUIRE(Expect(traverser.LocalLookup("Factorial"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
+        traverser.Next();
+            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1}));
+            traverser.Next();
+                REQUIRE(Expect(traverser.LocalLookup("y"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2}));
+                traverser.Next();
+                    REQUIRE(Expect(traverser.LocalLookup("i"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
+                traverser.Next();
+                REQUIRE(Expect(traverser.LocalLookup("z"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
+            traverser.Next();
+        traverser.Next();
 
-    for (int i = 0; i < actualStackOperations.size(); i++) {
-        REQUIRE(actualStackOperations.at(i) == expectedStackOperations.at(i));
-    }
+        REQUIRE(Expect(traverser.LocalLookup("main"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
+        traverser.Next();
+            traverser.Next();
+                REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 1}));
+                REQUIRE(Expect(traverser.LocalLookup("z"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 2}));
+                REQUIRE(Expect(traverser.LocalLookup("a"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
+                traverser.Next();
+                    REQUIRE(Expect(traverser.LocalLookup("u"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 4}));
+                traverser.Next();
+            traverser.Next();
+        traverser.Next();
+    traverser.Next();
 
-    for (int i = 0; i < actualTables.size(); i++) {
-        REQUIRE(actualTables.at(i).size() == expectedTables.at(i).size());
-        for (const auto &pair : expectedTables.at(i)) {
-            REQUIRE(actualTables.at(i).at(pair.first).scope == expectedTables.at(i).at(pair.first).scope);
-            REQUIRE(actualTables.at(i).at(pair.first).type == expectedTables.at(i).at(pair.first).type);
-            REQUIRE(actualTables.at(i).at(pair.first).address == expectedTables.at(i).at(pair.first).address);
-        }
-    }
-}*/
+    REQUIRE(Expect(traverser.GlobalLookup("literally_die"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
+    REQUIRE(Expect(traverser.GlobalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT, 1}));
+    REQUIRE(Expect(traverser.GlobalLookup("i"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 3}));
+    REQUIRE(Expect(traverser.GlobalLookup("main"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
+    REQUIRE(Expect(traverser.GlobalLookup("u"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT, 4}));
+}

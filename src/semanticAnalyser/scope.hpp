@@ -47,8 +47,11 @@ public:
     auto AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void;
     auto ContainsIdentifier(const string &identifier) -> bool;
     auto GetIdentifier(const string &identifier) -> IdentifierSymbol;
+    auto GetIdentifiers() -> unordered_map<string, IdentifierSymbol>;
 
     auto GetParent() -> Scope*;
     auto GetNextChild() -> Scope*;
     auto HaveAllChildrenBeenTraversed() -> bool;
+
+    auto ResetTraversalPointer() -> void;
 };

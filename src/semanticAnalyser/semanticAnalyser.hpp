@@ -8,6 +8,6 @@
 
 namespace semanticAnalyser {
     auto Reset() -> void;
-    auto Analyse(const parser::TreeNode &abstractSyntaxTree) -> Scope;
+    auto Analyse(const parser::TreeNode &abstractSyntaxTree) -> Scope&;
     auto FreeAddresses(int count) -> void;
 }

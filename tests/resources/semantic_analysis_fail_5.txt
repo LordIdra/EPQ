@@ -1,0 +1,7 @@
+void DoTheFirstThing() {
+    return 3 % 2;
+}
+
+void main() {
+    call DoTheFirstThing();
+}
