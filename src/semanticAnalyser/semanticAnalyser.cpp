@@ -9,6 +9,7 @@
 #include <iostream>
 #include <semanticAnalyser/semanticAnalyser.hpp>
 #include <stack>
+#include <string>
 
 
 
@@ -44,12 +45,67 @@ namespace semanticAnalyser {
                 colors::WHITE);
         }
 
+        auto IncorrectNumberOfArguments(const parser::TreeNode &node, const int &expected, const int &actual) -> void {
+            errors::AddError(errors::INCORRECT_NUMBER_OF_ARGUMENTS,
+                colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
+                colors::RED + " Incorrect number of arguments: identifier " + colors::CYAN + node.token.text + 
+                colors::RED + " should have " + colors::CYAN + std::to_string(expected) + 
+                colors::RED + " arguments but was provided with " + colors::CYAN + std::to_string(actual) + 
+                colors::WHITE);
+        }
+
         auto Redeclaration(const parser::TreeNode &node) -> void {
             errors::AddError(errors::REDECLARATION,
                 colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
                 colors::RED + " Identifier " + colors::CYAN + node.token.text + 
                 colors::RED + " was redeclared" +
                 colors::WHITE);
+        }
+
+        auto EvaluateTermType(const parser::TreeNode &node) -> SymbolType {
+            vector<SymbolType> types;
+
+            if (node.token.type != Value) {
+                for (const auto &child : node.children) {
+                    SymbolType type = EvaluateTermType(child);
+                    if (type != TYPE_ERROR) {
+                        types.push_back(type);
+                    }
+                }
+            } else {
+                const auto child = node.children.at(0);
+                switch (child.token.type) {
+                case Variable:
+                    // Variable -> IDENTIFIER IdentifierSuffix
+                    if (child.children.size() == 2) {
+                        const string identifier = child.children.at(1).token.text;
+                        types.push_back(ScopeManager::LookupScopes(identifier).type);
+                    // Variable -> Dereference
+                    } else {
+                        // TODO (pointers)
+                    }
+                    break;
+
+                case Literal:
+                    types.push_back(TYPE_INT32);
+                    break;
+
+                case FunctionCall:
+                    const string identifier = child.children.at(1).token.text;
+                    types.push_back(ScopeManager::GetFunctionSymbol(identifier).returnType);
+                    break;
+                }
+            }
+
+            // Select type with highest precedence
+            SymbolType finalType = TYPE_ERROR;
+            for (const auto type : types) {
+                if (type > finalType) {
+                    finalType = type;
+                }
+            }
+
+            return finalType;
         }
 
         // Forward declaration so the next few functions can have a circular dependency
@@ -161,18 +217,23 @@ namespace semanticAnalyser {
             const IdentifierSymbol symbol = ScopeManager::LookupScopes(node.token.text);
             if (symbol.type == TYPE_ERROR) {
                 UnknownIdentifier(node);
+                return;
             } else if (symbol.type == TYPE_FUNCTION) {
                 MismatchedType(node, "integer", "function");
+                return;
             }
         }
 
         auto CheckFunctionType(const parser::TreeNode &node) -> void {
+            std::cout << node.token.text << " " << symbolNames.at(node.parent->token.type) << "\n";
             const IdentifierSymbol symbol = ScopeManager::LookupScopes(node.token.text);
 
             if (symbol.type == TYPE_ERROR) {
                 UnknownIdentifier(node);
+                return;
             } else if (IsInt(symbol.type)) {
                 MismatchedType(node, "function", symbolNames.at(symbol.type));
+                return;
             }
 
             // Check return type is non-void if the function return is being treated as a value
@@ -184,7 +245,40 @@ namespace semanticAnalyser {
             }
 
             // Check that the number of arguments we're calling the function with matches up
-            // TODO
+            const auto argumentList1 = node.parent->children.at(2);
+            const auto argumentList0 = node.parent->children.at(1);
+
+            // ArgumentList0 -> NONE
+            if (argumentList0.children.size() == 1) {
+                return;
+            }
+
+            vector<SymbolType> expectedArguments = ScopeManager::GetFunctionSymbol(node.token.text).parameterTypes;
+            vector<SymbolType> actualArguments;
+
+            actualArguments.push_back(EvaluateTermType(argumentList0.children.at(0)));
+
+            auto currentArgument = argumentList0.children.at(1);
+
+            // While NOT Argument -> None
+            while (currentArgument.children.size() != 1) {
+                const SymbolType actualType = EvaluateTermType(currentArgument);
+                actualArguments.push_back(actualType);
+                currentArgument = currentArgument.children.at(2);
+            }
+
+            // Check number of arguments matches
+            if (expectedArguments.size() != actualArguments.size()) {
+                IncorrectNumberOfArguments(node, expectedArguments.size(), actualArguments.size());
+                return;
+            }
+
+            // Check argument types match
+            for (int i = 0; i < expectedArguments.size(); i++) {
+                if (actualArguments.at(i) != expectedArguments.at(i)) {
+                    MismatchedType(node, "TODO", "TODO");
+                }
+            }
         }
 
         auto Traverse(const parser::TreeNode &node) -> void {
