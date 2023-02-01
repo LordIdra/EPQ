@@ -1,7 +1,0 @@
-void DoTheFirstThing(int4 x) {
-    return;
-}
-
-void main() {
-    call DoTheFirstThing();
-}
