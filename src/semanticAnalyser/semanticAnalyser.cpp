@@ -29,46 +29,6 @@ namespace semanticAnalyser {
         
         int nextFreeAddress = 1;
 
-
-        auto AddIntIdentifier(const parser::TreeNode &node) -> void {
-            const int address = nextFreeAddress;
-            nextFreeAddress++;
-            SymbolType symbolType;
-
-            if (node.parent->token.type == Declaration_0) {
-                // [[ Identifier -> Declaration_0 -> Declaration <- Datatype <- INT4/INT8/etc ]]
-                 symbolType = integerTypeMap.at(node.parent->parent->children.at(0).children.at(0).token.type);
-
-            } else {
-                // [[ Identifier -> Parameter <- Datatype <- INT4/INT8/etc ]]
-                symbolType = integerTypeMap.at(node.parent->children.at(0).children.at(0).token.type);
-            }
-
-            ScopeManager::AddIntIdentifier(node.token.text, 
-                IdentifierSymbol{ScopeManager::CurrentScopeLevel(), symbolType, address});
-        }
-
-        auto AddFunctionIdentifier(const parser::TreeNode &node) -> void {
-            const int address = 0; // Determined during code generation
-            vector<SymbolType> parameterTypes;
-            SymbolType returnType;
-
-            // VoidableDatatype -> VOID
-            // [[ Identifier -> FunctionDeclaration <- VoidableDatatype <- VOID ]]
-            if (node.parent->children.at(0).children.at(0).token.type == VOID) {
-                returnType = TYPE_VOID;
-
-            // VoidableDatatype -> Datatype
-            // [[ Identifier -> FunctionDeclaration <- VoidableDatatype <- Datatype <- INT4/INT8/etc ]]
-            } else {
-                returnType = integerTypeMap.at(node.parent->children.at(0).children.at(0).children.at(0).token.type);
-            }
-
-            ScopeManager::AddFunctionIdentifier(node.token.text, 
-                IdentifierSymbol{ScopeManager::CurrentScopeLevel(), TYPE_FUNCTION, address},
-                FunctionSymbol{parameterTypes, returnType});
-        }
-
         auto UnknownIdentifier(const parser::TreeNode &node) -> void {
             errors::AddError(errors::UNKNOWN_IDENTIFIER,
                 colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
@@ -81,6 +41,14 @@ namespace semanticAnalyser {
                 colors::RED + " Mismatched Type: identifier " + colors::CYAN + node.token.text + 
                 colors::RED + " should be " + colors::CYAN + type1 + 
                 colors::RED + " but is " + colors::CYAN + type2 + 
+                colors::WHITE);
+        }
+
+        auto Redeclaration(const parser::TreeNode &node) -> void {
+            errors::AddError(errors::REDECLARATION,
+                colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
+                colors::RED + " Identifier " + colors::CYAN + node.token.text + 
+                colors::RED + " was redeclared" +
                 colors::WHITE);
         }
 
@@ -140,8 +108,57 @@ namespace semanticAnalyser {
             ScopeManager::ExitScope();
         }
 
+        auto AddIntIdentifier(const parser::TreeNode &node) -> void {
+            const int address = nextFreeAddress;
+            nextFreeAddress++;
+            SymbolType symbolType;
+
+            // Check that the variable has not already been declared
+            if (ScopeManager::ScopesContain(node.token.text)) {
+                Redeclaration(node);
+            }
+
+            if (node.parent->token.type == Declaration_0) {
+                // [[ Identifier -> Declaration_0 -> Declaration <- Datatype <- INT4/INT8/etc ]]
+                 symbolType = integerTypeMap.at(node.parent->parent->children.at(0).children.at(0).token.type);
+
+            } else {
+                // [[ Identifier -> Parameter <- Datatype <- INT4/INT8/etc ]]
+                symbolType = integerTypeMap.at(node.parent->children.at(0).children.at(0).token.type);
+            }
+
+            ScopeManager::AddIntIdentifier(node.token.text, 
+                IdentifierSymbol{ScopeManager::CurrentScopeLevel(), symbolType, address});
+        }
+
+        auto AddFunctionIdentifier(const parser::TreeNode &node) -> void {
+            const int address = 0; // Determined during code generation
+            vector<SymbolType> parameterTypes;
+            SymbolType returnType;
+
+            // Check that the function has not already been declared
+            if (ScopeManager::ScopesContain(node.token.text)) {
+                Redeclaration(node);
+            }
+
+            // VoidableDatatype -> VOID
+            // [[ Identifier -> FunctionDeclaration <- VoidableDatatype <- VOID ]]
+            if (node.parent->children.at(0).children.at(0).token.type == VOID) {
+                returnType = TYPE_VOID;
+
+            // VoidableDatatype -> Datatype
+            // [[ Identifier -> FunctionDeclaration <- VoidableDatatype <- Datatype <- INT4/INT8/etc ]]
+            } else {
+                returnType = integerTypeMap.at(node.parent->children.at(0).children.at(0).children.at(0).token.type);
+            }
+
+            ScopeManager::AddFunctionIdentifier(node.token.text, 
+                IdentifierSymbol{ScopeManager::CurrentScopeLevel(), TYPE_FUNCTION, address},
+                FunctionSymbol{parameterTypes, returnType});
+        }
+
         auto CheckIntType(const parser::TreeNode &node) -> void {
-            const IdentifierSymbol symbol = ScopeManager::LookupAllScopes(node.token.text);
+            const IdentifierSymbol symbol = ScopeManager::LookupScopes(node.token.text);
             if (symbol.type == TYPE_ERROR) {
                 UnknownIdentifier(node);
             } else if (symbol.type == TYPE_FUNCTION) {
@@ -150,12 +167,24 @@ namespace semanticAnalyser {
         }
 
         auto CheckFunctionType(const parser::TreeNode &node) -> void {
-            const IdentifierSymbol symbol = ScopeManager::LookupAllScopes(node.token.text);
+            const IdentifierSymbol symbol = ScopeManager::LookupScopes(node.token.text);
+
             if (symbol.type == TYPE_ERROR) {
                 UnknownIdentifier(node);
             } else if (IsInt(symbol.type)) {
                 MismatchedType(node, "function", symbolNames.at(symbol.type));
             }
+
+            // Check return type is non-void if the function return is being treated as a value
+            if (node.parent->parent->token.type == Value) {
+                const SymbolType returnType = ScopeManager::GetFunctionSymbol(node.token.text).returnType;
+                if (!IsInt(returnType)) {
+                    MismatchedType(node, "non-integer", "integer");
+                }
+            }
+
+            // Check that the number of arguments we're calling the function with matches up
+            // TODO
         }
 
         auto Traverse(const parser::TreeNode &node) -> void {
@@ -207,15 +236,17 @@ namespace semanticAnalyser {
 
             if (node.token.type == ReturnContents) {
                 const SymbolType correctType = ScopeManager::GetCurrentFunctionSymbol().returnType;
+                // ReturnContents -> NONE
                 if (node.children.at(0).token.type == NONE) {
                     if (correctType != TYPE_VOID) {
                         MismatchedType(node, "non-void", "void");
                         return;
                     }
+                
+                // ReturnContents -> Term
                 } else {
-                    const SymbolType actualType = node.children.at(0).children.at(0);
-                    if (correctType != actualType) {
-                        MismatchedType(node, "void", "non-void");
+                    if (!IsInt(correctType)) {
+                        MismatchedType(node, "non-int", "int");
                         return;
                     }
                 }
