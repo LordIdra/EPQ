@@ -138,6 +138,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 6") {
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
+
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
@@ -157,6 +158,8 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 7") {
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
+
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::INCORRECT_NUMBER_OF_ARGUMENTS);
 }
 
@@ -176,6 +179,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 8") {
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
+
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
@@ -195,6 +199,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 9") {
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
+
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
@@ -214,6 +219,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 10") {
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
+
     REQUIRE(errors::GetErrorCode() == errors::REDECLARATION);
 }
 
@@ -233,6 +239,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 11") {
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
+
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 

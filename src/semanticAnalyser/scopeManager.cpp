@@ -36,6 +36,8 @@ namespace ScopeManager {
     }
 
     auto Reset() -> void {
+        while (!stack.empty()) { stack.pop(); }
+        functionSymbols.clear();
         root = Scope();
         currentScope = &root;
     }
@@ -99,7 +101,7 @@ namespace ScopeManager {
 
     auto ScopesContain(const string &name) -> bool {
         IdentifierSymbol symbol = LookupScopes(name);
-        return (symbol.type != TYPE_ERROR) || (symbol.scope == SCOPE_ERROR);
+        return (symbol.type != TYPE_ERROR) || (symbol.scope != SCOPE_ERROR);
     }
 
     auto GetFunctionSymbol(const string &name) -> FunctionSymbol {

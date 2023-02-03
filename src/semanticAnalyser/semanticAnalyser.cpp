@@ -189,7 +189,7 @@ namespace semanticAnalyser {
 
         auto AddFunctionIdentifier(const parser::TreeNode &node) -> void {
             const int address = 0; // Determined during code generation
-            vector<SymbolType> parameterTypes;
+            vector<SymbolType> parameterTypes; // danger
             SymbolType returnType;
 
             // Check that the function has not already been declared
@@ -207,6 +207,19 @@ namespace semanticAnalyser {
             // [[ Identifier -> FunctionDeclaration <- VoidableDatatype <- Datatype <- INT4/INT8/etc ]]
             } else {
                 returnType = integerTypeMap.at(node.parent->children.at(0).children.at(0).children.at(0).token.type);
+            }
+            
+            // Get parameters
+            const auto parameterList_1 = node.parent->children.at(2);
+            const auto parameterList_0 = parameterList_1.children.at(1);
+            
+            // ParameterList_0 -> Parameter NextParameter
+            if (parameterList_0.children.size() == 2) {
+                parameterTypes.push_back(integerTypeMap.at(parameterList_0.children.at(1).children.at(0).token.type));
+                const auto nextParameter = parameterList_0.children.at(1);
+                while (nextParameter.children.size() != -1) {
+                    //parameterTypes.push_back(integerTypeMap.at(parameterList_0.children.at(1).children.at(0).token.type));
+                }
             }
 
             ScopeManager::AddFunctionIdentifier(node.token.text, 
@@ -232,7 +245,8 @@ namespace semanticAnalyser {
                 UnknownIdentifier(node);
                 return;
             } else if (IsInt(symbol.type)) {
-                MismatchedType(node, "function", symbolNames.at(symbol.type));
+                // ono
+                MismatchedType(node, "function", "non-function");
                 return;
             }
 
@@ -245,11 +259,6 @@ namespace semanticAnalyser {
                 }
             }
 
-            // Check that the number of arguments we're calling the function with matches up
-            //const parser::TreeNode argumentList_0 = node.parent->children.at(2).children.at(1);
-            
-            //const vector<SymbolType> expected = ScopeManager::GetFunctionSymbol(node.token.text).parameterTypes;
-            //const vector<SymbolType> actual = GetArguments(argumentList_0);
             // Check that the number of arguments we're calling the function with matches up
             const auto argumentList1 = node.parent->children.at(2);
             const auto argumentList0 = argumentList1.children.at(1);
@@ -286,6 +295,7 @@ namespace semanticAnalyser {
             for (int i = 0; i < expectedArguments.size(); i++) {
                 if (actualArguments.at(i) != expectedArguments.at(i)) {
                     MismatchedType(node, "TODO", "TODO");
+                    return;
                 }
             }
         }
