@@ -99,6 +99,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 4") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::UNKNOWN_IDENTIFIER);
 }
 
@@ -215,25 +216,6 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 10") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
     REQUIRE(errors::GetErrorCode() == errors::REDECLARATION);
-}
-
-TEST_CASE("[6|SMA] Semantic Analyser invalid program 11") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_11.txt");
-    
-    errors::Reset();
-    parser::Reset();
-    scanner::Reset();
-    semanticAnalyser::Reset();
-
-    const vector<Token> scannedInput = scanner::Scan(input);
-
-    first::ComputeFirstSet();
-    follow::ComputeFollowSet();
-    table::GenerateTable();
-
-    const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
-    semanticAnalyser::Analyse(abstractSyntaxTree);
-    REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {

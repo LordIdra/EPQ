@@ -9,6 +9,7 @@
 #include <iostream>
 #include <semanticAnalyser/semanticAnalyser.hpp>
 #include <stack>
+#include <string>
 
 
 
@@ -32,7 +33,7 @@ namespace semanticAnalyser {
         auto UnknownIdentifier(const parser::TreeNode &node) -> void {
             errors::AddError(errors::UNKNOWN_IDENTIFIER,
                 colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
-                colors::RED + " Unkown Identifier: " + colors::CYAN + node.token.text + colors::WHITE);
+                colors::RED + " Unkown Identifier:" + colors::CYAN + node.token.text + colors::WHITE);
         }
 
         auto MismatchedType(const parser::TreeNode &node, const string &type1, const string &type2) -> void {
@@ -171,7 +172,6 @@ namespace semanticAnalyser {
             // Check that the variable has not already been declared
             if (ScopeManager::ScopesContain(node.token.text)) {
                 Redeclaration(node);
-                return;
             }
 
             if (node.parent->token.type == Declaration_0) {
@@ -195,7 +195,6 @@ namespace semanticAnalyser {
             // Check that the function has not already been declared
             if (ScopeManager::ScopesContain(node.token.text)) {
                 Redeclaration(node);
-                return;
             }
 
             // VoidableDatatype -> VOID
@@ -226,6 +225,7 @@ namespace semanticAnalyser {
         }
 
         auto CheckFunctionType(const parser::TreeNode &node) -> void {
+            std::cout << node.token.text << " " << symbolNames.at(node.parent->token.type) << "\n";
             const IdentifierSymbol symbol = ScopeManager::LookupScopes(node.token.text);
 
             if (symbol.type == TYPE_ERROR) {
@@ -241,29 +241,20 @@ namespace semanticAnalyser {
                 const SymbolType returnType = ScopeManager::GetFunctionSymbol(node.token.text).returnType;
                 if (!IsInt(returnType)) {
                     MismatchedType(node, "non-integer", "integer");
-                    return;
                 }
             }
 
             // Check that the number of arguments we're calling the function with matches up
-            //const parser::TreeNode argumentList_0 = node.parent->children.at(2).children.at(1);
-            
-            //const vector<SymbolType> expected = ScopeManager::GetFunctionSymbol(node.token.text).parameterTypes;
-            //const vector<SymbolType> actual = GetArguments(argumentList_0);
-            // Check that the number of arguments we're calling the function with matches up
             const auto argumentList1 = node.parent->children.at(2);
-            const auto argumentList0 = argumentList1.children.at(1);
-
-            vector<SymbolType> expectedArguments = ScopeManager::GetFunctionSymbol(node.token.text).parameterTypes;
-            vector<SymbolType> actualArguments;
+            const auto argumentList0 = node.parent->children.at(1);
 
             // ArgumentList0 -> NONE
             if (argumentList0.children.size() == 1) {
-                if (expectedArguments.empty()) {
-                    return;
-                }
-                IncorrectNumberOfArguments(node, expectedArguments.size(), actualArguments.size());
+                return;
             }
+
+            vector<SymbolType> expectedArguments = ScopeManager::GetFunctionSymbol(node.token.text).parameterTypes;
+            vector<SymbolType> actualArguments;
 
             actualArguments.push_back(EvaluateTermType(argumentList0.children.at(0)));
 

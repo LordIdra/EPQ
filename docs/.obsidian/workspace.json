@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "d21290efacdf5ec1",
+        "id": "cba19e4415add678",
         "type": "tabs",
         "children": [
           {
-            "id": "09c34a3f3ddd442d",
+            "id": "a1fa02ecfb9aa834",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Assembly Specification.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -135,6 +131,8 @@
   "ribbon": {
     "mostRecentAction": ""
   },
-  "active": "09c34a3f3ddd442d",
-  "lastOpenFiles": []
+  "active": "a1fa02ecfb9aa834",
+  "lastOpenFiles": [
+    "Assembly Specification.md"
+  ]
 }
