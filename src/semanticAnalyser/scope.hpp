@@ -26,13 +26,24 @@ enum SymbolType {
     TYPE_INT64,
 };
 
-const std::unordered_map<int, SymbolType> integerTypeMap = {
+const std::unordered_map<int, SymbolType> typeMap = {
+    {VOID, TYPE_VOID},
     {INT4, TYPE_INT4},
     {INT8, TYPE_INT8},
     {INT12, TYPE_INT12},
     {INT16, TYPE_INT16},
     {INT32, TYPE_INT32},
     {INT64, TYPE_INT64},
+};
+
+const std::unordered_map<SymbolType, string> typeNames = {
+    {TYPE_VOID, "void"},
+    {TYPE_INT4, "int4"},
+    {TYPE_INT8, "int8"},
+    {TYPE_INT12, "int12"},
+    {TYPE_INT16, "int16"},
+    {TYPE_INT32, "int32"},
+    {TYPE_INT64, "int64"},
 };
 
 inline auto IsInt(const SymbolType type) -> bool {

@@ -35,12 +35,12 @@ namespace semanticAnalyser {
                 colors::RED + " Unkown Identifier: " + colors::CYAN + node.token.text + colors::WHITE);
         }
 
-        auto MismatchedType(const parser::TreeNode &node, const string &type1, const string &type2) -> void {
+        auto MismatchedType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
             errors::AddError(errors::MISMATCHED_TYPE,
                 colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
                 colors::RED + " Mismatched Type: identifier " + colors::CYAN + node.token.text + 
-                colors::RED + " should be " + colors::CYAN + type1 + 
-                colors::RED + " but is " + colors::CYAN + type2 + 
+                colors::RED + " should be " + colors::CYAN + typeNames.at(expected) + 
+                colors::RED + " but is " + colors::CYAN + typeNames.at(actual) + 
                 colors::WHITE);
         }
 
@@ -176,11 +176,11 @@ namespace semanticAnalyser {
 
             if (node.parent->token.type == Declaration_0) {
                 // [[ Identifier -> Declaration_0 -> Declaration <- Datatype <- INT4/INT8/etc ]]
-                 symbolType = integerTypeMap.at(node.parent->parent->children.at(0).children.at(0).token.type);
+                 symbolType = typeMap.at(node.parent->parent->children.at(0).children.at(0).token.type);
 
             } else {
                 // [[ Identifier -> Parameter <- Datatype <- INT4/INT8/etc ]]
-                symbolType = integerTypeMap.at(node.parent->children.at(0).children.at(0).token.type);
+                symbolType = typeMap.at(node.parent->children.at(0).children.at(0).token.type);
             }
 
             ScopeManager::AddIntIdentifier(node.token.text, 
@@ -206,7 +206,7 @@ namespace semanticAnalyser {
             // VoidableDatatype -> Datatype
             // [[ Identifier -> FunctionDeclaration <- VoidableDatatype <- Datatype <- INT4/INT8/etc ]]
             } else {
-                returnType = integerTypeMap.at(node.parent->children.at(0).children.at(0).children.at(0).token.type);
+                returnType = typeMap.at(node.parent->children.at(0).children.at(0).children.at(0).token.type);
             }
             
             // Get parameters
@@ -215,10 +215,20 @@ namespace semanticAnalyser {
             
             // ParameterList_0 -> Parameter NextParameter
             if (parameterList_0.children.size() == 2) {
-                parameterTypes.push_back(integerTypeMap.at(parameterList_0.children.at(1).children.at(0).token.type));
-                const auto nextParameter = parameterList_0.children.at(1);
-                while (nextParameter.children.size() != -1) {
-                    //parameterTypes.push_back(integerTypeMap.at(parameterList_0.children.at(1).children.at(0).token.type));
+                const auto parameter = parameterList_0.children.at(0);
+                const auto datatype = parameter.children.at(0);
+                const auto type = datatype.children.at(0);
+                parameterTypes.push_back(typeMap.at(type.token.type));
+
+                auto nextParameter = parameterList_0.children.at(1);
+
+                while (nextParameter.children.size() != 1) {
+                    const auto parameter = nextParameter.children.at(1);
+                    const auto datatype = parameter.children.at(0);
+                    const auto type = datatype.children.at(0);
+                    parameterTypes.push_back(typeMap.at(type.token.type));
+
+                    nextParameter = nextParameter.children.at(2);
                 }
             }
 
@@ -233,7 +243,7 @@ namespace semanticAnalyser {
                 UnknownIdentifier(node);
                 return;
             } else if (symbol.type == TYPE_FUNCTION) {
-                MismatchedType(node, "integer", "function");
+                MismatchedType(node, "integer", TYPE_FUNCTION);
                 return;
             }
         }
@@ -245,8 +255,7 @@ namespace semanticAnalyser {
                 UnknownIdentifier(node);
                 return;
             } else if (IsInt(symbol.type)) {
-                // ono
-                MismatchedType(node, "function", "non-function");
+                MismatchedType(node, TYPE_FUNCTION, "non-function");
                 return;
             }
 
@@ -272,17 +281,18 @@ namespace semanticAnalyser {
                     return;
                 }
                 IncorrectNumberOfArguments(node, expectedArguments.size(), actualArguments.size());
+                return;
             }
 
             actualArguments.push_back(EvaluateTermType(argumentList0.children.at(0)));
 
-            auto currentArgument = argumentList0.children.at(1);
+            auto argument = argumentList0.children.at(1);
 
             // While NOT Argument -> None
-            while (currentArgument.children.size() != 1) {
-                const SymbolType actualType = EvaluateTermType(currentArgument);
+            while (argument.children.size() == 3) {
+                const SymbolType actualType = EvaluateTermType(argument);
                 actualArguments.push_back(actualType);
-                currentArgument = currentArgument.children.at(2);
+                argument = argument.children.at(2);
             }
 
             // Check number of arguments matches
@@ -352,7 +362,7 @@ namespace semanticAnalyser {
                 // ReturnContents -> NONE
                 if (node.children.at(0).token.type == NONE) {
                     if (correctType != TYPE_VOID) {
-                        MismatchedType(node, "non-void", "void");
+                        MismatchedType(node, "TODO", TYPE_VOID);
                         return;
                     }
                 
