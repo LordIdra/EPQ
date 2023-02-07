@@ -1,8 +1,8 @@
 #pragma once
 
 #include "parser/parser.hpp"
-#include <semanticAnalyser/scope.hpp>
-#include <semanticAnalyser/scopeManager.hpp>
+#include <semanticAnalyser/scopes/scope.hpp>
+#include <semanticAnalyser/scopes/scopeManager.hpp>
 
 
 

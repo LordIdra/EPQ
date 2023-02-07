@@ -1,6 +1,6 @@
 #pragma once
 
-#include "semanticAnalyser/scope.hpp"
+#include "semanticAnalyser/scopes/scope.hpp"
 
 
 
