@@ -57,7 +57,6 @@ TEST_CASE("[3|SCN] All tokens") {
     vector<Token> expected = {
         {NEWLINE, ""},
 
-        {POINTER, "@"},
         {COMMA, ","},
         {DOT, "."},
         {COLON, ":"},

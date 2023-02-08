@@ -1,6 +1,6 @@
 #include "generator/assembly.hpp"
 #include "generator/registers.hpp"
-#include "semanticAnalyser/scopeTraverser.hpp"
+#include "semanticAnalyser/scopes/scopeTraverser.hpp"
 #include "semanticAnalyser/semanticAnalyser.hpp"
 #include "simulator/simulator.hpp"
 #include <catch2/catch_test_macros.hpp>

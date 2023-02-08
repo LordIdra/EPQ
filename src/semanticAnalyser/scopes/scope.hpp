@@ -37,6 +37,7 @@ const std::unordered_map<int, SymbolType> typeMap = {
 };
 
 const std::unordered_map<SymbolType, string> typeNames = {
+    {TYPE_FUNCTION, "function"},
     {TYPE_VOID, "void"},
     {TYPE_INT4, "int4"},
     {TYPE_INT8, "int8"},

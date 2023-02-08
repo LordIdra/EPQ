@@ -183,7 +183,6 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     /* Declaration */
     {Declaration_0, {
         {OPEN_SQUARE_BRACKET, NUMBER, CLOSE_SQUARE_BRACKET, IDENTIFIER},
-        {POINTER, IDENTIFIER, ASSIGN, Reference},
         {IDENTIFIER, ASSIGN, InputTerm}}},
 
     {Declaration, {

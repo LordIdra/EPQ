@@ -13,7 +13,6 @@ enum Terminal {
     COMMENT,
 
     // Punctuators
-    POINTER,
     COMMA,
     DOT,
     COLON,

@@ -1,6 +1,6 @@
-#include <semanticAnalyser/scope.hpp>
+#include <semanticAnalyser/scopes/scope.hpp>
 
-#include "semanticAnalyser/scopeManager.hpp"
+#include "semanticAnalyser/scopes/scopeManager.hpp"
 #include "util/errors.hpp"
 #include <iostream>
 #include <unordered_map>

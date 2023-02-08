@@ -11,7 +11,6 @@ const unordered_map<int, string> symbolNames {
     {NEWLINE, "NEWLINE"},
     {NO_TOKEN, "NO_TOKEN"},
     {COMMENT, "COMMENT"},
-    {POINTER, "POINTER"},
     {COMMA, "COMMA"},
     {DOT, "DOT"},
     {COLON, "COLON"},

@@ -5,12 +5,12 @@
 #include "semanticAnalyser/scopes/scope.hpp"
 #include "semanticAnalyser/scopes/scopeManager.hpp"
 #include "semanticAnalyser/scopes/scopeTraverser.hpp"
+#include "semanticAnalyser/semanticErrors.hpp"
+#include "semanticAnalyser/checks.hpp"
 #include "util/errors.hpp"
 #include <iostream>
 #include <semanticAnalyser/semanticAnalyser.hpp>
 #include <stack>
-#include <semanticAnalyser/declarations.hpp>
-#include <semanticAnalyser/uses.hpp>
 
 
 
@@ -74,88 +74,25 @@ namespace semanticAnalyser {
         }
 
         auto Traverse(const parser::TreeNode &node) -> void {
-            if ((node.token.type == N_Block) || (node.token.type == L_Block)) {
-                TraverseBlock(node);
-                return;
-            }
 
-            if (node.token.type == FunctionDeclaration) {
-                // FunctionDeclaration -> None
-                if (node.children.size() == 1) {
+            switch (node.token.type) {
+                case N_Block: TraverseBlock(node); return;
+                case L_Block: TraverseBlock(node); return;
+                case For: TraverseFor(node); return;
+                case While: TraverseWhile(node); return;
+                case Declaration_0: checks::Declaration_0(node); break;
+                case Parameter: checks::Parameter(node); break;
+                case FunctionDeclaration:
+                    // FunctionDeclaration -> None
+                    if (node.children.size() == 1) { return; }
+                    // FunctionDeclaration -> VoidableDatatype IDENTIFIER ParameterList_1 N_Block FunctionDeclaration
+                    checks::FunctionDeclaration(node);
+                    TraverseFunctionDeclaration(node); 
                     return;
-                }
-                TraverseFunctionDeclaration(node);
-                return;
-            }
-
-            if (node.token.type == For) {
-                TraverseFor(node);
-                return;
-            }
-
-            if (node.token.type == While) {
-                TraverseWhile(node);
-                return;
-            }
-
-            if (node.token.type == IDENTIFIER) {
-                switch (node.parent->token.type) {
-                    // Function declarations
-                    case FunctionDeclaration: declarations::FunctionDeclaration(node);  break;
-
-                    // Integer declarations
-                    case Declaration_0:  declarations::Declaration_0(node);  break;
-                    case Parameter:      declarations::Parameter(node);      break;
-
-                    // Integer uses
-                    case Reference:       uses::Reference(node);       break;
-                    case Dereference:     uses::Dereference(node);     break;
-                    case Argument:        uses::Argument(node);        break;
-                    case ArgumentList_0:  uses::ArgumentList_0(node);  break;
-                    case Variable:        uses::Variable(node);        break;
-
-                    // Function uses
-                    case FunctionCall:  uses::FunctionCall(node);  break;
-                }
-
-                // if (nonTerminalIntDeclarations.count(node.parent->token.type) != 0) {
-                //     AddIntIdentifier(node);
-                //     return;
-                // }
-
-                // if (nonTerminalFunctionDeclarations.count(node.parent->token.type) != 0) {
-                //     AddFunctionIdentifier(node);
-                //     return;
-                // }
-
-                // if (nonTerminalIntAndConstIntUses.count(node.parent->token.type) != 0) {
-                //     CheckIntType(node);
-                //     return;
-                // }
-
-                // if (nonTerminalFunctionUses.count(node.parent->token.type) != 0) {
-                //     CheckFunctionType(node);
-                //     return;
-                // }
-            }
-
-            if (node.token.type == ReturnContents) {
-                const SymbolType correctType = ScopeManager::GetCurrentFunctionSymbol().returnType;
-                // ReturnContents -> NONE
-                if (node.children.at(0).token.type == NONE) {
-                    if (correctType != TYPE_VOID) {
-                        MismatchedType(node, "TODO", TYPE_VOID);
-                        return;
-                    }
-                
-                // ReturnContents -> Term
-                } else {
-                    if (!IsInt(correctType)) {
-                        MismatchedType(node, "non-int", "int");
-                        return;
-                    }
-                }
-                return;
+                case Assignment: checks::Assignment(node); break;
+                case SimpleStatement: checks::SimpleStatement(node); break;
+                case FunctionCall: checks::FunctionCall(node); break;
+                case ReturnContents: checks::ReturnContents(node); break;
             }
 
             for (const parser::TreeNode &child : node.children) {
@@ -165,7 +102,7 @@ namespace semanticAnalyser {
     }
 
     auto Reset() -> void {
-        nextFreeAddress = 1;
+        checks::Reset();
         ScopeManager::Reset();
     }
 
@@ -176,7 +113,7 @@ namespace semanticAnalyser {
         return ScopeManager::GetTree();
     }
     
-    auto FreeAddresses(int count) -> void {
-        nextFreeAddress -= count;
+    auto FreeAddresses(const int count) -> void {
+        checks::FreeAddresses(count);
     }
 }

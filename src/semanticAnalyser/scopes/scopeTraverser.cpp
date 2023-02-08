@@ -1,5 +1,5 @@
 #include "scopeTraverser.hpp"
-#include "semanticAnalyser/scope.hpp"
+#include "semanticAnalyser/scopes/scope.hpp"
 #include "util/errors.hpp"
 #include <iostream>
 

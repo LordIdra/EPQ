@@ -1,5 +1,5 @@
-#include "semanticAnalyser/scopeManager.hpp"
-#include "semanticAnalyser/scope.hpp"
+#include "semanticAnalyser/scopes/scopeManager.hpp"
+#include "semanticAnalyser/scopes/scope.hpp"
 #include <iostream>
 #include <semanticAnalyser/semanticAnalyser.hpp>
 #include <stack>

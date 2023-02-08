@@ -4,8 +4,8 @@
 #include "grammar/symbolNames.hpp"
 #include "grammar/terminals.hpp"
 #include "parser/parser.hpp"
-#include "semanticAnalyser/scope.hpp"
-#include "semanticAnalyser/scopeTraverser.hpp"
+#include "semanticAnalyser/scopes/scope.hpp"
+#include "semanticAnalyser/scopes/scopeTraverser.hpp"
 #include "util/errors.hpp"
 #include <cstdlib>
 #include <generator/generator.hpp>
@@ -1198,12 +1198,6 @@ namespace generator {
                         // Declaration -> Datatype OPEN_SQUARE_BRACKET NUMBER CLOSE_SQUARE_BRACKET IDENTIFIER
                         if (node->children.at(1).children.at(0).token.type == OPEN_SQUARE_BRACKET) {
                             // TODO (lists)
-                        }
-
-                        // Declaration_0 -> POINTER IDENTIFIER ASSIGN Reference
-                        // Declaration -> Datatype POINTER IDENTIFIER ASSIGN Reference
-                        if (node->children.at(1).children.at(0).token.type == POINTER) {
-                            // TODO (12-bit datatype)
                         }
 
                         // Declaration_0 -> IDENTIFIER ASSIGN InputTerm
