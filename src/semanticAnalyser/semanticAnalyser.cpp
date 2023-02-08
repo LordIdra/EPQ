@@ -105,7 +105,7 @@ namespace semanticAnalyser {
 
                     // Integer declarations
                     case Declaration_0:  declarations::Declaration_0(node);  break;
-                    case Parameter:      declarations::Parameter(node)       break;
+                    case Parameter:      declarations::Parameter(node);      break;
 
                     // Integer uses
                     case Reference:       uses::Reference(node);       break;
@@ -118,25 +118,25 @@ namespace semanticAnalyser {
                     case FunctionCall:  uses::FunctionCall(node);  break;
                 }
 
-                if (nonTerminalIntDeclarations.count(node.parent->token.type) != 0) {
-                    AddIntIdentifier(node);
-                    return;
-                }
+                // if (nonTerminalIntDeclarations.count(node.parent->token.type) != 0) {
+                //     AddIntIdentifier(node);
+                //     return;
+                // }
 
-                if (nonTerminalFunctionDeclarations.count(node.parent->token.type) != 0) {
-                    AddFunctionIdentifier(node);
-                    return;
-                }
+                // if (nonTerminalFunctionDeclarations.count(node.parent->token.type) != 0) {
+                //     AddFunctionIdentifier(node);
+                //     return;
+                // }
 
-                if (nonTerminalIntAndConstIntUses.count(node.parent->token.type) != 0) {
-                    CheckIntType(node);
-                    return;
-                }
+                // if (nonTerminalIntAndConstIntUses.count(node.parent->token.type) != 0) {
+                //     CheckIntType(node);
+                //     return;
+                // }
 
-                if (nonTerminalFunctionUses.count(node.parent->token.type) != 0) {
-                    CheckFunctionType(node);
-                    return;
-                }
+                // if (nonTerminalFunctionUses.count(node.parent->token.type) != 0) {
+                //     CheckFunctionType(node);
+                //     return;
+                // }
             }
 
             if (node.token.type == ReturnContents) {

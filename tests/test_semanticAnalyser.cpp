@@ -1,5 +1,5 @@
-#include "semanticAnalyser/scope.hpp"
-#include "semanticAnalyser/scopeTraverser.hpp"
+#include "semanticAnalyser/scopes/scope.hpp"
+#include "semanticAnalyser/scopes/scopeTraverser.hpp"
 #include "semanticAnalyser/semanticAnalyser.hpp"
 #include <catch2/catch_test_macros.hpp>
 
