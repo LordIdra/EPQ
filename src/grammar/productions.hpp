@@ -117,6 +117,7 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     
     {Term_14, {
         {OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS},
+        {Datatype, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS},
         {Value}}},
 
 

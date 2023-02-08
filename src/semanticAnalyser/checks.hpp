@@ -13,6 +13,7 @@ namespace checks {
     auto Declaration_0(const parser::TreeNode &node) -> void;
     auto Parameter(const parser::TreeNode &node) -> void;
     auto FunctionDeclaration(const parser::TreeNode &node) -> void;
+    auto SimpleStatement(const parser::TreeNode &node) -> void;
     auto FunctionCall(const parser::TreeNode &node) -> void;
     auto ReturnContents(const parser::TreeNode &node) -> void;
 

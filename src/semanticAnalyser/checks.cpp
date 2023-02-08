@@ -23,14 +23,8 @@ namespace checks {
     auto EvaluateTermType(const parser::TreeNode &node) -> SymbolType {
         vector<SymbolType> types;
 
-        if (node.token.type != Value) {
-            for (const auto &child : node.children) {
-                SymbolType type = EvaluateTermType(child);
-                if (type != TYPE_ERROR) {
-                    types.push_back(type);
-                }
-            }
-        } else {
+        // Term_14 -> Value
+        if (node.token.type == Value) {
             const auto child = node.children.at(0);
             switch (child.token.type) {
             case Variable:
@@ -38,10 +32,12 @@ namespace checks {
                 if (child.children.size() == 2) {
                     const string identifier = child.children.at(1).token.text;
                     types.push_back(ScopeManager::LookupScopes(identifier).type);
+
                 // Variable -> Dereference
                 } else {
                     // TODO (pointers)
                 }
+
                 break;
 
             case Literal:
@@ -52,6 +48,22 @@ namespace checks {
                 const string identifier = child.children.at(1).token.text;
                 types.push_back(ScopeManager::GetFunctionSymbol(identifier).returnType);
                 break;
+            }
+        }
+
+        // Term_14 -> Datatype OPEN_PARENTHESIS Term CLOSE_PARENTHESIS
+        else if (node.token.type == Datatype) {
+            const auto cast = node.parent;
+            
+        }
+        
+        // Everything else
+        else {
+            for (const auto &child : node.children) {
+                SymbolType type = EvaluateTermType(child);
+                if (type != TYPE_ERROR) {
+                    types.push_back(type);
+                }
             }
         }
 
@@ -77,15 +89,32 @@ namespace checks {
         // Declaration_0 -> IDENTIFIER ASSIGN InputTerm
         else {
             const string name = node.children.at(0).token.text;
-            const auto symbolType = typeMap.at(node.parent->children.at(0).children.at(0).token.type);
+            const auto expectedType = typeMap.at(node.parent->children.at(0).children.at(0).token.type);
+            SymbolType actualType;
+
+            // InputTerm -> INPUT
+            if (node.children.at(2).children.at(0).token.type == INPUT) {
+                actualType = TYPE_ERROR;
+                // TODO (new CPU section)
+            }
+
+            // InputTerm -> Term
+            else {
+                actualType = EvaluateTermType(node.children.at(2).children.at(0));
+            }
 
             if (ScopeManager::ScopesContain(name)) {
                 semanticErrors::Redeclaration(node);
                 return;
             }
 
+            if (actualType != expectedType) {
+                semanticErrors::MismatchedType(node, expectedType, actualType);
+                return;
+            }
+
             ScopeManager::AddIntIdentifier(
-                name, IdentifierSymbol{ScopeManager::CurrentScopeLevel(), symbolType, address});
+                name, IdentifierSymbol{ScopeManager::CurrentScopeLevel(), actualType, address});
         }
     }
 
@@ -125,10 +154,11 @@ namespace checks {
         // [[ FunctionDeclaration <- VoidableDatatype <- VOID ]]
         if (node.children.at(0).children.at(0).token.type == VOID) {
             returnType = TYPE_VOID;
+        }
 
         // VoidableDatatype -> Datatype
         // [[ FunctionDeclaration <- VoidableDatatype <- Datatype <- INT4/INT8/etc ]]
-        } else {
+        else {
             returnType = typeMap.at(node.children.at(0).children.at(0).children.at(0).token.type);
         }
 
@@ -217,7 +247,9 @@ namespace checks {
         if (symbol.type == TYPE_ERROR) {
             semanticErrors::UnknownIdentifier(node);
             return;
-        } else if (symbol.type != TYPE_FUNCTION) {
+        } 
+
+        else if (symbol.type != TYPE_FUNCTION) {
             semanticErrors::MismatchedType(node, TYPE_FUNCTION, symbol.type);
             return;
         }

@@ -3,5 +3,5 @@ void main() {
     if (x) {
         int4 y = 50;  # lol
     }
-    output y;
+    int4 z = y;
 }
