@@ -11,10 +11,10 @@ namespace semanticErrors {
             colors::RED + " Unkown Identifier: " + colors::CYAN + node.token.text + colors::WHITE);
     }
 
-    auto MismatchedType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
+    auto MismatchedIdentifierType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
         errors::AddError(errors::MISMATCHED_TYPE,
             colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
-            colors::RED + " Mismatched Type: identifier " + colors::CYAN + node.token.text + 
+            colors::RED + " Mismatched Identifier Type: identifier " + colors::CYAN + node.token.text + 
             colors::RED + " should be " + colors::CYAN + typeNames.at(expected) + 
             colors::RED + " but found " + colors::CYAN + typeNames.at(actual) + 
             colors::WHITE);
