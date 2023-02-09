@@ -1,12 +1,12 @@
-void DoTheFirstThing() {
+int32 DoTheFirstThing() {
     return 3 % 2;
 }
 
-void DoTheSecondThing() {
+int32 DoTheSecondThing() {
     return 2 + 4;
 }
 
 void main() {
-    int4 TEST_OUTPUT_1 = call DoTheFirstThing();
-    int4 TEST_OUTPUT_2 = call DoTheSecondThing();
+    int32 TEST_OUTPUT_1 = call DoTheFirstThing();
+    int32 TEST_OUTPUT_2 = call DoTheSecondThing();
 }

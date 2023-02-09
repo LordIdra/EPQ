@@ -1,0 +1,19 @@
+int32 Factorial(int32 x) {
+   int16 y = int16(1);
+   for (int32 i = 0; i < x; i+=1) {
+       y *= int16(i);
+   }
+   return int32(y);
+}
+
+void main() {
+    int4 x = input;
+    int4 z = int4(-3);
+    int64 a = int64(true);
+    if (a) {
+       x /= z;
+       int12 j = ->x;
+       int4 k = <-j;
+    }
+    output call Factorial(int32(x));
+}

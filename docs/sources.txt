@@ -1,0 +1,12 @@
+2022-11-25 https://bcahelper.blogspot.com/2008/11/write-context-free-grammar-for-if-then.html
+2022-11-25 https://www.cs.auckland.ac.nz/courses/compsci330s1c/lectures/330ChaptersPDF/Chapt2.pdf
+2022-11-25 https://pages.cs.wisc.edu/~fischer/cs536.s08/course.hold/html/NOTES/3.CFG.html
+2022-11-25 http://www.cs.ecu.edu/karl/5220/spr16/Notes/CFG/precedence.html
+2022-11-26 http://marvin.cs.uidaho.edu/Handouts/grammar.pdf
+2022-11-26 https://github.com/chao-peng/SIF/issues/5
+2022-11-26 https://stackoverflow.com/questions/17005883/how-does-a-c-like-compiler-interpret-the-if-statement
+2022-11-29 https://blog.reverberate.org/2013/09/ll-and-lr-in-context-why-parsing-tools.html
+2022-11-29 https://stackoverflow.com/questions/5975741/what-is-the-difference-between-ll-and-lr-parsing#:~:text=At%20a%20high%20level%2C%20the,to%2Dright%2C%20leftmost%20derivation.
+2022-11-29 https://softwareengineering.stackexchange.com/questions/419368/what-are-the-practical-advantages-of-lr-parser-over-ll-parser-in-today
+2022-11-30 https://www.reddit.com/r/Compilers/comments/z3w68j/comment/ixnxtr1/
+2023-01-22 https://stackoverflow.com/questions/1123396/assembly-to-compare-two-numbers

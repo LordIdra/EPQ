@@ -1,0 +1,4 @@
+void main() {
+    int4 address = int4(2);
+    int8 address = int8(-2);
+}

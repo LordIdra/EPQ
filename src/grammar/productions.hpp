@@ -152,6 +152,7 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     
     {Variable, {
         {IDENTIFIER, IdentifierSuffix},
+        {Reference},
         {Dereference}}},
 
     {IdentifierSuffix, {

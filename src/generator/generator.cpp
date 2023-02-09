@@ -1439,6 +1439,10 @@ namespace generator {
                     assembly::PSH();
                     assembly::MOV(returnAddress1b, registers::MDR2);
                     assembly::PSH();
+
+                    registers::Free(returnAddress1b);
+                    registers::Free(returnAddress2a);
+                    registers::Free(returnAddress2b);
                 }
             }
 

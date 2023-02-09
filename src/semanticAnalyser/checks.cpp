@@ -10,6 +10,58 @@
 namespace checks {
     namespace {
         int nextFreeAddress = 1;
+
+        auto EvaluateDatatypeType(const parser::TreeNode &node) -> SymbolType {
+            return typeMap.at(node.children.at(0).token.type);
+        }
+
+        auto EvaluateVariableType(const parser::TreeNode &node) -> SymbolType {
+            // Variable -> Reference
+            if (node.children.at(0).token.type == Reference) {
+                return TYPE_INT12;
+            }
+
+            // Variable -> Dereference
+            else if (node.children.at(0).token.type == Dereference) {
+                return TYPE_INT4;
+            }
+
+            // Variable -> IDENTIFIER IdentifierSuffix
+            else {
+                const string identifier = node.children.at(0).token.text;
+                SymbolType type = ScopeManager::LookupScopes(identifier).type;
+                if (type == TYPE_ERROR) {
+                    semanticErrors::UnknownIdentifier(node.children.at(0));
+                }
+                return type;
+            }
+        }
+
+        auto EvaluateFunctionCallType(const parser::TreeNode &node) -> SymbolType {
+            const string identifier = node.children.at(1).token.text;
+            const SymbolType returnType = ScopeManager::GetFunctionSymbol(identifier).returnType;
+            if (returnType == TYPE_ERROR) {
+                semanticErrors::UnknownIdentifier(node.children.at(1));
+            }
+            return returnType;
+        }
+
+        auto EvaluateValueType(const parser::TreeNode &node) -> SymbolType {
+            const auto child = node.children.at(0);
+            switch (child.token.type) {
+            case Variable:
+                return EvaluateVariableType(child);
+
+            case Literal:
+                return TYPE_INT32;
+
+            case FunctionCall:
+                return EvaluateFunctionCallType(child);
+
+            default:
+                return TYPE_ERROR;
+            }
+        }
     }
 
     auto Reset() -> void {
@@ -22,42 +74,30 @@ namespace checks {
 
     auto EvaluateTermType(const parser::TreeNode &node) -> SymbolType {
         vector<SymbolType> types;
-
-        // Term_14 -> Value
-        if (node.token.type == Value) {
+        
+        // These must evaluate to a type (if they return TYPE_ERROR, something has gone wrong)
+        if (node.token.type == Term_14) {
             const auto child = node.children.at(0);
             switch (child.token.type) {
-            case Variable:
-                // Variable -> IDENTIFIER IdentifierSuffix
-                if (child.children.size() == 2) {
-                    const string identifier = child.children.at(1).token.text;
-                    types.push_back(ScopeManager::LookupScopes(identifier).type);
 
-                // Variable -> Dereference
-                } else {
-                    // TODO (pointers)
-                }
-
+            // Term_14 -> Datatype OPEN_PARENTHESIS Term CLOSE_PARENTHESIS
+            case Datatype:
+                types.push_back(EvaluateDatatypeType(node.children.at(0)));
                 break;
 
-            case Literal:
-                types.push_back(TYPE_INT32);
+            // Term_14 -> Value
+            case Value:
+                types.push_back(EvaluateValueType(node.children.at(0)));
                 break;
 
-            case FunctionCall:
-                const string identifier = child.children.at(1).token.text;
-                types.push_back(ScopeManager::GetFunctionSymbol(identifier).returnType);
+            // Term_14 -> OPEN_PARENTHESIS Term CLOSE_PARENTHESIS
+            case OPEN_PARENTHESIS:
+                types.push_back(EvaluateTermType(node.children.at(1)));
                 break;
             }
         }
-
-        // Term_14 -> Datatype OPEN_PARENTHESIS Term CLOSE_PARENTHESIS
-        else if (node.token.type == Datatype) {
-            const auto cast = node.parent;
-            
-        }
         
-        // Everything else
+        // Everything else (TYPE_ERROR means it hasn't evaluated to a type)
         else {
             for (const auto &child : node.children) {
                 SymbolType type = EvaluateTermType(child);
@@ -67,15 +107,20 @@ namespace checks {
             }
         }
 
-        // Select type with highest precedence
-        SymbolType finalType = TYPE_ERROR;
+        if (types.empty()) {
+            return TYPE_ERROR;
+        }
+
+        // Verify all types in the non-terminal are the same
+        const SymbolType initialType = types.at(0);
         for (const auto type : types) {
-            if (type > finalType) {
-                finalType = type;
+            if (type != initialType) {
+                semanticErrors::MismatchedTermType(node, initialType, type);
+                return TYPE_ERROR;
             }
         }
 
-        return finalType;
+        return initialType;
     }
 
     auto Declaration_0(const parser::TreeNode &node) -> void {
@@ -94,7 +139,7 @@ namespace checks {
 
             // InputTerm -> INPUT
             if (node.children.at(2).children.at(0).token.type == INPUT) {
-                actualType = TYPE_ERROR;
+                actualType = TYPE_INT4;
                 // TODO (new CPU section)
             }
 
@@ -109,7 +154,7 @@ namespace checks {
             }
 
             if (actualType != expectedType) {
-                semanticErrors::MismatchedType(node, expectedType, actualType);
+                semanticErrors::MismatchedIdentifierType(node.children.at(0), expectedType, actualType);
                 return;
             }
 
@@ -121,7 +166,7 @@ namespace checks {
     auto Parameter(const parser::TreeNode &node) -> void {
         const int address = nextFreeAddress++;
         const auto name = node.children.at(1).token.text;
-        const auto symbolType = typeMap.at(node.parent->children.at(0).children.at(0).token.type);
+        const auto symbolType = typeMap.at(node.children.at(0).children.at(0).token.type);
 
         // Check that the variable has not already been declared
         if (ScopeManager::ScopesContain(name)) {
@@ -190,21 +235,14 @@ namespace checks {
     }
 
     auto Assignment(const parser::TreeNode &node) -> void {
-        SymbolType expectedType;
-        SymbolType actualType;
-
         const auto variable = node.children.at(0);
         const auto assignmentOperation = node.children.at(1);
 
-        // Variable -> Dereference
-        if (variable.children.at(0).token.type == Dereference) {
-            // TODO (pointers)
-        }
+        SymbolType expectedType = EvaluateVariableType(variable);
+        SymbolType actualType;
 
-        // Variable -> IDENTIFIER IdentifierSuffix
-        else {
-            const string name = variable.children.at(0).token.text;
-            expectedType = ScopeManager::LookupScopes(name).type;
+        if (expectedType == TYPE_ERROR) {
+            return;
         }
 
         // AssignmentOperation -> ASSIGN InputTerm
@@ -220,6 +258,7 @@ namespace checks {
             // InputTerm -> INPUT
             else {
                 // TODO (new CPU section)
+                actualType = TYPE_INT4;
             }
         }
 
@@ -228,14 +267,19 @@ namespace checks {
             actualType = EvaluateTermType(assignmentOperation.children.at(1));
         }
 
+        if (actualType == TYPE_ERROR) {
+            
+        }
+
         if (actualType != expectedType) {
-            semanticErrors::MismatchedType(node, expectedType, actualType);
+            semanticErrors::MismatchedTermType(node, expectedType, actualType);
         }
     }
 
     auto SimpleStatement(const parser::TreeNode &node) -> void {
         // SimpleStatement -> OUTPUT Term SEMICOLON
         if (node.children.at(0).token.type == OUTPUT) {
+            const SymbolType type = EvaluateTermType(node.children.at(1));
             // TODO (new CPU section)
         }
     }
@@ -245,12 +289,12 @@ namespace checks {
         const IdentifierSymbol symbol = ScopeManager::LookupScopes(name);
 
         if (symbol.type == TYPE_ERROR) {
-            semanticErrors::UnknownIdentifier(node);
+            semanticErrors::UnknownIdentifier(node.children.at(1));
             return;
-        } 
+        }
 
         else if (symbol.type != TYPE_FUNCTION) {
-            semanticErrors::MismatchedType(node, TYPE_FUNCTION, symbol.type);
+            semanticErrors::MismatchedIdentifierType(node, TYPE_FUNCTION, symbol.type);
             return;
         }
 
@@ -258,7 +302,7 @@ namespace checks {
         if (node.token.type == Value) {
             const SymbolType returnType = ScopeManager::GetFunctionSymbol(name).returnType;
             if (symbol.type != returnType) {
-                semanticErrors::MismatchedType(node, returnType, symbol.type);
+                semanticErrors::MismatchedIdentifierType(node, returnType, symbol.type);
                 return;
             }
         }
@@ -297,7 +341,7 @@ namespace checks {
         // Check argument types match
         for (int i = 0; i < expectedArguments.size(); i++) {
             if (actualArguments.at(i) != expectedArguments.at(i)) {
-                semanticErrors::MismatchedType(node, actualArguments.at(i), expectedArguments.at(i));
+                semanticErrors::MismatchedArgumentType(node.children.at(1), actualArguments.at(i), expectedArguments.at(i));
                 return;
             }
         }
@@ -309,7 +353,7 @@ namespace checks {
         // ReturnContents -> NONE
         if (node.children.at(0).token.type == NONE) {
             if (expectedType != TYPE_VOID) {
-                semanticErrors::MismatchedType(node, expectedType, TYPE_VOID);
+                semanticErrors::MismatchedIdentifierType(node, expectedType, TYPE_VOID);
                 return;
             }
         }
@@ -317,7 +361,7 @@ namespace checks {
         // ReturnContents -> Term
         else {
             if (expectedType == TYPE_VOID) {
-                semanticErrors::MismatchedType(node, TYPE_VOID, checks::EvaluateTermType(node.children.at(0)));
+                semanticErrors::MismatchedTermType(node, TYPE_VOID, checks::EvaluateTermType(node.children.at(0)));
                 return;
             }
         }

@@ -9,7 +9,7 @@
 
 
 TEST_CASE("[3|SCN] Invalid program") {
-    vector<string> input = readfile::Read("../../tests/resources/scanner_fail_1.txt");
+    vector<string> input = readfile::Read("../../tests/resources/scanner/fail_1.txt");
     
     errors::Reset();
     scanner::Reset();
@@ -19,7 +19,7 @@ TEST_CASE("[3|SCN] Invalid program") {
 };
 
 TEST_CASE("[3|SCN] Valid but nonsensical program") {
-    vector<string> input = readfile::Read("../../tests/resources/scanner_fail_2.txt");
+    vector<string> input = readfile::Read("../../tests/resources/scanner/fail_2.txt");
     vector<Token> expected = {
         {IDENTIFIER, "I"}, 
         {IDENTIFIER, "AM"}, 
@@ -53,7 +53,7 @@ TEST_CASE("[3|SCN] Valid but nonsensical program") {
 }
 
 TEST_CASE("[3|SCN] All tokens") {
-    vector<string> input = readfile::Read("../../tests/resources/scanner_pass_1.txt");
+    vector<string> input = readfile::Read("../../tests/resources/scanner/pass_1.txt");
     vector<Token> expected = {
         {NEWLINE, ""},
 
@@ -160,7 +160,7 @@ TEST_CASE("[3|SCN] All tokens") {
 }
 
 TEST_CASE("[3|SCN] Valid program") {
-    vector<string> input = readfile::Read("../../tests/resources/scanner_pass_2.txt");
+    vector<string> input = readfile::Read("../../tests/resources/scanner/pass_2.txt");
     vector<Token> expected = {
         {INT64, "int64"},
         {IDENTIFIER, "Factorial"},

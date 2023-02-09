@@ -1,11 +1,11 @@
 void main() {
-    int4 TEST_OUTPUT_1 = 0;
-    for (int4 i = 0; i < 3; i+=1) {
-        TEST_OUTPUT_1 += 2;
+    int4 TEST_OUTPUT_1 = int4(0);
+    for (int32 i = 0; i < 3; i+=1) {
+        TEST_OUTPUT_1 += int4(2);
     }
 
-    int4 TEST_OUTPUT_2 = 1;
-    for (int4 i = 3; i > 0; i-=1) {
-        TEST_OUTPUT_2 += 2;
+    int4 TEST_OUTPUT_2 = int4(1);
+    for (int32 i = 3; i > 0; i-=1) {
+        TEST_OUTPUT_2 += int4(2);
     }
 }

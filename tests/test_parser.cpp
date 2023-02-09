@@ -22,7 +22,7 @@
 
 
 TEST_CASE("[5|PRS] Parser valid program 1") {
-    vector<string> input = readfile::Read("../../tests/resources/parser_pass_1.txt");
+    vector<string> input = readfile::Read("../../tests/resources/parser/pass_1.txt");
     
     errors::Reset();
     parser::Reset();
@@ -41,7 +41,7 @@ TEST_CASE("[5|PRS] Parser valid program 1") {
 }
 
 TEST_CASE("[5|PRS] Parser valid program 2") {
-    vector<string> input = readfile::Read("../../tests/resources/parser_pass_2.txt");
+    vector<string> input = readfile::Read("../../tests/resources/parser/pass_2.txt");
     
     errors::Reset();
     parser::Reset();
@@ -60,7 +60,7 @@ TEST_CASE("[5|PRS] Parser valid program 2") {
 }
 
 TEST_CASE("[5|PRS] Parser valid program 3") {
-    vector<string> input = readfile::Read("../../tests/resources/parser_pass_3.txt");
+    vector<string> input = readfile::Read("../../tests/resources/parser/pass_3.txt");
     
     errors::Reset();
     parser::Reset();
@@ -79,7 +79,7 @@ TEST_CASE("[5|PRS] Parser valid program 3") {
 }
 
 TEST_CASE("[5|PRS] Parser AST 1") {
-    vector<string> input = readfile::Read("../../tests/resources/parser_ast_1.txt");
+    vector<string> input = readfile::Read("../../tests/resources/parser/ast_1.txt");
     
     errors::Reset();
     parser::Reset();
@@ -99,7 +99,7 @@ TEST_CASE("[5|PRS] Parser AST 1") {
 }
 
 TEST_CASE("[5|PRS] Parser AST 2") {
-    vector<string> input = readfile::Read("../../tests/resources/parser_ast_2.txt");
+    vector<string> input = readfile::Read("../../tests/resources/parser/ast_2.txt");
     
     errors::Reset();
     parser::Reset();

@@ -1,6 +1,9 @@
 #include "parser/parser.hpp"
 #include "semanticAnalyser/scopes/scope.hpp"
 #include "util/errors.hpp"
+
+
+
 namespace semanticErrors {
     auto UnknownIdentifier(const parser::TreeNode &node) -> void {
         errors::AddError(errors::UNKNOWN_IDENTIFIER,
@@ -8,12 +11,30 @@ namespace semanticErrors {
             colors::RED + " Unkown Identifier: " + colors::CYAN + node.token.text + colors::WHITE);
     }
 
-    auto MismatchedType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
+    auto MismatchedIdentifierType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
         errors::AddError(errors::MISMATCHED_TYPE,
             colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
-            colors::RED + " Mismatched Type: identifier " + colors::CYAN + node.token.text + 
+            colors::RED + " Mismatched Identifier Type: identifier " + colors::CYAN + node.token.text + 
             colors::RED + " should be " + colors::CYAN + typeNames.at(expected) + 
-            colors::RED + " but is " + colors::CYAN + typeNames.at(actual) + 
+            colors::RED + " but found " + colors::CYAN + typeNames.at(actual) + 
+            colors::WHITE);
+    }
+
+    auto MismatchedArgumentType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
+        errors::AddError(errors::MISMATCHED_TYPE,
+            colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
+            colors::RED + " Mismatched Argument Type: function " + colors::CYAN + node.token.text + 
+            colors::RED + " expected argument " + colors::CYAN + typeNames.at(expected) + 
+            colors::RED + " but got " + colors::CYAN + typeNames.at(actual) + 
+            colors::WHITE);
+    }
+
+    auto MismatchedTermType(const parser::TreeNode &node, const SymbolType &expected, const SymbolType &actual) -> void {
+        errors::AddError(errors::MISMATCHED_TYPE,
+            colors::AMBER + "[line " + std::to_string(node.token.line) + "]" +
+            colors::RED + " Mismatched Term Type:" +
+            colors::RED + " expected " + colors::CYAN + typeNames.at(expected) + 
+            colors::RED + " but found " + colors::CYAN + typeNames.at(actual) + 
             colors::WHITE);
     }
 

@@ -1,5 +1,5 @@
 void main() {
-    int4 x = 7;
-    x %= 3;
+    int4 x = int4(7);
+    x %= int4(3);
     int4 TEST_OUTPUT = x;
 }

@@ -105,6 +105,9 @@ namespace ScopeManager {
     }
 
     auto GetFunctionSymbol(const string &name) -> FunctionSymbol {
+        if (functionSymbols.count(name) == 0) {
+            return FunctionSymbol{vector<SymbolType>(), TYPE_ERROR};
+        }
         return functionSymbols.at(name);
     }
 

@@ -1,0 +1,25 @@
+int4 literally_die(int4 x) {
+    return x*4;
+}
+
+int64 Factorial(int32 x) {
+   int16 y = int16(1);
+   while (y < x) {
+        int4 i = int4(2);
+        y *= int16(call literally_die(i));
+   }
+   int4 z = int4(7);
+   return int64(y);
+}
+
+void main() {
+    int4 x = input;
+    int4 z = int4(-3);
+    int12 a = int12(true);
+    if (a) {
+        int8 u = int8(3);
+        x /= z;
+        x += int4(u);
+    }
+    output call Factorial(int32(x));
+}

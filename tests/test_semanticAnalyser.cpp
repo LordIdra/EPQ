@@ -23,7 +23,7 @@ auto Expect(const IdentifierSymbol x1, const IdentifierSymbol x2) -> bool {
 
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 1") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_1.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_1.txt");
     
     errors::Reset();
     parser::Reset();
@@ -39,12 +39,11 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 1") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
     
-    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 2") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_2.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_2.txt");
     
     errors::Reset();
     parser::Reset();
@@ -64,7 +63,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 2") {
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 3") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_3.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_3.txt");
     
     errors::Reset();
     parser::Reset();
@@ -84,7 +83,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 3") {
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 4") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_4.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_4.txt");
     
     errors::Reset();
     parser::Reset();
@@ -100,11 +99,12 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 4") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::UNKNOWN_IDENTIFIER);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 5") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_5.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_5.txt");
     
     errors::Reset();
     parser::Reset();
@@ -124,7 +124,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 5") {
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 6") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_6.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_6.txt");
     
     errors::Reset();
     parser::Reset();
@@ -144,7 +144,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 6") {
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 7") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_7.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_7.txt");
     
     errors::Reset();
     parser::Reset();
@@ -165,7 +165,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 7") {
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 8") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_8.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_8.txt");
     
     errors::Reset();
     parser::Reset();
@@ -181,11 +181,12 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 8") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 9") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_9.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_9.txt");
     
     errors::Reset();
     parser::Reset();
@@ -199,13 +200,16 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 9") {
     table::GenerateTable();
 
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+    errors::OutputErrors();
+
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 10") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_10.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_10.txt");
     
     errors::Reset();
     parser::Reset();
@@ -221,11 +225,12 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 10") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::REDECLARATION);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser invalid program 11") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_fail_11.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_11.txt");
     
     errors::Reset();
     parser::Reset();
@@ -241,11 +246,12 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 11") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_pass_1.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/pass_1.txt");
     
     errors::Reset();
     parser::Reset();
@@ -280,10 +286,12 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
         REQUIRE(Expect(traverser.LocalLookup("main"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
         traverser.Next();
             traverser.Next();
-                REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT64, 1}));
+                REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT4, 1}));
                 REQUIRE(Expect(traverser.LocalLookup("z"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT4, 2}));
                 REQUIRE(Expect(traverser.LocalLookup("a"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT64, 3}));
                 traverser.Next();
+                    REQUIRE(Expect(traverser.LocalLookup("j"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT12, 4}));
+                    REQUIRE(Expect(traverser.LocalLookup("k"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT4, 5}));
                 traverser.Next();
             traverser.Next();
         traverser.Next();
@@ -295,7 +303,7 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
 }
 
 TEST_CASE("[6|SMA] Semantic Analyser valid program 2") {
-    const vector<string> input = readfile::Read("../../tests/resources/semantic_analysis_pass_2.txt");
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/pass_2.txt");
     
     errors::Reset();
     parser::Reset();

@@ -1,4 +1,4 @@
 void main() {
-    int4 TEST_OUTPUT_AND = 5 and 13;   # 0101 and 1100 -> 0100 -> 4
-    int4 TEST_OUTPUT_OR = 4 or 13;     # 0101 or  1101 -> 1101 -> 13
+    int32 TEST_OUTPUT_AND = 5 and 13;   # 0101 and 1100 -> 0100 -> 4
+    int32 TEST_OUTPUT_OR = 4 or 13;     # 0101 or  1101 -> 1101 -> 13
 }
