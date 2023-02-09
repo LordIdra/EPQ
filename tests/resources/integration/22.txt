@@ -1,0 +1,7 @@
+int4 DoTheThing(int32 x) {
+    return 3 + int4(x);
+}
+
+void main() {
+    int4 TEST_OUTPUT = call DoTheThing(2);
+}

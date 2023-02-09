@@ -1,12 +1,68 @@
+xxxx-xx-xx https://www3.nd.edu/~dthain/compilerbook/compilerbook.pdf
+
+2022-11-16 https://www.cs.iusb.edu/~danav/teach/c311/c311_10_reggr.html
+2022-11-16 https://stackoverflow.com/questions/46807520/how-to-use-finite-automaton-to-implement-a-scanner
+2022-11-16 https://www.tutorialspoint.com/construct-a-finite-automata-for-the-regular-expression-aplusb-aplusb
+2022-11-16 https://cs.stackexchange.com/questions/67329/can-a-finite-automaton-have-more-than-one-regular-expression
+2022-11-16 https://www.geeksforgeeks.org/designing-finite-automata-from-regular-expression-set-1/
+2022-11-16 https://math.stackexchange.com/questions/3694624/how-to-build-a-finite-automata-by-combining-two-regular-expressions
+2022-11-16 https://stackoverflow.com/questions/9655164/regex-ignore-case-sensitivity
+2022-11-16 https://www.tutorialspoint.com/how-to-convert-regular-expression-to-finite-automata
+2022-11-16 https://www.codingninjas.com/codestudio/library/conversion-of-regular-expressions-to-finite-automata
+2022-11-16 https://slideplayer.com/slide/9878358/
+2022-11-16 https://www.cs.iusb.edu/~danav/teach/c311/c311_10_reggr.html
+
+2022-11-21 https://www.javatpoint.com/automata-conversion-from-nfa-to-dfa
+
+2022-11-24 https://www.cs.utep.edu/vladik/cs3350.20a/CFGtoPDA.pdf
+2022-11-24 https://danieltakeshi.github.io/2012/10/29/cs-theory-part-3-context-free-grammars/
+
 2022-11-25 https://bcahelper.blogspot.com/2008/11/write-context-free-grammar-for-if-then.html
 2022-11-25 https://www.cs.auckland.ac.nz/courses/compsci330s1c/lectures/330ChaptersPDF/Chapt2.pdf
 2022-11-25 https://pages.cs.wisc.edu/~fischer/cs536.s08/course.hold/html/NOTES/3.CFG.html
 2022-11-25 http://www.cs.ecu.edu/karl/5220/spr16/Notes/CFG/precedence.html
+
 2022-11-26 http://marvin.cs.uidaho.edu/Handouts/grammar.pdf
 2022-11-26 https://github.com/chao-peng/SIF/issues/5
 2022-11-26 https://stackoverflow.com/questions/17005883/how-does-a-c-like-compiler-interpret-the-if-statement
+
+2022-11-28 https://stackoverflow.com/questions/33446934/how-to-write-a-cfg-with-functions
+2022-11-28 https://groups.google.com/g/llvm-dev/c/_V1ErNXCJEA
+
 2022-11-29 https://blog.reverberate.org/2013/09/ll-and-lr-in-context-why-parsing-tools.html
 2022-11-29 https://stackoverflow.com/questions/5975741/what-is-the-difference-between-ll-and-lr-parsing#:~:text=At%20a%20high%20level%2C%20the,to%2Dright%2C%20leftmost%20derivation.
 2022-11-29 https://softwareengineering.stackexchange.com/questions/419368/what-are-the-practical-advantages-of-lr-parser-over-ll-parser-in-today
+
 2022-11-30 https://www.reddit.com/r/Compilers/comments/z3w68j/comment/ixnxtr1/
+
+2022-12-01 https://tutorialspoint.dev/computer-science/compiler-design/compiler-design-first-in-syntax-analysis
+
+2023-12-21 https://stackoverflow.com/questions/21064599/building-parse-trees-with-shift-reduce-parsing
+
+2022-12-22 https://stackoverflow.com/questions/63961082/convert-nfa-for-email-validation-into-dfa
+2022-12-22 https://www.aleksandrhovhannisyan.com/blog/implementing-a-finite-state-machine-in-cpp/
+
+2022-12-23 https://cs.stackexchange.com/questions/93144/why-is-this-grammar-an-ll2-grammar
+
+2022-12-26 https://www.geeksforgeeks.org/write-c-code-to-determine-if-two-trees-are-identical/
+2022-12-26 https://cs.lmu.edu/~ray/notes/compilerarchitecture/
+
+2022-12-27 https://www.twilio.com/blog/abstract-syntax-trees
+2022-12-27 https://www.codeproject.com/Questions/1232932/How-to-build-an-AST-or-a-CST-from-a-top-down-parse
+2022-12-27 https://stackoverflow.com/questions/62589838/how-to-build-ast-while-ll1-parsing
+2022-12-27 https://stackoverflow.com/questions/54706455/ll-top-down-parser-from-cst-to-ast/54751222#54751222
+2022-12-27 https://stackoverflow.com/questions/62589838/how-to-build-ast-while-ll1-parsing
+2022-12-27 https://stackoverflow.com/questions/42410302/converting-a-parse-tree-to-ast
+2022-12-27 https://softwareengineering.stackexchange.com/questions/387582/generating-an-ast-directly-vs-converting-from-a-cst
+2022-12-27 https://groups.google.com/g/sablecc/c/P027y9pHjDY?pli=1
+
+2022-12-28 https://stackoverflow.com/questions/6161809/optimised-assembly-equality-routine
+
+2022-12-31 https://www.tutorialspoint.com/assembly_programming/assembly_loops.htm
+
+2023-01-11 https://stackoverflow.com/questions/56497139/is-there-a-symbol-table-for-local-variables-stored-within-a-stack-frame
+2023-01-11 https://www.tutorialspoint.com/compiler_design/compiler_design_symbol_table.htm
+2023-01-11 https://www.codingninjas.com/codestudio/library/symbol-tables-in-compiler-design
+2023-01-11 https://stackoverflow.com/questions/56497139/is-there-a-symbol-table-for-local-variables-stored-within-a-stack-frame
+
 2023-01-22 https://stackoverflow.com/questions/1123396/assembly-to-compare-two-numbers

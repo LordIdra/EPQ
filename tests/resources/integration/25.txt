@@ -1,0 +1,8 @@
+void main() {
+    int32 x = 1;
+    int4 y = int4(true);
+    if (y) {
+        x = 3;
+    }
+    int32 TEST_OUTPUT = x;
+}

@@ -61,12 +61,25 @@ auto Compile(const string &file) -> std::pair<vector<string>, unordered_map<int,
     return output;
 }
 
-TEST_CASE("[7|INT] Integration 21") {
-    const auto program = Compile("21");
+TEST_CASE("[7|INT] Integration 25") {
+    const auto program = Compile("25");
     simulator::Run(program, true);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 1);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 6);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Integration 26") {
+    const auto program = Compile("26");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == -2);
+}
+
+TEST_CASE("[7|INT] Integration 27") {
+    const auto program = Compile("27");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }
 
 TEST_CASE("[7|INT] Integration 1") {
@@ -271,4 +284,33 @@ TEST_CASE("[7|INT] Integration 20") {
     simulator::Run(program, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
+}
+
+TEST_CASE("[7|INT] Integration 21") {
+    const auto program = Compile("21");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 1);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 6);
+}
+
+TEST_CASE("[7|INT] Integration 22") {
+    const auto program = Compile("22");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 5);
+}
+
+TEST_CASE("[7|INT] Integration 23") {
+    const auto program = Compile("23");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
+}
+
+TEST_CASE("[7|INT] Integration 24") {
+    const auto program = Compile("24");
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }

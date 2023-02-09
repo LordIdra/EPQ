@@ -1032,12 +1032,12 @@ namespace generator {
 
                             const int r4 = registers::Allocate();
 
+                            assembly::Comment("load " + identifier);
                             assembly::SET(a1, r1);
                             assembly::SET(a2, r2);
                             assembly::SET(a3, r3);
-
-                            assembly::Comment("load " + identifier);
                             assembly::LDA(r1, r2, r3);
+
                             assembly::MOV(registers::MDR1, r4);
 
                             PushRegister(r4);
@@ -1319,6 +1319,22 @@ namespace generator {
                 }
             }
 
+            //{If, generate::If::First},
+            namespace If {
+                
+            }
+
+            //{ElseIf, generate::ElseIf::First},
+            //{Else, generate::Else::First},
+            //{N_If, generate::N_If::First},
+            //{N_ElseIf, generate::N_ElseIf::First},
+            //{N_Else, generate::N_Else::First},
+            //{N_IfBlock, generate::N_IfBlock::First},
+            //{L_If, generate::L_If::First},
+            //{L_ElseIf, generate::L_ElseIf::First},
+            //{L_Else, generate::L_Else::First},
+            //{L_IfBlock, generate::L_IfBlock::First},
+
             namespace Parameter {
                 auto First() -> void {
                     const string identifier = node->children.at(1).token.text;
@@ -1333,13 +1349,13 @@ namespace generator {
                     const int r2 = registers::Allocate();
                     const int r3 = registers::Allocate();
 
+                    assembly::POP();
+
+                    assembly::Comment("store " + identifier);
                     assembly::SET(a1, r1);
                     assembly::SET(a2, r2);
                     assembly::SET(a3, r3);
-
-                    assembly::POP();
-                    assembly::Comment("load " + identifier);
-                    assembly::LDA(r1, r2, r3);
+                    assembly::STA(r1, r2, r3);
 
                     registers::Free(r1);
                     registers::Free(r2);
@@ -1386,12 +1402,18 @@ namespace generator {
                     const string identifier = node->children[1].token.text;
                     const int IHaveNoIdea = 4;
 
+                    assembly::Comment("call " + identifier);
+                    assembly::PPC(IHaveNoIdea);
+                }
+
+                auto Last() -> void {
+                    const string identifier = node->children.at(1).token.text;
+
+                    // Call code
                     const int r1 = registers::Allocate();
                     const int r2 = registers::Allocate();
                     const int r3 = registers::Allocate();
 
-                    assembly::Comment("call " + identifier);
-                    assembly::PPC(IHaveNoIdea);
                     assembly::SET("1" + identifier, r1);
                     assembly::SET("2" + identifier, r2);
                     assembly::SET("3" + identifier, r3);
@@ -1400,10 +1422,18 @@ namespace generator {
                     registers::Free(r1);
                     registers::Free(r2);
                     registers::Free(r3);
-                }
 
-                auto Last() -> void {
-                    
+                    // Return code
+                    const SymbolType returnType = ScopeManager::GetFunctionSymbol(identifier).returnType;
+
+                    if (returnType != TYPE_VOID) {
+                        const int returnRegister = registers::Allocate();
+
+                        assembly::POP();
+                        assembly::MOV(registers::MDR1, returnRegister);
+
+                        PushRegister(returnRegister);
+                    }
                 }
             }
 
@@ -1425,8 +1455,7 @@ namespace generator {
                     assembly::MOV(registers::MDR2, returnAddress1b);
                     assembly::POP();
                     assembly::MOV(registers::MDR1, returnAddress2a);
-                    assembly::POP();
-                    assembly::MOV(registers::MDR1, returnAddress2b);
+                    assembly::MOV(registers::MDR2, returnAddress2b);
 
                     // Push return value to stack
                     const int returnValue = PopRegister();
@@ -1583,6 +1612,8 @@ namespace generator {
             //{L_Switch_1, generate::L_Switch_1::Last},
 
             {FunctionDeclaration, generate::FunctionDeclaration::Last},
+
+            {FunctionCall, generate::FunctionCall::Last},
 
             {ReturnContents, generate::ReturnContents::Last},
             {N_Block_0, generate::N_Block_0::Last},

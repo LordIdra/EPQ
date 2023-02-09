@@ -1,0 +1,10 @@
+void main() {
+    int4 x = int4(0);
+    for (int32 i = 0; i < 5; i++) {
+        if (x > 1) {
+            break;
+        }
+        x++;
+    }
+    int4 TEST_OUTPUT = x;
+}
