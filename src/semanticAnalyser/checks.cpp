@@ -267,10 +267,6 @@ namespace checks {
             actualType = EvaluateTermType(assignmentOperation.children.at(1));
         }
 
-        if (actualType == TYPE_ERROR) {
-            
-        }
-
         if (actualType != expectedType) {
             semanticErrors::MismatchedTermType(node, expectedType, actualType);
         }
@@ -289,12 +285,12 @@ namespace checks {
         const IdentifierSymbol symbol = ScopeManager::LookupScopes(name);
 
         if (symbol.type == TYPE_ERROR) {
-            semanticErrors::UnknownIdentifier(node.children.at(1));
+            semanticErrors::UnknownIdentifier(node);
             return;
         }
 
         else if (symbol.type != TYPE_FUNCTION) {
-            semanticErrors::MismatchedIdentifierType(node, TYPE_FUNCTION, symbol.type);
+            semanticErrors::MismatchedType(node, TYPE_FUNCTION, symbol.type);
             return;
         }
 
@@ -302,7 +298,7 @@ namespace checks {
         if (node.token.type == Value) {
             const SymbolType returnType = ScopeManager::GetFunctionSymbol(name).returnType;
             if (symbol.type != returnType) {
-                semanticErrors::MismatchedIdentifierType(node, returnType, symbol.type);
+                semanticErrors::MismatchedType(node, returnType, symbol.type);
                 return;
             }
         }
@@ -353,7 +349,7 @@ namespace checks {
         // ReturnContents -> NONE
         if (node.children.at(0).token.type == NONE) {
             if (expectedType != TYPE_VOID) {
-                semanticErrors::MismatchedIdentifierType(node, expectedType, TYPE_VOID);
+                semanticErrors::MismatchedType(node, expectedType, TYPE_VOID);
                 return;
             }
         }
