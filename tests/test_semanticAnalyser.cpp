@@ -80,6 +80,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 3") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
 
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::UNKNOWN_IDENTIFIER);
 }
 

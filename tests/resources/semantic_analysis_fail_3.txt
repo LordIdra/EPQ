@@ -1,7 +1,7 @@
 void main() {
     int32 x = true;
     if (x) {
-        int4 y = 50;  # lol
+        int4 y = int4(50);  # lol
     }
     int4 z = y;
 }
