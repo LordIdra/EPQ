@@ -39,6 +39,7 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 1") {
     const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
     semanticAnalyser::Analyse(abstractSyntaxTree);
     
+    errors::OutputErrors();
     REQUIRE(errors::GetErrorCode() == errors::MISMATCHED_TYPE);
 }
 
