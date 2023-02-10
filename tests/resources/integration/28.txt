@@ -3,8 +3,6 @@ void main() {
     int4 y = int4(false);
     if (y) {
         x = 3;
-    } else {
-        x = -2;
     }
     int32 TEST_OUTPUT = x;
 }

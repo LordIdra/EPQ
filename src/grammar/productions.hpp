@@ -212,11 +212,8 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {WHILE, OPEN_PARENTHESIS, LoopCondition, CLOSE_PARENTHESIS, L_Block}}},
 
     /* If-else*/
-    {BranchCondition, {
-        {Term}}},
-
     {If, {
-        {IF, OPEN_PARENTHESIS, BranchCondition, CLOSE_PARENTHESIS}}},
+        {IF, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS}}},
 
     {ElseIf, {
         {ELSEIF, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS}}},

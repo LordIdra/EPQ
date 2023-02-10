@@ -64,8 +64,7 @@ enum NonTerminal {
     ForSequence,
     For,
     While,
-
-    BranchCondition,
+    
     If,
     ElseIf,
     Else,

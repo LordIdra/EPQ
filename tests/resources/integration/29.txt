@@ -1,0 +1,9 @@
+void main() {
+    int4 x = int4(0);
+    for (int32 i = 0; i < 3; i+=1) {
+        for (int32 j = 0; j < 2; j+=1) {
+            x += int4(1);
+        }
+    }
+    int4 TEST_OUTPUT = x;
+}

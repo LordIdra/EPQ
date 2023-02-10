@@ -25,6 +25,7 @@ namespace generator {
         std::stack<int> registerStack;
         std::stack<string> loopStartStack;
         std::stack<string> loopEndStack;
+        std::stack<string> branchEndStack;
         ScopeTraverser scopeTraverser;
 
         bool debugMode;
@@ -1166,12 +1167,12 @@ namespace generator {
                             const int a2 = div(div(address, 256).rem, 16).quot;
                             const int a3 = div(div(address, 256).rem, 16).rem;
 
+                            assembly::Comment("store " + identifier);
                             assembly::SET(a1, r1);
                             assembly::SET(a2, r2);
                             assembly::SET(a3, r3);
 
                             assembly::MOV(r4, registers::MDR1);
-                            assembly::Comment("store " + identifier);
                             assembly::STA(r1, r2, r3);
 
                             registers::Free(r1);
@@ -1321,16 +1322,52 @@ namespace generator {
 
             //{If, generate::If::First},
             namespace If {
-                
+                auto First() -> void {
+                    branchEndStack.push(assembly::GenerateLabel("branchEnd"));
+                }
+
+                auto Last() -> void {
+                    const int r2 = registers::Allocate();
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    const int r1 = PopRegister();
+
+                    assembly::NOT(r1, r1);
+                    assembly::Comment("branch to " + branchEndStack.top());
+                    assembly::SET("1" + branchEndStack.top(), r2);
+                    assembly::SET("2" + branchEndStack.top(), r3);
+                    assembly::SET("3" + branchEndStack.top(), r4);
+                    assembly::BRP(r2, r3, r4, r1);
+
+                    registers::Free(r2);
+                    registers::Free(r3);
+                    registers::Free(r4);
+                }
             }
 
             //{ElseIf, generate::ElseIf::First},
             //{Else, generate::Else::First},
             //{N_If, generate::N_If::First},
+            namespace N_If {
+                auto Last() -> void {
+                    assembly::NOP();
+                    assembly::LabelLatestInstruction(branchEndStack.top());
+
+                    branchEndStack.pop();
+                }
+            }
+
             //{N_ElseIf, generate::N_ElseIf::First},
             //{N_Else, generate::N_Else::First},
             //{N_IfBlock, generate::N_IfBlock::First},
             //{L_If, generate::L_If::First},
+            namespace L_If {
+                auto Last() -> void {
+                    N_If::Last();
+                }
+            }
+
             //{L_ElseIf, generate::L_ElseIf::First},
             //{L_Else, generate::L_Else::First},
             //{L_IfBlock, generate::L_IfBlock::First},
@@ -1525,7 +1562,7 @@ namespace generator {
             {SimpleStatement, generate::SimpleStatement::First},
             {LoopCondition, generate::LoopCondition::First},
 
-            //{If, generate::If::First},
+            {If, generate::If::First},
             //{ElseIf, generate::ElseIf::First},
             //{Else, generate::Else::First},
             //{N_If, generate::N_If::First},
@@ -1589,14 +1626,14 @@ namespace generator {
             {For, generate::For::Last},
             {While, generate::While::Last},
 
-            //{If, generate::If::Last},
+            {If, generate::If::Last},
             //{ElseIf, generate::ElseIf::Last},
             //{Else, generate::Else::Last},
-            //{N_If, generate::N_If::Last},
+            {N_If, generate::N_If::Last},
             //{N_ElseIf, generate::N_ElseIf::Last},
             //{N_Else, generate::N_Else::Last},
             //{N_IfBlock, generate::N_IfBlock::Last},
-            //{L_If, generate::L_If::Last},
+            {L_If, generate::L_If::Last},
             //{L_ElseIf, generate::L_ElseIf::Last},
             //{L_Else, generate::L_Else::Last},
             //{L_IfBlock, generate::L_IfBlock::Last},
@@ -1660,9 +1697,11 @@ namespace generator {
             scopeTraverser.Next();
             RecursiveGenerate(node.children.at(0));
             RecursiveGenerate(node.children.at(1));
-            RecursiveGenerate(node.children.at(2));
+            RecursiveGenerate(node.children.at(2).children.at(0)); // Declaration
+            RecursiveGenerate(node.children.at(2).children.at(2)); // LoopCondition
             RecursiveGenerate(node.children.at(3));
             RecursiveGenerateBlockWithoutEnteringScope(node.children.at(4));
+            RecursiveGenerate(node.children.at(2).children.at(4)); // Assignment
             scopeTraverser.Next();
         }
 

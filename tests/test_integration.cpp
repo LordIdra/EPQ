@@ -74,6 +74,36 @@ TEST_CASE("[7|INT] Integration 27") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }
 
+TEST_CASE("[7|INT] Integration 28") {
+    const auto output = Compile(PATH + "28");
+    const auto program = output.second;
+    auto traverser = output.first;
+
+    simulator::Run(program, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 1);
+}
+
+TEST_CASE("[7|INT] Integration 29") {
+    const auto output = Compile(PATH + "29");
+    const auto program = output.second;
+    auto traverser = output.first;
+
+    simulator::Run(program, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 6);
+}
+
+TEST_CASE("[7|INT] Integration 30") {
+    const auto output = Compile(PATH + "30");
+    const auto program = output.second;
+    auto traverser = output.first;
+
+    simulator::Run(program, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
+}
+
 TEST_CASE("[7|INT] Integration 1") {
     const auto output = Compile(PATH + "1");
     const auto program = output.second;
