@@ -9,6 +9,7 @@ namespace registers {
     const int MDR1 = 0;
     const int MDR2 = 1;
     
+    auto Reset() -> void;
     auto Allocate() -> int;
     auto AllocateMDR1() -> int;
     auto AllocateMDR2() -> int;

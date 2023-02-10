@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <scanner/scanner.hpp>
+#include "util.hpp"
 
 
 
@@ -15,7 +16,7 @@ TEST_CASE("[3|SCN] Invalid program") {
     scanner::Reset();
     scanner::Scan(input);
 
-    REQUIRE(errors::GetErrorCode() == errors::UNRECOGNIZED_SYMBOL);
+   CheckErrorCode(errors::UNRECOGNIZED_SYMBOL);
 };
 
 TEST_CASE("[3|SCN] Valid but nonsensical program") {
@@ -43,7 +44,7 @@ TEST_CASE("[3|SCN] Valid but nonsensical program") {
     scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
     REQUIRE(output.size() == expected.size());
 
     for (int i = 0; i < expected.size(); i++) {
@@ -148,7 +149,7 @@ TEST_CASE("[3|SCN] All tokens") {
     scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
     REQUIRE(output.size() == expected.size());
 
     for (int i = 0; i < output.size(); i++) {
@@ -266,9 +267,7 @@ TEST_CASE("[3|SCN] Valid program") {
     scanner::Reset();
     vector<Token> output = scanner::Scan(input);
 
-    errors::OutputErrors();
-
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
     REQUIRE(output.size() == expected.size());
 
     for (int i = 0; i < output.size(); i++) {

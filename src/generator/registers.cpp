@@ -14,6 +14,13 @@ namespace registers {
         set<int> allocatedRegisters;
     }
 
+    auto Reset() -> void {
+        MDR1reserved = false;
+        MDR2reserved = false;
+        freeRegisters = {2, 3, 4, 5, 6, 7, 8, 9};
+        allocatedRegisters.clear();
+    }
+
     auto Allocate() -> int {
         if (freeRegisters.empty()){
             errors::AddError(errors::NO_FREE_REGISTERS, colors::RED + "No free registers remaining");

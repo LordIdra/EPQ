@@ -9,6 +9,7 @@
 #include "readfile/readfile.hpp"
 #include "scanner/scanner.hpp"
 #include "parser/parser.hpp"
+#include "util.hpp"
 #include "util/errors.hpp"
 
 #include "test_parser_expected_1.hpp"
@@ -34,10 +35,8 @@ TEST_CASE("[5|PRS] Parser valid program 1") {
     table::GenerateTable();
 
     parser::Parse(scannedInput);
-
-    errors::OutputErrors();
     
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
 }
 
 TEST_CASE("[5|PRS] Parser valid program 2") {
@@ -54,9 +53,9 @@ TEST_CASE("[5|PRS] Parser valid program 2") {
 
     parser::Parse(scannedInput);
 
-    errors::OutputErrors();
     
-    REQUIRE(errors::GetErrorCode() == NONE);
+    
+    CheckErrorCode(errors::NONE);
 }
 
 TEST_CASE("[5|PRS] Parser valid program 3") {
@@ -72,10 +71,8 @@ TEST_CASE("[5|PRS] Parser valid program 3") {
     table::GenerateTable();
 
     parser::Parse(scannedInput);
-
-    errors::OutputErrors();
     
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
 }
 
 TEST_CASE("[5|PRS] Parser AST 1") {
@@ -92,9 +89,7 @@ TEST_CASE("[5|PRS] Parser AST 1") {
 
     const parser::TreeNode actual = parser::Parse(scannedInput);
 
-    errors::OutputErrors();
-    
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
     REQUIRE(TreesIdentical(&actual, &expected_1));
 }
 
@@ -111,9 +106,7 @@ TEST_CASE("[5|PRS] Parser AST 2") {
     table::GenerateTable();
 
     const parser::TreeNode actual = parser::Parse(scannedInput);
-
-    errors::OutputErrors();
     
-    REQUIRE(errors::GetErrorCode() == NONE);
+    CheckErrorCode(errors::NONE);
     REQUIRE(TreesIdentical(&actual, &expected_2));
 }

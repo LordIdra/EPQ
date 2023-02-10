@@ -43,6 +43,7 @@ SET(TEST_FILES
     "test_grammar.cpp"
     "test_assembler.cpp"
     "test_integration.cpp"
+    "util.cpp"
     "treesIdentical.cpp"
 )
 

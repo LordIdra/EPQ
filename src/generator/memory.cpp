@@ -11,6 +11,11 @@ namespace memory {
         unordered_map<string, int> allocatedMemory;
     }
 
+    auto Reset() -> void {
+        freeMemory.clear();
+        allocatedMemory.clear();
+    }
+
     auto Allocate(const string &identifier) -> void {
         if (freeMemory.empty()) {
             errors::AddError(errors::OUT_OF_MEMORY, colors::RED + "Out of memory");
