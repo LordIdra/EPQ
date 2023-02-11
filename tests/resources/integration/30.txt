@@ -1,7 +1,6 @@
 void main() {
     int4 x = int4(0);
     for (int32 i = 0; i < 7; i+=1) {
-        #x += int4(1);
         if (i < 4) {
             x -= int4(1);
         }

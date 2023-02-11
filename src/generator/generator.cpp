@@ -26,6 +26,7 @@ namespace generator {
         std::stack<string> loopStartStack;
         std::stack<string> loopEndStack;
         std::stack<string> branchEndStack;
+        std::stack<string> branchFinalStack;
         ScopeTraverser scopeTraverser;
 
         bool debugMode;
@@ -1324,6 +1325,7 @@ namespace generator {
             namespace If {
                 auto First() -> void {
                     branchEndStack.push(assembly::GenerateLabel("branchEnd"));
+                    branchFinalStack.push(assembly::GenerateLabel("branchFinal"));
                 }
 
                 auto Last() -> void {
@@ -1332,6 +1334,19 @@ namespace generator {
                     const int r4 = registers::Allocate();
 
                     const int r1 = PopRegister();
+
+                    // If the IF statement is followed by an ELSE or ELSE IF statement
+                    // const auto ifBlock = node->parent->parent;
+                    // const bool hasElseIf = ifBlock->children.at(1).children.at(0).token.type != NONE;
+                    // const bool hasElse = ifBlock->children.at(2).children.at(0).token.type != NONE;
+
+                    // if (hasElse || hasElseIf) {
+                    //     assembly::Comment("branch to " + branchEndStack.top());
+                    //     assembly::SET("1" + branchEndStack.top(), r2);
+                    //     assembly::SET("2" + branchEndStack.top(), r3);
+                    //     assembly::SET("3" + branchEndStack.top(), r4);
+                    //     assembly::BRP(r2, r3, r4, r1);
+                    // }
 
                     assembly::NOT(r1, r1);
                     assembly::Comment("branch to " + branchEndStack.top());
@@ -1348,29 +1363,71 @@ namespace generator {
 
             //{ElseIf, generate::ElseIf::First},
             //{Else, generate::Else::First},
-            //{N_If, generate::N_If::First},
+
             namespace N_If {
                 auto Last() -> void {
+                    const int r2 = registers::Allocate();
+                    const int r3 = registers::Allocate();
+                    const int r4 = registers::Allocate();
+
+                    assembly::Comment("branch to " + branchFinalStack.top());
+                    assembly::SET("1" + branchFinalStack.top(), r2);
+                    assembly::SET("2" + branchFinalStack.top(), r3);
+                    assembly::SET("3" + branchFinalStack.top(), r4);
+                    assembly::BRA(r2, r3, r4);
+
                     assembly::NOP();
                     assembly::LabelLatestInstruction(branchEndStack.top());
 
                     branchEndStack.pop();
+
+                    registers::Free(r2);
+                    registers::Free(r3);
+                    registers::Free(r4);
                 }
             }
 
-            //{N_ElseIf, generate::N_ElseIf::First},
-            //{N_Else, generate::N_Else::First},
-            //{N_IfBlock, generate::N_IfBlock::First},
-            //{L_If, generate::L_If::First},
+            namespace ElseIf {
+                auto First() -> void {
+                    branchEndStack.push(assembly::GenerateLabel("branchEnd"));
+                }
+
+                auto Last() -> void {
+                    If::Last();
+                }
+            }
+
+            namespace N_ElseIf {
+                auto Last() -> void {
+                    N_If::Last();
+                }
+            }
+
+            namespace N_IfBlock {
+                auto Last() -> void {
+                    assembly::NOP();
+                    assembly::LabelLatestInstruction(branchFinalStack.top());
+                    branchFinalStack.pop();
+                }
+            }
+
             namespace L_If {
                 auto Last() -> void {
                     N_If::Last();
                 }
             }
 
-            //{L_ElseIf, generate::L_ElseIf::First},
-            //{L_Else, generate::L_Else::First},
-            //{L_IfBlock, generate::L_IfBlock::First},
+            namespace L_ElseIf {
+                auto Last() -> void {
+                    N_ElseIf::Last();
+                }
+            }
+
+            namespace L_IfBlock {
+                auto Last() -> void {
+                    N_IfBlock::Last();
+                }
+            }
 
             namespace Parameter {
                 auto First() -> void {
@@ -1563,7 +1620,7 @@ namespace generator {
             {LoopCondition, generate::LoopCondition::First},
 
             {If, generate::If::First},
-            //{ElseIf, generate::ElseIf::First},
+            {ElseIf, generate::ElseIf::First},
             //{Else, generate::Else::First},
             //{N_If, generate::N_If::First},
             //{N_ElseIf, generate::N_ElseIf::First},
@@ -1627,16 +1684,16 @@ namespace generator {
             {While, generate::While::Last},
 
             {If, generate::If::Last},
-            //{ElseIf, generate::ElseIf::Last},
-            //{Else, generate::Else::Last},
+            {ElseIf, generate::ElseIf::Last},
+            // {Else, generate::Else::Last},
             {N_If, generate::N_If::Last},
-            //{N_ElseIf, generate::N_ElseIf::Last},
-            //{N_Else, generate::N_Else::Last},
-            //{N_IfBlock, generate::N_IfBlock::Last},
+            {N_ElseIf, generate::N_ElseIf::Last},
+            // {N_Else, generate::N_Else::Last},
+            {N_IfBlock, generate::N_IfBlock::Last},
             {L_If, generate::L_If::Last},
-            //{L_ElseIf, generate::L_ElseIf::Last},
+            {L_ElseIf, generate::L_ElseIf::Last},
             //{L_Else, generate::L_Else::Last},
-            //{L_IfBlock, generate::L_IfBlock::Last},
+            {L_IfBlock, generate::L_IfBlock::Last},
 
             //{N_Case_0, generate::N_Case_0::Last},
             //{N_Case_1, generate::N_Case_1::Last},

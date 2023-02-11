@@ -155,7 +155,7 @@ namespace parser {
                 colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
                 colors::RED + " Invalid Syntax: invalid symbol '"+ colors::CYAN + currentTokenText +
                 colors::RED + "' of type " + colors::CYAN + symbolNames.at(currentTokenType) +
-                colors::RED + " with stack " + colors::CYAN + FormatStack(stack));
+                colors::RED + " with stack: " + colors::CYAN + FormatStack(stack));
             return root;
         }
 

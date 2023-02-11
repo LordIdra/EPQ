@@ -4,7 +4,7 @@ void main() {
     if (y) {
         x = 3;
     } else {
-        x = -2
+        x = -2;
     }
     int32 TEST_OUTPUT = x;
 }

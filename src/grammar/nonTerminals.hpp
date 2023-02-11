@@ -71,11 +71,13 @@ enum NonTerminal {
 
     N_If,
     N_ElseIf,
+    N_ElseIfBlock,
     N_Else,
     N_IfBlock,
 
     L_If,
     L_ElseIf,
+    L_ElseIfBlock,
     L_Else,
     L_IfBlock,
 

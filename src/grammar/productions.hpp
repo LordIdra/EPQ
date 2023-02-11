@@ -225,29 +225,35 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {If, N_Block}}},
 
     {N_ElseIf, {
-        {NONE},
-        {ElseIf, N_Block, N_ElseIf}}},
+        {ElseIf, N_Block}}},
 
     {N_Else, {
         {NONE},
         {Else, N_Block}}},
+    
+    {N_ElseIfBlock, {
+        {NONE},
+        {N_ElseIf, N_ElseIfBlock}}},
 
     {N_IfBlock, {
-        {N_If, N_ElseIf, N_Else}}},
+        {N_If, N_ElseIfBlock, N_Else}}},
 
     {L_If, {
         {If, L_Block}}},
 
     {L_ElseIf, {
-        {NONE},
-        {ElseIf, L_Block, L_ElseIf}}},
+        {ElseIf, L_Block}}},
 
     {L_Else, {
         {NONE},
         {Else, L_Block}}},
+
+    {L_ElseIfBlock, {
+        {NONE},
+        {L_ElseIf, L_ElseIfBlock}}},
     
     {L_IfBlock, {
-        {L_If, L_ElseIf, L_Else}}},
+        {L_If, L_ElseIfBlock, L_Else}}},
 
 
     /* Case-switch */
