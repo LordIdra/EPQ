@@ -14,6 +14,6 @@ public:
     ScopeTraverser(Scope &root);
 
     auto Next() -> void;
-    auto LocalLookup(const string identifier) -> IdentifierSymbol;
-    auto GlobalLookup(const string identifier) -> IdentifierSymbol;
+    auto LocalLookup(const string &identifier) -> IdentifierSymbol;
+    auto GlobalLookup(const string &identifier) -> IdentifierSymbol;
 };

@@ -5,14 +5,13 @@
 #include <iostream>
 #include <unordered_map>
 
-// IMPORTANT next thing to do is disable debug messages and replace the queue system because it's getting ridiculous
 
 
 Scope::Scope() : parent(nullptr) {}
 Scope::Scope(Scope* parent) : parent(parent) {}
 
 auto Scope::EnterScope() -> Scope* {
-    children.push_back(Scope(this));
+    children.emplace_back(Scope(this));
     // This iterator should point to first element while tree is being constructed
     currentScope = children.begin();
     return &children.back();

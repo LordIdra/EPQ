@@ -106,7 +106,7 @@ namespace table {
         tableGenerated = true;
     }
 
-    auto GetTable() -> unordered_map<int, unordered_map<int, ProductionPair>> {
+    auto GetTable() -> const unordered_map<int, unordered_map<int, ProductionPair>>& {
         return table;
     }
 }

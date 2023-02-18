@@ -11,7 +11,5 @@ namespace registers {
     
     auto Reset() -> void;
     auto Allocate() -> int;
-    auto AllocateMDR1() -> int;
-    auto AllocateMDR2() -> int;
     auto Free(const int r) -> void;
 }

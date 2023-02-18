@@ -10,8 +10,8 @@ namespace assembly {
     auto GenerateLabel(const string &identifier) -> string;
     auto LabelLatestInstruction(const string &label) -> void;
     auto ResolveLabels() -> void;
-    auto GetProgram() -> vector<string>;
-    auto GetComments() -> unordered_map<int, string>;
+    auto GetProgram() -> const vector<string>&;
+    auto GetComments() -> const unordered_map<int, string>&;
 
     auto NOP() -> void;
 

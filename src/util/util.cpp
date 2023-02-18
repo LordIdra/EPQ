@@ -72,19 +72,22 @@ auto Contains(const vector<int> &container, const int target) -> bool {
 auto FormatValue(int x) -> string {
     if (x <= 9) {
         return "0" + std::to_string(x);
-    } else {
-        return std::to_string(x);
     }
+    return std::to_string(x);
 }
 
 auto FormatAddress(int x) -> string {
     if (x <= 9) {
         return "000" + std::to_string(x);
-    } else if (x <= 99) {
-        return "00" + std::to_string(x);
-    } else if (x <= 999) {
-        return "0" + std::to_string(x);
-    } else {
-        return std::to_string(x);
     }
+
+    if (x <= 99) {
+        return "00" + std::to_string(x);
+    }
+
+    if (x <= 999) {
+        return "0" + std::to_string(x);
+    }
+    
+    return std::to_string(x);
 }

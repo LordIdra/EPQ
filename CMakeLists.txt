@@ -12,6 +12,7 @@ SET(SOURCE_FILES
     "util/util.cpp" 
     "util/errors.cpp" 
     "readfile/readfile.cpp"
+    "scanner/stateGenerator.cpp"
     "scanner/scanner.cpp"
     "parser/parser.cpp"
     "parser/sets/setUtil.cpp"
@@ -31,6 +32,7 @@ SET(SOURCE_FILES
     "generator/memory.cpp"
     "generator/registers.cpp"
     "simulator/simulator.cpp"
+    "compile.cpp"
 )
 
 # Test files

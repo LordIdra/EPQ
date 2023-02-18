@@ -20,6 +20,8 @@ namespace colors {
 namespace errors {
     enum ErrorCode {
         NONE,
+        
+        FILE_NOT_FOUND,
 
         EXPECTED_TERMINAL,
 

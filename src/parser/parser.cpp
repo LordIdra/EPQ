@@ -2,6 +2,8 @@
 #include "grammar/productions.hpp"
 #include "grammar/symbolNames.hpp"
 #include "grammar/terminals.hpp"
+#include "parser/sets/first.hpp"
+#include "parser/sets/follow.hpp"
 #include "parser/sets/setUtil.hpp"
 #include "parser/table.hpp"
 #include "util/errors.hpp"
@@ -20,6 +22,34 @@ namespace parser {
         int currentLine = 1;
         int currentTokenIndex = 0;
 
+        auto FormatStack(std::stack<int> stack) -> string {
+            string str;
+            while (!stack.empty()) {
+                str += symbolNames.at(stack.top()) + " ";
+                stack.pop();
+            }
+            return str;
+        }
+
+        auto ExpectedTerminal(const int currentTokenType) -> void {
+            errors::AddError(errors::EXPECTED_TERMINAL,
+                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
+                colors::RED + " Expected " + colors::CYAN + symbolNames.at(stack.top()) +
+                colors::RED + " but got " + colors::CYAN + symbolNames.at(currentTokenType));
+        }
+
+        auto InvalidSymbol(const int currentTokenType) -> void {
+            errors::AddError(errors::INVALID_SYNTAX,
+                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
+                colors::RED + " Invalid symbol '"+ colors::CYAN + symbolNames.at(currentTokenType) + colors::RED + "'");
+        }
+
+        auto UnexpectedEndOfProgram() -> void {
+            errors::AddError(errors::EXPECTED_TERMINAL,
+                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
+                colors::RED + " Unexpected end of program ");
+        }
+
         auto IndexOfCurrentNode() -> int {
             int i = 0;
             while (currentNode != &(currentNode->parent->children.at(i))) {
@@ -32,15 +62,6 @@ namespace parser {
             return currentNode == &(currentNode->parent->children.at(currentNode->parent->children.size()-1));
         }
 
-        auto FormatStack(std::stack<int> stack) -> string {
-            string str;
-            while (!stack.empty()) {
-                str += symbolNames.at(stack.top()) + " ";
-                stack.pop();
-            }
-            return str;
-        }
-
         auto HandleNewline() -> void {
             currentLine++;
             currentTokenIndex++;
@@ -49,14 +70,9 @@ namespace parser {
         auto HandleTerminal(const int currentTokenType, const string &currentTokenText) -> bool {
             // Returns 'true' if an error occurred
 
-            //std::cout << colors::BOLD_GREEN << symbolNames.at(currentTokenType) << colors::WHITE << "\n";
-
             // Set current tree node (representing the current terminal) to have currentTokenText
             if (setUtil::IsSymbolTerminal(stack.top())) {
                 currentNode->token.text = currentTokenText;
-                //std::cout << colors::AMBER << symbolNames.at(currentTokenType) << " " << currentTokenText << "\n";
-                //std::cout << colors::AMBER << symbolNames.at(currentNode->token.type) << " " << currentNode->token.text << "\n";
-                //std::cout << "\n";
             }
 
             // Backtrack up the tree until we're one node below the node whose children we have not fully traversed
@@ -72,20 +88,15 @@ namespace parser {
                 return false;
             }
 
-            // If top of stack matches the current terminal
-            if (stack.top() == currentTokenType) {
-                stack.pop();
-                currentTokenIndex++;
-                return false;
+            // If top of stack does not match the current terminal
+            if (stack.top() != currentTokenType) {
+                return true;
             }
 
-            // If top of stack  does not match the current terminal
-            errors::AddError(errors::EXPECTED_TERMINAL,
-                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
-                colors::RED + " Expected Terminal: got " + colors::CYAN + symbolNames.at(currentTokenType) +
-                colors::RED + " but expected " + colors::CYAN + symbolNames.at(stack.top()) +
-                colors::RED + " with stack " + colors::CYAN + FormatStack(stack) + colors::WHITE);
-            return true;
+            // Top of stack matches the current terminal
+            stack.pop();
+            currentTokenIndex++;
+            return false;
         }
 
         auto HandleNonTerminal(const int currentTokenType) -> bool {
@@ -131,8 +142,6 @@ namespace parser {
             const string currentTokenText = tokens[currentTokenIndex].text;
             const int currentTokenType = tokens[currentTokenIndex].type;
 
-            //std::cout << FormatStack(stack) << "\n";
-
             if (currentTokenType == NEWLINE) {
                 HandleNewline();
                 continue;
@@ -140,23 +149,21 @@ namespace parser {
 
             if (setUtil::IsSymbolTerminal(stack.top())) {
                 if (HandleTerminal(currentTokenType, currentTokenText)) {
+                    ExpectedTerminal(currentTokenType);
                     return root;
                 }
-                continue;
             }
 
             // Top of stack is a non-terminal
-            if (!HandleNonTerminal(currentTokenType)) {
-                continue;
+            else if (HandleNonTerminal(currentTokenType)) {
+                // There is no applicable rule at the corresponding slot in the table
+                InvalidSymbol(currentTokenType);
+                return root;
             }
+        }
 
-            // If there is no applicable rule at the corresponding slot in the table
-            errors::AddError(errors::INVALID_SYNTAX,
-                colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
-                colors::RED + " Invalid Syntax: invalid symbol '"+ colors::CYAN + currentTokenText +
-                colors::RED + "' of type " + colors::CYAN + symbolNames.at(currentTokenType) +
-                colors::RED + " with stack: " + colors::CYAN + FormatStack(stack));
-            return root;
+        if (stack.size() != 1) {
+            UnexpectedEndOfProgram();
         }
 
         return root;

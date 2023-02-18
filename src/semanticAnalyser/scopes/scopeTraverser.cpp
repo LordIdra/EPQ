@@ -22,7 +22,7 @@ auto ScopeTraverser::Next() -> void {
     }
 }
 
-auto ScopeTraverser::LocalLookup(const string identifier) -> IdentifierSymbol {
+auto ScopeTraverser::LocalLookup(const string &identifier) -> IdentifierSymbol {
     Scope* tempScope = currentScope;
     while (true) {
         if (tempScope->ContainsIdentifier(identifier)) {
@@ -37,7 +37,7 @@ auto ScopeTraverser::LocalLookup(const string identifier) -> IdentifierSymbol {
     return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
 }
 
-auto ScopeTraverser::GlobalLookup(const string identifier) -> IdentifierSymbol {
+auto ScopeTraverser::GlobalLookup(const string &identifier) -> IdentifierSymbol {
     Scope* tempScope = root;
     tempScope->ResetTraversalPointer();
     while (true) {
@@ -48,11 +48,6 @@ auto ScopeTraverser::GlobalLookup(const string identifier) -> IdentifierSymbol {
 
         // Traverse children if they have not all been traversed
         if (!tempScope->HaveAllChildrenBeenTraversed()) {
-            //std::cout << identifier << " | ";
-            //for (auto x : tempScope->GetIdentifiers()) {
-            //    std::cout << x.first << " ";
-            //}
-            //std::cout << "\n";
             tempScope = tempScope->GetNextChild();
             tempScope->ResetTraversalPointer();
         
@@ -60,7 +55,7 @@ auto ScopeTraverser::GlobalLookup(const string identifier) -> IdentifierSymbol {
         } else if (tempScope->GetParent() != nullptr) {
             tempScope = tempScope->GetParent();
 
-        // All nodes travesed
+        // All nodes traversed
         } else {
             break;
         }

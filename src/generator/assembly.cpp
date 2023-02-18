@@ -78,11 +78,11 @@ namespace assembly {
         }
     }
 
-    auto GetProgram() -> vector<string> {
+    auto GetProgram() -> const vector<string>& {
         return program;
     }
 
-    auto GetComments() -> unordered_map<int, string> {
+    auto GetComments() -> const unordered_map<int, string>& {
         return comments;
     }
     

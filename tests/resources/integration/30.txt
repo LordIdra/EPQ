@@ -1,8 +1,8 @@
 void main() {
-    int4 x = int4(0);
-    for (int32 i = 0; i < 7; i+=1) {
-        if (i < 4) {
-            x -= int4(1);
+    int4 x = 0;
+    for int4 i = 0; i < 7; i++ {
+        if i < 4 {
+            x -= 1;
         }
     }
     int4 TEST_OUTPUT = x;

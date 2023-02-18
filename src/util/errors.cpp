@@ -8,22 +8,12 @@ namespace errors {
 
     namespace {
         int errorCode = NONE;
-        bool stopCompilation = false;
         vector<string> errors;
     }
 
     auto Reset() -> void {
         errorCode = NONE;
-        stopCompilation = false;
         errors.clear();
-    }
-
-    auto StopCompilation() -> void {
-        stopCompilation = true;
-    }
-
-    auto ShouldCompilationBeStopped() -> bool {
-        return stopCompilation;
     }
 
     auto GetErrorCode() -> int {
@@ -43,7 +33,7 @@ namespace errors {
         
         std::cout << colors::BOLD_RED << std::to_string(errors.size()) << " compiler errors" << colors::WHITE << "\n";
         for (const string &error : errors) {
-            std::cout << error << "\n";
+            std::cout << error << colors::WHITE << "\n";
         }
     }
 }

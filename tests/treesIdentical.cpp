@@ -4,7 +4,6 @@
 
 
 auto TreesIdentical(const parser::TreeNode *node1, const parser::TreeNode *node2) -> bool {
-    //std::cout << symbolNames.at(node1->token.type) << " " << symbolNames.at(node2->token.type) << "\n";
     if (node1->children.empty() && node2->children.empty()) {
         if (node1->token.type == NONE) {
             return true;
@@ -17,7 +16,9 @@ auto TreesIdentical(const parser::TreeNode *node1, const parser::TreeNode *node2
                          colors::WHITE << "\n";
         }
         return contentsIdentical;
-    } else if (node1->children.size() == node2->children.size()) {
+    }
+    
+    if (node1->children.size() == node2->children.size()) {
         bool childrenIdentical = true;
         for (int i = 0; i < node1->children.size(); i++) {
             if (!TreesIdentical(&(node1->children[i]), &(node2->children[i]))) {

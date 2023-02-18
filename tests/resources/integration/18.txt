@@ -1,11 +1,11 @@
 void main() {
-    int4 x = int4(0);
-    while (x < 3) {
-        x += int4(1);
+    int4 x = 0;
+    while x < 3 {
+        x += 1;
     }
-    int4 i = int4(0);
-    while (i < 6) {
-        i += int4(1);
+    int4 i = 0;
+    while i < 6 {
+        i += 1;
     }
     int4 TEST_OUTPUT_1 = x;
     int4 TEST_OUTPUT_2 = i;

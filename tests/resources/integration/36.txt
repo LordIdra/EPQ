@@ -1,0 +1,12 @@
+void main() {
+    int4 x = 0;
+
+    for int4 i = 0; i < 6; i++ {
+        if i == 3 {
+            break;
+        }
+        x += 1;
+    }
+
+    int4 TEST_OUTPUT = x;
+}

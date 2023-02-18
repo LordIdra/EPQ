@@ -18,7 +18,7 @@ namespace memory {
 
     auto Allocate(const string &identifier) -> void {
         if (freeMemory.empty()) {
-            errors::AddError(errors::OUT_OF_MEMORY, colors::RED + "Out of memory");
+            errors::AddError(errors::OUT_OF_MEMORY, colors::RED + "No remaining free memory addresses");
             return;
         }
 

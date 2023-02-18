@@ -7,6 +7,6 @@
 
 namespace simulator {
     auto Reset() -> void;
-    auto Run(std::pair<vector<string>, std::unordered_map<int, string>> input, const bool debugMode) -> void;
+    auto Run(const vector<string> &program, const unordered_map<int, string> &comments, const bool debugMode) -> void;
     auto GetData(const int x) -> std::pair<int, int>;
 }

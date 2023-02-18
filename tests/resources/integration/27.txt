@@ -1,10 +1,10 @@
 void main() {
-    int32 x = 1;
-    int4 y = int4(true);
-    if (y) {
+    int4 x = 1;
+    int4 y = true;
+    if y {
         x = 3;
     } else {
         x = -2;
     }
-    int32 TEST_OUTPUT = x;
+    int4 TEST_OUTPUT = x;
 }

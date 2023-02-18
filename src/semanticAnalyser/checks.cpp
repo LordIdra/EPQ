@@ -4,6 +4,7 @@
 #include "semanticAnalyser/scopes/scope.hpp"
 #include "semanticAnalyser/scopes/scopeManager.hpp"
 #include "semanticErrors.hpp"
+#include <iostream>
 
 
 
@@ -22,22 +23,21 @@ namespace checks {
             }
 
             // Variable -> Dereference
-            else if (node.children.at(0).token.type == Dereference) {
+            if (node.children.at(0).token.type == Dereference) {
                 return TYPE_INT4;
             }
 
             // Variable -> IDENTIFIER IdentifierSuffix
-            else {
-                const string identifier = node.children.at(0).token.text;
-                SymbolType type = ScopeManager::LookupScopes(identifier).type;
-                if (type == TYPE_ERROR) {
-                    semanticErrors::UnknownIdentifier(node.children.at(0));
-                }
-                return type;
+            const string identifier = node.children.at(0).token.text;
+            SymbolType type = ScopeManager::LookupScopes(identifier).type;
+            if (type == TYPE_ERROR) {
+                semanticErrors::UnknownIdentifier(node.children.at(0));
             }
+            return type;
         }
 
         auto EvaluateFunctionCallType(const parser::TreeNode &node) -> SymbolType {
+            // FunctionCall -> CALL IDENTIFIER ArgumentList_1
             const string identifier = node.children.at(1).token.text;
             const SymbolType returnType = ScopeManager::GetFunctionSymbol(identifier).returnType;
             if (returnType == TYPE_ERROR) {
@@ -49,12 +49,16 @@ namespace checks {
         auto EvaluateValueType(const parser::TreeNode &node) -> SymbolType {
             const auto child = node.children.at(0);
             switch (child.token.type) {
+            
+            // Value -> Variable
             case Variable:
                 return EvaluateVariableType(child);
 
+            // Value -> Literal
             case Literal:
-                return TYPE_INT32;
+                return TYPE_INT4;
 
+            // Value -> FunctionCall
             case FunctionCall:
                 return EvaluateFunctionCallType(child);
 
@@ -245,6 +249,16 @@ namespace checks {
             return;
         }
 
+        // AssignmentOperation -> INCREMENT
+        if (assignmentOperation.children.at(0).token.type == INCREMENT) {
+            return;
+        }
+
+        // AssignmentOperation -> DECREMENT
+        if (assignmentOperation.children.at(0).token.type == DECREMENT) {
+            return;
+        }
+
         // AssignmentOperation -> ASSIGN InputTerm
         if (assignmentOperation.children.at(0).token.type == ASSIGN) {
 
@@ -265,10 +279,6 @@ namespace checks {
         // AssignmentOperation -> (Everything Else) Term
         else {
             actualType = EvaluateTermType(assignmentOperation.children.at(1));
-        }
-
-        if (actualType == TYPE_ERROR) {
-            
         }
 
         if (actualType != expectedType) {
@@ -293,7 +303,7 @@ namespace checks {
             return;
         }
 
-        else if (symbol.type != TYPE_FUNCTION) {
+        if (symbol.type != TYPE_FUNCTION) {
             semanticErrors::MismatchedIdentifierType(node, TYPE_FUNCTION, symbol.type);
             return;
         }
@@ -365,7 +375,5 @@ namespace checks {
                 return;
             }
         }
-
-        return;
     }
 }

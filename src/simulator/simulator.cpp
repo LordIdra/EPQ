@@ -21,9 +21,6 @@ namespace simulator {
         array<std::pair<int, int>, MEMORY_SIZE> memory;
         std::stack<std::pair<int, int>> stack;
 
-        vector<string> instructions;
-        std::unordered_map<int, string> comments;
-
         auto GetArg1(const string &instruction) -> int {
             return std::stoi(instruction.substr(4, 2));
         }
@@ -196,7 +193,7 @@ namespace simulator {
             return instruction;
         }
 
-        auto DebugCycle(const string &instruction) -> void {
+        auto DebugCycle(const unordered_map<int, string> &comments, const string &instruction) -> void {
             if (comments.find(programCounter) != comments.end()) {
                 std::cout << colors::WHITE << comments.at(programCounter) << "\n";
             }
@@ -226,24 +223,19 @@ namespace simulator {
             stack.pop();
         }
 
-        instructions.clear();
-        comments.clear();
-
         programCounter = 0;
         carry1 = 0;
         carry2 = 0;
     }
 
-    auto Run(std::pair<vector<string>, std::unordered_map<int, string>> input, const bool debugMode) -> void {
-        instructions = input.first;
-        comments = input.second;
+    auto Run(const vector<string> &program, const unordered_map<int, string> &comments, const bool debugMode) -> void {
 
         while (programCounter != FINAL_INSTRUCTION) {
-            const string instruction = instructions.at(programCounter);
+            const string instruction = program.at(programCounter);
             const string opcode = instruction.substr(0, 3);
 
             if (debugMode) {
-                DebugCycle(instruction);
+                DebugCycle(comments, instruction);
             }
 
             if      (opcode == "NOP") { NOP(instruction); }

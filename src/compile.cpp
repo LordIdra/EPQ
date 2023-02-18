@@ -7,6 +7,7 @@
 #include "parser/table.hpp"
 #include "readfile/readfile.hpp"
 #include "scanner/scanner.hpp"
+#include "scanner/stateGenerator.hpp"
 #include "semanticAnalyser/scopes/scopeTraverser.hpp"
 #include "semanticAnalyser/semanticAnalyser.hpp"
 #include "simulator/simulator.hpp"
@@ -20,57 +21,67 @@
 
 
 
-std::pair<ScopeTraverser, std::pair<vector<string>, unordered_map<int, string>>> compileError = 
-    std::make_pair(ScopeTraverser(), std::make_pair(vector<string>(), unordered_map<int, string>()));
+namespace compile {
+    namespace {
+        ScopeTraverser traverser;
 
+        auto Reset() -> void {
+            errors::Reset();
+            scanner::Reset();
+            parser::Reset();
+            semanticAnalyser::Reset();
+            assembly::Reset();
+            memory::Reset();
+            registers::Reset();
+            generator::Reset();
+            simulator::Reset();
+        }
 
+        auto GenerateSets() -> void {
+            first::ComputeFirstSet();
+            follow::ComputeFollowSet();
+            table::GenerateTable();
+        }
 
-auto Reset() -> void {
-    errors::Reset();
-    scanner::Reset();
-    parser::Reset();
-    semanticAnalyser::Reset();
-    assembly::Reset();
-    memory::Reset();
-    registers::Reset();
-    generator::Reset();
-    simulator::Reset();
-}
-
-auto GenerateSets() -> void {
-    first::ComputeFirstSet();
-    follow::ComputeFollowSet();
-    table::GenerateTable();
-}
-
-auto CheckErrors() -> bool {
-    if (errors::GetErrorCode() != errors::NONE) {
-        errors::OutputErrors();
-        return true;
+        auto CheckErrors() -> void {
+            if (errors::GetErrorCode() != errors::NONE) {
+                errors::OutputErrors();
+                throw;
+            }
+        }
     }
-    return false;
-}
 
-auto Compile(const string &file) -> std::pair<ScopeTraverser, std::pair<vector<string>, unordered_map<int, string>>> {
-    Reset();
+    auto Compile(const string &file) -> void {
+        Reset();
 
-    const vector<string> input = readfile::Read(file + ".txt");
-    if (CheckErrors()) { return compileError; }
+        const vector<string> &input = readfile::Read(file + ".txt");
+        CheckErrors();
 
-    const vector<Token> scannedInput = scanner::Scan(input);
-    if (CheckErrors()) { return compileError; }
+        const vector<Token> &scannedInput = scanner::Scan(input);
+        CheckErrors();
 
-    GenerateSets();
+        GenerateSets();
 
-    parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
-    if (CheckErrors()) { return compileError; }
+        parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+        CheckErrors();
 
-    Scope& scope = semanticAnalyser::Analyse(abstractSyntaxTree);
-    if (CheckErrors()) { return compileError; }
+        Scope& scope = semanticAnalyser::Analyse(abstractSyntaxTree);
+        CheckErrors();
 
-    ScopeTraverser traverser = ScopeTraverser(scope);
-    auto output = generator::Generate(abstractSyntaxTree, scope, false);
-    if (CheckErrors()) { return compileError; }
+        traverser = ScopeTraverser(scope);
+        generator::Generate(abstractSyntaxTree, scope, false);
+        CheckErrors();
+    }
 
-    return std::make_pair<>(traverser, output);
+    auto GetTraverser() -> ScopeTraverser& {
+        return traverser;
+    }
+
+    auto GetProgram() -> const vector<string>& {
+        return generator::GetProgram();
+    }
+
+    auto GetComments() -> const unordered_map<int, string>& {
+        return generator::GetComments();
+    }
 }

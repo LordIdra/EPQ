@@ -16,7 +16,7 @@
 #include <parser/parser.hpp>
 #include <semanticAnalyser/semanticAnalyser.hpp>
 #include <generator/generator.hpp>
-#include "compile.cpp"
+#include "compile.hpp"
 
 
 
@@ -25,31 +25,34 @@ const string PATH = "../../tests/resources/integration/";
 
 
 TEST_CASE("[7|INT] Integration 1") {
-    const auto output = Compile(PATH + "1");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "1");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 5);
 }
 
 TEST_CASE("[7|INT] Integration 2") {
-    const auto output = Compile(PATH + "2");
-    auto traverser = output.first;
-    const auto program = output.second;
+    compile::Compile(PATH + "2");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 8);
 }
 
 TEST_CASE("[7|INT] Integration 3") {
-    const auto output = Compile(PATH + "3");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "3");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 4);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 10);
@@ -62,22 +65,24 @@ TEST_CASE("[7|INT] Integration 3") {
 }
 
 TEST_CASE("[7|INT] Integration 4") {
-    const auto output = Compile(PATH + "4");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "4");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_AND").address).first == 5);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_OR").address).first == 13);
 }
 
 TEST_CASE("[7|INT] Integration 5") {
-    const auto output = Compile(PATH + "5");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "5");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
@@ -90,11 +95,12 @@ TEST_CASE("[7|INT] Integration 5") {
 }
 
 TEST_CASE("[7|INT] Integration 6") {
-    const auto output = Compile(PATH + "6");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "6");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
@@ -107,11 +113,12 @@ TEST_CASE("[7|INT] Integration 6") {
 }
 
 TEST_CASE("[7|INT] Integration 7") {
-    const auto output = Compile(PATH + "7");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "7");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
@@ -125,11 +132,12 @@ TEST_CASE("[7|INT] Integration 7") {
 }
 
 TEST_CASE("[7|INT] Integration 8") {
-    const auto output = Compile(PATH + "8");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "8");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
@@ -143,11 +151,12 @@ TEST_CASE("[7|INT] Integration 8") {
 }
 
 TEST_CASE("[7|INT] Integration 9") {
-    const auto output = Compile(PATH + "9");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "9");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
@@ -161,11 +170,12 @@ TEST_CASE("[7|INT] Integration 9") {
 }
 
 TEST_CASE("[7|INT] Integration 10") {
-    const auto output = Compile(PATH + "10");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "10");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
@@ -179,41 +189,45 @@ TEST_CASE("[7|INT] Integration 10") {
 }
 
 TEST_CASE("[7|INT] Integration 11") {
-    const auto output = Compile(PATH + "11");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "11");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }
 
 TEST_CASE("[7|INT] Integration 12") {
-    const auto output = Compile(PATH + "12");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "12");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 15);
 }
 
 TEST_CASE("[7|INT] Integration 13") {
-    const auto output = Compile(PATH + "13");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "13");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
 }
 
 TEST_CASE("[7|INT] Integration 14") {
-    const auto output = Compile(PATH + "14");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "14");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 2);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 4);
@@ -222,21 +236,23 @@ TEST_CASE("[7|INT] Integration 14") {
 }
 
 TEST_CASE("[7|INT] Integration 15") {
-    const auto output = Compile(PATH + "15");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "15");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
 }
 
 TEST_CASE("[7|INT] Integration 16") {
-    const auto output = Compile(PATH + "16");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "16");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 0);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 0);
@@ -247,184 +263,224 @@ TEST_CASE("[7|INT] Integration 16") {
 }
 
 TEST_CASE("[7|INT] Integration 17") {
-    const auto output = Compile(PATH + "17");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "17");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 1);
 }
 
 TEST_CASE("[7|INT] Integration 18") {
-    const auto output = Compile(PATH + "18");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "18");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 3);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 6);
 }
 
 TEST_CASE("[7|INT] Integration 19") {
-    const auto output = Compile(PATH + "19");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "19");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 6);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 7);
 }
 
 TEST_CASE("[7|INT] Integration 20") {
-    const auto output = Compile(PATH + "20");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "20");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
 }
 
 TEST_CASE("[7|INT] Integration 21") {
-    const auto output = Compile(PATH + "21");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "21");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 1);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 6);
 }
 
 TEST_CASE("[7|INT] Integration 22") {
-    const auto output = Compile(PATH + "22");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "22");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 5);
 }
 
 TEST_CASE("[7|INT] Integration 23") {
-    const auto output = Compile(PATH + "23");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "23");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
 }
 
 TEST_CASE("[7|INT] Integration 24") {
-    const auto output = Compile(PATH + "24");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "24");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, true);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
 }
 
 TEST_CASE("[7|INT] Integration 25") {
-    const auto output = Compile(PATH + "25");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "25");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }
 
 TEST_CASE("[7|INT] Integration 26") {
-    const auto output = Compile(PATH + "26");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "26");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 14);
 }
 
 TEST_CASE("[7|INT] Integration 27") {
-    const auto output = Compile(PATH + "27");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "27");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, true);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }
 
 TEST_CASE("[7|INT] Integration 28") {
-    const auto output = Compile(PATH + "28");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "28");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 1);
 }
 
 TEST_CASE("[7|INT] Integration 29") {
-    const auto output = Compile(PATH + "29");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "29");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 6);
 }
 
 TEST_CASE("[7|INT] Integration 30") {
-    const auto output = Compile(PATH + "30");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "30");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
 }
 
 TEST_CASE("[7|INT] Integration 31") {
-    const auto output = Compile(PATH + "31");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "31");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 4);
 }
 
 TEST_CASE("[7|INT] Integration 32") {
-    const auto output = Compile(PATH + "32");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "32");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 14);
 }
 
 TEST_CASE("[7|INT] Integration 33") {
-    const auto output = Compile(PATH + "33");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "33");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 11);
 }
 
 TEST_CASE("[7|INT] Integration 34") {
-    const auto output = Compile(PATH + "34");
-    const auto program = output.second;
-    auto traverser = output.first;
+    compile::Compile(PATH + "34");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, false);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 7);
+}
+
+TEST_CASE("[7|INT] Integration 35") {
+    compile::Compile(PATH + "35");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Integration 36") {
+    compile::Compile(PATH + "36");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }

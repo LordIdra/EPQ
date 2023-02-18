@@ -4,9 +4,9 @@ void main() {
     int32 pi = 3;  # lol
     int32 x = input;
 
-    for (int32 i = 0; i != x; i += 1) {
+    for int32 i = 0; i != x; i += 1 {
         pi -= 1;
-        if (x >= 2) {
+        if x >= 2 {
             continue;
         } else {
             return 666;

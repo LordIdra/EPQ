@@ -57,9 +57,7 @@ namespace semanticAnalyser {
             ScopeManager::EnterScope();
             Traverse(node.children.at(0));
             Traverse(node.children.at(1));
-            Traverse(node.children.at(2));
-            Traverse(node.children.at(3));
-            TraverseBlockWithoutEnteringScope(node.children.at(4));
+            TraverseBlockWithoutEnteringScope(node.children.at(2));
             ScopeManager::ExitScope();
         }
 
@@ -67,9 +65,7 @@ namespace semanticAnalyser {
             ScopeManager::EnterScope();
             Traverse(node.children.at(0));
             Traverse(node.children.at(1));
-            Traverse(node.children.at(2));
-            Traverse(node.children.at(3));
-            TraverseBlockWithoutEnteringScope(node.children.at(4));
+            TraverseBlockWithoutEnteringScope(node.children.at(2));
             ScopeManager::ExitScope();
         }
 

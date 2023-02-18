@@ -20,7 +20,6 @@ namespace ScopeManager {
                 return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
             }
 
-
             // Pop top table off the stack
             unordered_map<string, IdentifierSymbol> table = stack.top();
             stack.pop();
@@ -73,7 +72,7 @@ namespace ScopeManager {
         stack.top().insert(std::make_pair(name, symbol));
     }
 
-    auto AddFunctionIdentifier(const string &name, const IdentifierSymbol identifierSymbol, const FunctionSymbol functionSymbol) -> void {
+    auto AddFunctionIdentifier(const string &name, const IdentifierSymbol identifierSymbol, const FunctionSymbol &functionSymbol) -> void {
         currentScope->AddIdentifier(name, identifierSymbol);
         stack.top().insert(std::make_pair(name, identifierSymbol));
         functionSymbols.insert(std::make_pair(name, functionSymbol));

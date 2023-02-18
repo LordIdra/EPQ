@@ -81,18 +81,6 @@ enum NonTerminal {
     L_Else,
     L_IfBlock,
 
-    N_Case_0,
-    N_Case_1,
-    N_Case_2,
-
-    L_Case_0,
-    L_Case_1,
-    L_Case_2,
-
-    Switch_0,
-    N_Switch_1,
-    L_Switch_1,
-
     Parameter,
     NextParameter,
     ParameterList_0,

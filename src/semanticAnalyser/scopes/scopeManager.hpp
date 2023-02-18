@@ -15,7 +15,7 @@ namespace ScopeManager {
     auto CurrentScopeLevel() -> SymbolScope;
 
     auto AddIntIdentifier(const string &name, const IdentifierSymbol symbol) -> void;
-    auto AddFunctionIdentifier(const string &name, const IdentifierSymbol identifierSymbol, const FunctionSymbol functionSymbol) -> void;
+    auto AddFunctionIdentifier(const string &name, const IdentifierSymbol identifierSymbol, const FunctionSymbol &functionSymbol) -> void;
 
     auto LookupScopes(const string &name) -> IdentifierSymbol;
     auto LookupTopScope(const string &name) -> IdentifierSymbol;

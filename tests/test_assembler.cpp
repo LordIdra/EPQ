@@ -17,7 +17,7 @@ TEST_CASE("[2|ASM] Invalid size") {
 
     errors::Reset();
 
-    for (ErrorTest t : tests) {
+    for (const ErrorTest &t : tests) {
         CAPTURE(t.input, t.errorCode);
         REQUIRE(assembler::Assemble(t.input) == "");
         REQUIRE(errors::GetErrorCode() == t.errorCode);
@@ -31,8 +31,8 @@ TEST_CASE("[2|ASM] Invalid opcode") {
 
     errors::Reset();
 
-    for (ErrorTest t : tests) {
-        REQUIRE(assembler::Assemble(t.input) == "");
+    for (const ErrorTest &t : tests) {
+        REQUIRE(assembler::Assemble(t.input).empty());
         REQUIRE(errors::GetErrorCode() == t.errorCode);
     }
 }
@@ -44,8 +44,8 @@ TEST_CASE("[2|ASM] Invalid operand count") {
 
     errors::Reset();
 
-    for (ErrorTest t : tests) {
-        REQUIRE(assembler::Assemble(t.input) == "");
+    for (const ErrorTest &t : tests) {
+        REQUIRE(assembler::Assemble(t.input).empty());
         REQUIRE(errors::GetErrorCode() == t.errorCode);
     }
 }
@@ -60,7 +60,7 @@ TEST_CASE("[2|ASM] Invalid operand value") {
     errors::Reset();
 
     for (ErrorTest t : tests) {
-        REQUIRE(assembler::Assemble(t.input) == "");
+        REQUIRE(assembler::Assemble(t.input).empty());
         REQUIRE(errors::GetErrorCode() == t.errorCode);
     }
 }

@@ -176,7 +176,9 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {SUBTRACT_ASSIGN, Term},
         {MULTIPLY_ASSIGN, Term},
         {DIVIDE_ASSIGN, Term},
-        {MODULUS_ASSIGN, Term}}},
+        {MODULUS_ASSIGN, Term},
+        {INCREMENT},
+        {DECREMENT}}},
 
     {Assignment, {
         {Variable, AssignmentOperation}}},
@@ -206,17 +208,17 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     
 
     {For, {
-        {FOR, OPEN_PARENTHESIS, ForSequence, CLOSE_PARENTHESIS, L_Block}}},
+        {FOR, ForSequence, L_Block}}},
 
     {While, {
-        {WHILE, OPEN_PARENTHESIS, LoopCondition, CLOSE_PARENTHESIS, L_Block}}},
+        {WHILE, LoopCondition, L_Block}}},
 
     /* If-else*/
     {If, {
-        {IF, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS}}},
+        {IF, Term}}},
 
     {ElseIf, {
-        {ELSEIF, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS}}},
+        {ELSEIF, Term}}},
 
     {Else, {
         {ELSE}}},
@@ -254,42 +256,6 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
     
     {L_IfBlock, {
         {L_If, L_ElseIfBlock, L_Else}}},
-
-
-    /* Case-switch */
-    {N_Case_0, {
-        {DEFAULT, N_Block},
-        {NONE}}},
-
-    {N_Case_1, {
-        {CASE, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS, N_Block, N_Case_1},
-        {NONE}}},
-
-    {N_Case_2, {
-        {N_Case_1, N_Case_0}}},
-
-
-    {L_Case_0, {
-        {DEFAULT, L_Block},
-        {NONE}}},
-
-    {L_Case_1, {
-        {CASE, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS, L_Block, L_Case_1},
-        {NONE}}},
-
-    {L_Case_2, {
-        {L_Case_1, L_Case_0}}},
-
-
-    {Switch_0, {
-        {SWITCH, OPEN_PARENTHESIS, Term, CLOSE_PARENTHESIS}}},
-
-    {N_Switch_1, {
-        {Switch_0, OPEN_BRACE, N_Case_2, CLOSE_BRACE}}},
-
-    {L_Switch_1, {
-        {Switch_0, OPEN_BRACE, L_Case_2, CLOSE_BRACE}}},
-
 
     /* Function definitions */
     {Parameter, {
@@ -337,7 +303,6 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {SimpleStatement, N_Block_0},
         {For, N_Block_0},
         {While, N_Block_0},
-        {N_Switch_1, N_Block_0},
         {N_IfBlock, N_Block_0},
         {RETURN, ReturnContents, SEMICOLON, N_Block_0}}},
 
@@ -349,7 +314,6 @@ const unordered_map<ProductionLeft, vector<ProductionRight>> productions {
         {SimpleStatement, L_Block_0},
         {For, L_Block_0},
         {While, L_Block_0},
-        {L_Switch_1, L_Block_0},
         {L_IfBlock, L_Block_0},
         {RETURN, ReturnContents, SEMICOLON, L_Block_0},
         {BREAK, SEMICOLON, L_Block_0},

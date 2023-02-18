@@ -1,9 +1,10 @@
 #include "scanner.hpp"
+#include "grammar/symbolNames.hpp"
 #include "grammar/terminals.hpp"
+#include "scanner/stateGenerator.hpp"
 #include "util/errors.hpp"
 
 #include <iostream>
-#include <scanner/states.hpp>
 
 
 
@@ -27,22 +28,20 @@ namespace scanner {
         }
 
         auto TransitionPossible(const char character) -> bool {
-            unordered_map<char, int> possibleTransitions = transitions.at(state);
-            return possibleTransitions.count(character) == 1;
+            return stateGenerator::Transitions().at(state).count(character) == 1;
         }
 
         auto MakeTransition(const char character) -> void {
-            unordered_map<char, int> possibleTransitions = transitions.at(state);
-            state = possibleTransitions.at(character);
+            state = stateGenerator::Transitions().at(state).at(character);
             stateText += character;
         }
 
         auto IsCommentState() -> bool {
-            return state == 108;
+            return stateGenerator::FinalStates().at(state) == COMMENT;
         }
 
         auto IsDeadEndState() -> bool {
-            return finalStates.at(state) == NONE;
+            return stateGenerator::FinalStates().at(state) == NONE;
         }
 
         auto PopCharacter(string &str) -> void {
@@ -50,11 +49,11 @@ namespace scanner {
         }
 
         auto ShouldAddToken() -> bool {
-            return finalStates.at(state) != NO_TOKEN;
+            return stateGenerator::FinalStates().at(state) != NO_TOKEN;
         }
 
         auto AddToken() -> void {
-            tokens.push_back(Token{finalStates.at(state), stateText});
+            tokens.push_back(Token{stateGenerator::FinalStates().at(state), stateText});
         }
 
         auto LastFinalStateExists() -> bool {
@@ -62,11 +61,11 @@ namespace scanner {
         }
 
         auto AddFinalStateToken() -> void {
-            tokens.push_back(Token{finalStates.at(lastFinalState), lastFinalStateText});
+            tokens.push_back(Token{stateGenerator::FinalStates().at(lastFinalState), lastFinalStateText});
         }
 
         auto IsCurrentStateFinal() -> bool {
-            return finalStates.at(state) != NONE;
+            return stateGenerator::FinalStates().at(state) != NONE;
         }
 
         auto UpdateLastFinalState(const string &remainingText) -> void {
@@ -84,7 +83,7 @@ namespace scanner {
         auto LogUnexpectedEndOfLine() -> void {
             errors::AddError(errors::UNRECOGNIZED_SYMBOL, 
                 colors::AMBER + "[line " + std::to_string(currentLine) + "]" +
-                colors::RED + " Unrecognized end-of-line: " + stateText + colors::WHITE);
+                colors::RED + " Unexpected end-of-line: " + stateText + colors::WHITE);
         }
 
         auto FinishLine() -> void {
@@ -140,7 +139,8 @@ namespace scanner {
     }
 
 
-    auto Scan(const vector<string> &lines) -> vector<Token> {
+    auto Scan(const vector<string> &lines) -> const vector<Token>& {
+        stateGenerator::GenerateStates();
         for (const string &line : lines) {
             restOfLineIsComment = false;
 
