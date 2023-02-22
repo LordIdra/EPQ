@@ -4,4 +4,7 @@ void main() {
     int4 TEST_OUTPUT_2 = 4 / 1;
     int4 TEST_OUTPUT_3 = 5 / 2;
     int4 TEST_OUTPUT_4 = -5 / 2;
+
+    int8 TEST_OUTPUT_5 = int8(100) / int8(4);
+    int8 TEST_OUTPUT_6 = int8(200) / int8(-4);
 }

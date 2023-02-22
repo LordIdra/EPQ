@@ -25,30 +25,35 @@ const string PATH = "../../tests/resources/integration/";
 
 
 
-TEST_CASE("[7|INT] Integration 1") {
-    compile::Compile(PATH + "1");
+TEST_CASE("[7|INT] Arithmetic - Add") {
+    compile::Compile(PATH + "arithmetic/add");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 5);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 5);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 1);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 146);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 2323);
 }
 
-TEST_CASE("[7|INT] Integration 2") {
-    compile::Compile(PATH + "2");
+TEST_CASE("[7|INT] Arithmetic - Sub") {
+    compile::Compile(PATH + "arithmetic/sub");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 8);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == 8);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 24);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == 812);
 }
 
-TEST_CASE("[7|INT] Integration 3") {
-    compile::Compile(PATH + "3");
+TEST_CASE("[7|INT] Arithmetic - Multiply") {
+    compile::Compile(PATH + "arithmetic/multiply");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -63,171 +68,13 @@ TEST_CASE("[7|INT] Integration 3") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == 10);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == 13);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == 3);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_8").address).first == 100);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_9").address).first == 1050);
 }
 
-TEST_CASE("[7|INT] Integration 4") {
-    compile::Compile(PATH + "4");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_AND").address).first == 5);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_OR").address).first == 13);
-}
-
-TEST_CASE("[7|INT] Integration 5") {
-    compile::Compile(PATH + "5");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
-}
-
-TEST_CASE("[7|INT] Integration 6") {
-    compile::Compile(PATH + "6");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
-}
-
-TEST_CASE("[7|INT] Integration 7") {
-    compile::Compile(PATH + "7");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
-    
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
-}
-
-TEST_CASE("[7|INT] Integration 8") {
-    compile::Compile(PATH + "8");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
-    
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
-}
-
-TEST_CASE("[7|INT] Integration 9") {
-    compile::Compile(PATH + "9");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
-    
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
-}
-
-TEST_CASE("[7|INT] Integration 10") {
-    compile::Compile(PATH + "10");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
-    
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
-}
-
-TEST_CASE("[7|INT] Integration 11") {
-    compile::Compile(PATH + "11");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
-}
-
-TEST_CASE("[7|INT] Integration 12") {
-    compile::Compile(PATH + "12");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 15);
-}
-
-TEST_CASE("[7|INT] Integration 13") {
-    compile::Compile(PATH + "13");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
-
-    for (const string &instruction : program) {
-        std::cout << assembler::Assemble(instruction) << "\n";
-    }
-}
-
-TEST_CASE("[7|INT] Integration 14") {
-    compile::Compile(PATH + "14");
+TEST_CASE("[7|INT] Arithmetic - Divide") {
+    compile::Compile(PATH + "arithmetic/divide");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -238,21 +85,13 @@ TEST_CASE("[7|INT] Integration 14") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 4);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == 2);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == 14);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == 25);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == 206); //-50
 }
 
-TEST_CASE("[7|INT] Integration 15") {
-    compile::Compile(PATH + "15");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
-}
-
-TEST_CASE("[7|INT] Integration 16") {
-    compile::Compile(PATH + "16");
+TEST_CASE("[7|INT] Arithmetic - Modulus") {
+    compile::Compile(PATH + "arithmetic/modulus");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -265,10 +104,78 @@ TEST_CASE("[7|INT] Integration 16") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == 15);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == 15);
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == 1);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == 2);
 }
 
-TEST_CASE("[7|INT] Integration 17") {
-    compile::Compile(PATH + "17");
+TEST_CASE("[7|INT] Logic - And") {
+    compile::Compile(PATH + "logic/and");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 5);
+}
+
+TEST_CASE("[7|INT] Logic - Or") {
+    compile::Compile(PATH + "logic/or");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 13);
+}
+
+TEST_CASE("[7|INT] Assign - Add") {
+    compile::Compile(PATH + "assign/add");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Assign - Sub") {
+    compile::Compile(PATH + "assign/sub");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 15);
+}
+
+TEST_CASE("[7|INT] Assign - Multiply") {
+    compile::Compile(PATH + "assign/multiply");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
+}
+
+TEST_CASE("[7|INT] Assign - Divide") {
+    compile::Compile(PATH + "assign/divide");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
+}
+
+TEST_CASE("[7|INT] Assign - Modulus") {
+    compile::Compile(PATH + "assign/modulus");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -278,8 +185,208 @@ TEST_CASE("[7|INT] Integration 17") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 1);
 }
 
-TEST_CASE("[7|INT] Integration 18") {
-    compile::Compile(PATH + "18");
+TEST_CASE("[7|INT] Comparison - Equal") {
+    compile::Compile(PATH + "comparison/equal");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
+}
+
+TEST_CASE("[7|INT] Comparison - Not Equal") {
+    compile::Compile(PATH + "comparison/not_equal");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
+}
+
+TEST_CASE("[7|INT] Comparison - Greater") {
+    compile::Compile(PATH + "comparison/greater");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
+    
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
+}
+
+TEST_CASE("[7|INT] Comparison - Greater/Equal") {
+    compile::Compile(PATH + "comparison/greater_equal");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
+    
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
+}
+
+TEST_CASE("[7|INT] Comparison - Less") {
+    compile::Compile(PATH + "comparison/less");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
+    
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
+}
+
+TEST_CASE("[7|INT] Comparison - Less/Equal") {
+    compile::Compile(PATH + "comparison/less_equal");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
+    
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
+}
+
+TEST_CASE("[7|INT] Branching - If 1") {
+    compile::Compile(PATH + "branching/if_1");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Branching - If 2") {
+    compile::Compile(PATH + "branching/if_2");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 1);
+}
+
+TEST_CASE("[7|INT] Branching - Else 1") {
+    compile::Compile(PATH + "branching/else_1");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Branching - Else 2") {
+    compile::Compile(PATH + "branching/else_2");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 14);
+}
+
+TEST_CASE("[7|INT] Branching - Elseif 1") {
+    compile::Compile(PATH + "branching/elseif_1");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 4);
+}
+
+TEST_CASE("[7|INT] Branching - Elseif 2") {
+    compile::Compile(PATH + "branching/elseif_2");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 14);
+}
+
+TEST_CASE("[7|INT] Branching - Elseif 3") {
+    compile::Compile(PATH + "branching/elseif_3");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 11);
+}
+
+TEST_CASE("[7|INT] Branching - Elseif 4") {
+    compile::Compile(PATH + "branching/elseif_4");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 7);
+}
+
+TEST_CASE("[7|INT] Loops - While") {
+    compile::Compile(PATH + "loops/while");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -290,8 +397,8 @@ TEST_CASE("[7|INT] Integration 18") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 6);
 }
 
-TEST_CASE("[7|INT] Integration 19") {
-    compile::Compile(PATH + "19");
+TEST_CASE("[7|INT] Loops - For") {
+    compile::Compile(PATH + "loops/for");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -302,8 +409,30 @@ TEST_CASE("[7|INT] Integration 19") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 7);
 }
 
-TEST_CASE("[7|INT] Integration 20") {
-    compile::Compile(PATH + "20");
+TEST_CASE("[7|INT] Loops - Nested For") {
+    compile::Compile(PATH + "loops/nested_for");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 6);
+}
+
+TEST_CASE("[7|INT] Loops - For-If") {
+    compile::Compile(PATH + "loops/for_if");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
+}
+
+TEST_CASE("[7|INT] Loops - Continue 1") {
+    compile::Compile(PATH + "loops/continue_1");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -313,8 +442,52 @@ TEST_CASE("[7|INT] Integration 20") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
 }
 
-TEST_CASE("[7|INT] Integration 21") {
-    compile::Compile(PATH + "21");
+TEST_CASE("[7|INT] Loops - Continue 2") {
+    compile::Compile(PATH + "loops/continue_2");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Loops - Break 1") {
+    compile::Compile(PATH + "loops/break_1");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
+}
+
+TEST_CASE("[7|INT] Loops - Break 2") {
+    compile::Compile(PATH + "loops/break_2");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, true);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
+}
+
+TEST_CASE("[7|INT] Functions - Call") {
+    compile::Compile(PATH + "functions/call");
+    const auto &program = compile::GetProgram();
+    const auto &comments = compile::GetComments();
+    auto &traverser = compile::GetTraverser();
+
+    simulator::Run(program, comments, false);
+
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
+}
+
+TEST_CASE("[7|INT] Functions - Multiple return values") {
+    compile::Compile(PATH + "functions/return_multiple");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -325,8 +498,8 @@ TEST_CASE("[7|INT] Integration 21") {
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == 6);
 }
 
-TEST_CASE("[7|INT] Integration 22") {
-    compile::Compile(PATH + "22");
+TEST_CASE("[7|INT] Functions - Return") {
+    compile::Compile(PATH + "functions/return");
     const auto &program = compile::GetProgram();
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
@@ -334,158 +507,4 @@ TEST_CASE("[7|INT] Integration 22") {
     simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 5);
-}
-
-TEST_CASE("[7|INT] Integration 23") {
-    compile::Compile(PATH + "23");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
-}
-
-TEST_CASE("[7|INT] Integration 24") {
-    compile::Compile(PATH + "24");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, true);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 2);
-}
-
-TEST_CASE("[7|INT] Integration 25") {
-    compile::Compile(PATH + "25");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
-}
-
-TEST_CASE("[7|INT] Integration 26") {
-    compile::Compile(PATH + "26");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 14);
-}
-
-TEST_CASE("[7|INT] Integration 27") {
-    compile::Compile(PATH + "27");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
-}
-
-TEST_CASE("[7|INT] Integration 28") {
-    compile::Compile(PATH + "28");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 1);
-}
-
-TEST_CASE("[7|INT] Integration 29") {
-    compile::Compile(PATH + "29");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 6);
-}
-
-TEST_CASE("[7|INT] Integration 30") {
-    compile::Compile(PATH + "30");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
-}
-
-TEST_CASE("[7|INT] Integration 31") {
-    compile::Compile(PATH + "31");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 4);
-}
-
-TEST_CASE("[7|INT] Integration 32") {
-    compile::Compile(PATH + "32");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 14);
-}
-
-TEST_CASE("[7|INT] Integration 33") {
-    compile::Compile(PATH + "33");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 11);
-}
-
-TEST_CASE("[7|INT] Integration 34") {
-    compile::Compile(PATH + "34");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 7);
-}
-
-TEST_CASE("[7|INT] Integration 35") {
-    compile::Compile(PATH + "35");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
-}
-
-TEST_CASE("[7|INT] Integration 36") {
-    compile::Compile(PATH + "36");
-    const auto &program = compile::GetProgram();
-    const auto &comments = compile::GetComments();
-    auto &traverser = compile::GetTraverser();
-
-    simulator::Run(program, comments, false);
-
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }

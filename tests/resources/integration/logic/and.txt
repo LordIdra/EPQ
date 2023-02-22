@@ -1,0 +1,3 @@
+void main() {
+    int4 TEST_OUTPUT = 5 & 13;   # 0101 and 1100 -> 0100 -> 4
+}

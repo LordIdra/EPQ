@@ -1,0 +1,6 @@
+void main() {
+    int4 TEST_OUTPUT_1 = 3 + 2;
+    int4 TEST_OUTPUT_2 = 3 + -2;
+    int8 TEST_OUTPUT_3 = int8(24) + int8(122);
+    int16 TEST_OUTPUT_4 = int16(323) + int16(2000);
+}

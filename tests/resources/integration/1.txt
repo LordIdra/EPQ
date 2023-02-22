@@ -1,5 +1,0 @@
-void main() {
-    int4 x = int4(1);
-    x = int4(2);
-    int4 TEST_OUTPUT = int4(3) + x;
-}

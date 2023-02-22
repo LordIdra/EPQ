@@ -1,4 +1,0 @@
-void main() {
-    int4 y = int4(2 + 7 + 3);             # 12
-    int4 TEST_OUTPUT = y - int4(3 + 1);   # 8
-}
