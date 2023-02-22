@@ -10,6 +10,8 @@ namespace registers {
 
         set<int> freeRegisters = {2, 3, 4, 5, 6, 7, 8, 9};
         set<int> allocatedRegisters;
+
+        
     }
 
     auto Reset() -> void {
