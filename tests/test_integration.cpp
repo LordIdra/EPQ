@@ -1,3 +1,4 @@
+#include "assembler/assembler.hpp"
 #include "generator/assembly.hpp"
 #include "generator/registers.hpp"
 #include "semanticAnalyser/scopes/scopeTraverser.hpp"
@@ -219,6 +220,10 @@ TEST_CASE("[7|INT] Integration 13") {
     simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
+
+    for (const string &instruction : program) {
+        std::cout << assembler::Assemble(instruction) << "\n";
+    }
 }
 
 TEST_CASE("[7|INT] Integration 14") {

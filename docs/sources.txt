@@ -10,7 +10,6 @@ xxxx-xx-xx https://www3.nd.edu/~dthain/compilerbook/compilerbook.pdf
 2022-11-16 https://www.tutorialspoint.com/how-to-convert-regular-expression-to-finite-automata
 2022-11-16 https://www.codingninjas.com/codestudio/library/conversion-of-regular-expressions-to-finite-automata
 2022-11-16 https://slideplayer.com/slide/9878358/
-2022-11-16 https://www.cs.iusb.edu/~danav/teach/c311/c311_10_reggr.html
 
 2022-11-21 https://www.javatpoint.com/automata-conversion-from-nfa-to-dfa
 

@@ -198,6 +198,7 @@ namespace generator {
         while (!registerStack.empty())  { registerStack.pop();  };
         while (!loopStartStack.empty()) { loopStartStack.pop(); };
         while (!loopEndStack.empty())   { loopEndStack.pop();   };
+        // why was I insane enough to attempt this project aaaaaaa
     }
 
     auto Generate(parser::TreeNode &_node, Scope &_scopeTree, const bool _debugMode) -> void {
