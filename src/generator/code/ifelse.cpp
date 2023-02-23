@@ -2,7 +2,7 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 
 
 
@@ -14,11 +14,11 @@ namespace generator {
         }
 
         auto Last() -> void {
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r1 = PopRegister();
+            const int r1 = PopValue();
 
             // If the IF statement is followed by an ELSE or ELSE IF statement
             // const auto ifBlock = node->parent->parent;
@@ -40,9 +40,10 @@ namespace generator {
             assembly::SET("3" + branchEndStack.top(), r4);
             assembly::BRP(r2, r3, r4, r1);
 
-            registers::Free(r2);
-            registers::Free(r3);
-            registers::Free(r4);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
+            dataValues::Free(r4);
         }
     }
 
@@ -51,9 +52,9 @@ namespace generator {
 
     namespace N_If {
         auto Last() -> void {
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
             assembly::Comment("branch to " + branchFinalStack.top());
             assembly::SET("1" + branchFinalStack.top(), r2);
@@ -66,9 +67,9 @@ namespace generator {
 
             branchEndStack.pop();
 
-            registers::Free(r2);
-            registers::Free(r3);
-            registers::Free(r4);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
+            dataValues::Free(r4);
         }
     }
 

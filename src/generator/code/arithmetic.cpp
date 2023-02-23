@@ -2,7 +2,6 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
 
 
 
@@ -13,14 +12,15 @@ namespace generator {
             if (node->children.size() == 1) { return; }
 
             // Term_SUB -> SUB Term_9 Term_SUB
-            const int r3 = registers::Allocate();
+            const int out = dataValues::Allocate();
+            const int in_2 = PopValue();
+            const int in_1 = PopValue();
 
-            const int r1 = PopRegister();
-            const int r2 = PopRegister();
+            assembly::SUB(in_1, in_2, out);
 
-            assembly::SUB(r2, r1, r3);
-
-            PushRegister(r3);
+            dataValues::Free(in_1);
+            dataValues::Free(in_2);
+            PushValue(out);
         }
     }
 
@@ -30,14 +30,15 @@ namespace generator {
             if (node->children.size() == 1) { return; }
 
             // Term_ADD -> ADD Term_10 Term_ADD
-            const int r3 = registers::Allocate();
+            const int out = dataValues::Allocate();
+            const int in_2 = PopValue();
+            const int in_1 = PopValue();
 
-            const int r1 = PopRegister();
-            const int r2 = PopRegister();
+            assembly::ADD(in_1, in_2, out);
 
-            assembly::ADD(r2, r1, r3);
-
-            PushRegister(r3);
+            dataValues::Free(in_1);
+            dataValues::Free(in_2);
+            PushValue(out);
         }
     }
 
@@ -52,16 +53,16 @@ namespace generator {
             const string labelSecondNumberPositive = assembly::GenerateLabel("secondNumberPositive");
             const string labelResultPositive = assembly::GenerateLabel("resultPositive");
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
-            const int r5 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
+            const int r5 = dataValues::Allocate();
 
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
-            const int r8 = registers::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
+            const int r8 = dataValues::Allocate();
 
-            const int r1 = PopRegister();
-            const int r2 = PopRegister();
+            const int r1 = PopValue();
+            const int r2 = PopValue();
 
             // Used to determine whether the result is negative later on
             assembly::XOR(r1, r2, r5);
@@ -117,13 +118,14 @@ namespace generator {
 
             assembly::LabelLatestInstruction(labelResultPositive);
 
-            PushRegister(r4);
-
-            registers::Free(r3);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
-            registers::Free(r8);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            dataValues::Free(r8);
+            PushValue(r4);
         }
     }
 
@@ -138,16 +140,16 @@ namespace generator {
             const string labelSecondNumberPositive = assembly::GenerateLabel("secondNumberPositive");
             const string labelResultPositive = assembly::GenerateLabel("resultPositive");
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
-            const int r5 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
+            const int r5 = dataValues::Allocate();
 
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
-            const int r8 = registers::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
+            const int r8 = dataValues::Allocate();
 
-            const int r2 = PopRegister();
-            const int r1 = PopRegister();
+            const int r2 = PopValue();
+            const int r1 = PopValue();
 
             // Used to determine whether the result is negative later on
             assembly::XOR(r1, r2, r5);
@@ -203,13 +205,14 @@ namespace generator {
 
             assembly::LabelLatestInstruction(labelResultPositive);
 
-            PushRegister(r4);
-
-            registers::Free(r3);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
-            registers::Free(r8);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            dataValues::Free(r8);
+            PushValue(r4);
         }
     }
 
@@ -224,16 +227,16 @@ namespace generator {
             const string labelSecondNumberPositive = assembly::GenerateLabel("secondNumberPositive");
             const string labelResultPositive = assembly::GenerateLabel("resultPositive");
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
-            const int r5 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
+            const int r5 = dataValues::Allocate();
 
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
-            const int r8 = registers::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
+            const int r8 = dataValues::Allocate();
 
-            const int r2 = PopRegister();
-            const int r1 = registerStack.top();
+            const int r2 = PopValue();
+            const int r1 = dataStack.top();
 
             // Used to determine whether the result is negative later on
             assembly::XOR(r1, r2, r5);
@@ -294,12 +297,13 @@ namespace generator {
 
             assembly::LabelLatestInstruction(labelResultPositive);
 
-            registers::Free(r3);
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
-            registers::Free(r8);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            dataValues::Free(r8);
         }
 
     }

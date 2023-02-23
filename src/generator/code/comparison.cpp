@@ -2,7 +2,7 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 
 
 
@@ -14,15 +14,15 @@ namespace generator {
 
             // Term_EQUALS -> EQUALS Term_3 Term_EQUALS
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r5 = registers::Allocate();
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
+            const int r5 = dataValues::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
 
-            const int r1 = PopRegister();
-            const int r2 = PopRegister();
+            const int r1 = PopValue();
+            const int r2 = PopValue();
 
             const string labelMSBTheSame = assembly::GenerateLabel("MSBTheSame");
             const string labelNotEqual   = assembly::GenerateLabel("NotEqual");
@@ -63,7 +63,7 @@ namespace generator {
             assembly::BRP(r5, r6, r7, r3);
 
             // We haven't branched, so they are equal
-            assembly::SET(registers::TRUE, r3);
+            assembly::SET(dataValues::TRUE, r3);
             assembly::Comment("branch to " + labelEnd);
             assembly::SET("1" + labelEnd, r5);
             assembly::SET("2" + labelEnd, r6);
@@ -72,18 +72,19 @@ namespace generator {
 
             // This is where we branch to if they are not equal
             assembly::LabelLatestInstruction(labelNotEqual);
-            assembly::SET(registers::FALSE, r3);
+            assembly::SET(dataValues::FALSE, r3);
 
             // And this is the end of the whole thing
             assembly::LabelLatestInstruction(labelEnd);
             assembly::NOP();
 
-            PushRegister(r3);
-
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            PushValue(r3);
         }
 
     }
@@ -94,15 +95,15 @@ namespace generator {
             if (node->children.size() == 1) { return; }
 
             // Term_NOT_EQUALS -> NOT_EQUALS Term_4 Term_NOT_EQUALS
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r5 = registers::Allocate();
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
+            const int r5 = dataValues::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
 
-            const int r1 = PopRegister();
-            const int r2 = PopRegister();
+            const int r1 = PopValue();
+            const int r2 = PopValue();
 
             const string labelMSBTheSame = assembly::GenerateLabel("MSBTheSame");
             const string labelNotEqual   = assembly::GenerateLabel("NotEqual");
@@ -143,7 +144,7 @@ namespace generator {
             assembly::BRP(r5, r6, r7, r3);
 
             // We haven't branched, so they are equal
-            assembly::SET(registers::FALSE, r3);
+            assembly::SET(dataValues::FALSE, r3);
             assembly::Comment("branch to " + labelEnd);
             assembly::SET("1" + labelEnd, r5);
             assembly::SET("2" + labelEnd, r6);
@@ -152,18 +153,19 @@ namespace generator {
 
             // This is where we branch to if they are not equal
             assembly::LabelLatestInstruction(labelNotEqual);
-            assembly::SET(registers::TRUE, r3);
+            assembly::SET(dataValues::TRUE, r3);
 
             // And this is the end of the whole thing
             assembly::LabelLatestInstruction(labelEnd);
             assembly::NOP();
 
-            PushRegister(r3);
-
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            PushValue(r3);
         }
     }
 
@@ -172,16 +174,16 @@ namespace generator {
             // Term_GREATER -> NONE
             if (node->children.size() == 1) { return; }
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r5 = registers::Allocate();
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
+            const int r5 = dataValues::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
 
             // We're checking if r1 > r2 but the order is inverted when we pop
-            const int r2 = PopRegister();
-            const int r1 = PopRegister();
+            const int r2 = PopValue();
+            const int r1 = PopValue();
 
             const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
             const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
@@ -239,7 +241,7 @@ namespace generator {
 
             // r1 > r2
             assembly::LabelLatestInstruction(labelR1Greater);
-            assembly::SET(registers::TRUE, r3);
+            assembly::SET(dataValues::TRUE, r3);
             assembly::Comment("branch to " + labelEnd);
             assembly::SET("1" + labelEnd, r5);
             assembly::SET("2" + labelEnd, r6);
@@ -248,18 +250,19 @@ namespace generator {
 
             // r1 < r2
             assembly::LabelLatestInstruction(labelR1Lower);
-            assembly::SET(registers::FALSE, r3);
+            assembly::SET(dataValues::FALSE, r3);
 
             // end
             assembly::LabelLatestInstruction(labelEnd);
             assembly::NOP();
 
-            PushRegister(r3);
-
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            PushValue(r3);
         }
     }
 
@@ -268,16 +271,16 @@ namespace generator {
             // Term_GREATER_OR_EQUAL -> NONE
             if (node->children.size() == 1) { return; }
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r5 = registers::Allocate();
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
+            const int r5 = dataValues::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
 
             // We're checking if r1 > r2 but the order is inverted when we pop
-            const int r2 = PopRegister();
-            const int r1 = PopRegister();
+            const int r2 = PopValue();
+            const int r1 = PopValue();
 
             const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
             const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
@@ -332,7 +335,7 @@ namespace generator {
 
             // r1 > r2
             assembly::LabelLatestInstruction(labelR1Greater);
-            assembly::SET(registers::TRUE, r3);
+            assembly::SET(dataValues::TRUE, r3);
             assembly::Comment("branch to " + labelEnd);
             assembly::SET("1" + labelEnd, r5);
             assembly::SET("2" + labelEnd, r6);
@@ -341,18 +344,19 @@ namespace generator {
 
             // r1 < r2
             assembly::LabelLatestInstruction(labelR1Lower);
-            assembly::SET(registers::FALSE, r3);
+            assembly::SET(dataValues::FALSE, r3);
 
             // end
             assembly::LabelLatestInstruction(labelEnd);
             assembly::NOP();
 
-            PushRegister(r3);
-
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            PushValue(r3);
         }
     }
 
@@ -361,16 +365,16 @@ namespace generator {
             // Term_LESS -> NONE
             if (node->children.size() == 1) { return; }
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r5 = registers::Allocate();
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
+            const int r5 = dataValues::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
 
             // We're checking if r1 > r2 but the order is inverted when we pop
-            const int r2 = PopRegister();
-            const int r1 = PopRegister();
+            const int r2 = PopValue();
+            const int r1 = PopValue();
 
             const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
             const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
@@ -425,7 +429,7 @@ namespace generator {
 
             // r1 > r2
             assembly::LabelLatestInstruction(labelR1Greater);
-            assembly::SET(registers::FALSE, r3);
+            assembly::SET(dataValues::FALSE, r3);
             assembly::Comment("branch to " + labelEnd);
             assembly::SET("1" + labelEnd, r5);
             assembly::SET("2" + labelEnd, r6);
@@ -434,18 +438,19 @@ namespace generator {
 
             // r1 < r2
             assembly::LabelLatestInstruction(labelR1Lower);
-            assembly::SET(registers::TRUE, r3);
+            assembly::SET(dataValues::TRUE, r3);
 
             // end
             assembly::LabelLatestInstruction(labelEnd);
             assembly::NOP();
 
-            PushRegister(r3);
-
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            PushValue(r3);
         }
     }
 
@@ -454,16 +459,16 @@ namespace generator {
             // Term_LESS_OR_EQUAL -> NONE
             if (node->children.size() == 1) { return; }
 
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r5 = registers::Allocate();
-            const int r6 = registers::Allocate();
-            const int r7 = registers::Allocate();
+            const int r5 = dataValues::Allocate();
+            const int r6 = dataValues::Allocate();
+            const int r7 = dataValues::Allocate();
 
             // We're checking if r1 > r2 but the order is inverted when we pop
-            const int r2 = PopRegister();
-            const int r1 = PopRegister();
+            const int r2 = PopValue();
+            const int r1 = PopValue();
 
             const string labelMSBTheSame      = assembly::GenerateLabel("MSBTheSame");
             const string labelR1Greater       = assembly::GenerateLabel("R1Greater");
@@ -521,7 +526,7 @@ namespace generator {
 
             // r1 > r2
             assembly::LabelLatestInstruction(labelR1Greater);
-            assembly::SET(registers::FALSE, r3);
+            assembly::SET(dataValues::FALSE, r3);
             assembly::Comment("branch to " + labelEnd);
             assembly::SET("1" + labelEnd, r5);
             assembly::SET("2" + labelEnd, r6);
@@ -530,18 +535,19 @@ namespace generator {
 
             // r1 < r2
             assembly::LabelLatestInstruction(labelR1Lower);
-            assembly::SET(registers::TRUE, r3);
+            assembly::SET(dataValues::TRUE, r3);
 
             // end
             assembly::LabelLatestInstruction(labelEnd);
             assembly::NOP();
 
-            PushRegister(r3);
-
-            registers::Free(r4);
-            registers::Free(r5);
-            registers::Free(r6);
-            registers::Free(r7);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r4);
+            dataValues::Free(r5);
+            dataValues::Free(r6);
+            dataValues::Free(r7);
+            PushValue(r3);
         }
     }
 }

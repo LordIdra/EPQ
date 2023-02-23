@@ -2,7 +2,8 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValue.hpp"
+#include "generator/dataValues.hpp"
 #include "semanticAnalyser/scopes/scopeManager.hpp"
 
 
@@ -18,9 +19,9 @@ namespace generator {
             const int a2 = div(div(address, 256).rem, 16).quot;
             const int a3 = div(div(address, 256).rem, 16).rem;
 
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             assembly::POP();
 
@@ -30,9 +31,9 @@ namespace generator {
             assembly::SET(a3, r3);
             assembly::STA(r1, r2, r3);
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
         }
     }
 
@@ -57,9 +58,12 @@ namespace generator {
 
     namespace Argument {
         auto First() -> void {
-            const int r1 = PopRegister();
-            assembly::MOV(r1, registers::MDR1);
+            const int r1 = PopValue();
+
+            assembly::MOV(r1, MDR_1);
             assembly::PSH();
+
+            dataValues::Free(r1);
         }
     }
 
@@ -76,29 +80,29 @@ namespace generator {
             const string identifier = node->children.at(1).token.text;
 
             // Call code
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             assembly::SET("1" + identifier, r1);
             assembly::SET("2" + identifier, r2);
             assembly::SET("3" + identifier, r3);
             assembly::BRA(r1, r2, r3);
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
 
             // Return code
             const SymbolType returnType = ScopeManager::GetFunctionSymbol(identifier).returnType;
 
             if (returnType != TYPE_VOID) {
-                const int returnRegister = registers::Allocate();
+                const int returnRegister = dataValues::Allocate();
 
                 assembly::POP();
-                assembly::MOV(registers::MDR1, returnRegister);
+                assembly::MOV(MDR_1, returnRegister);
 
-                PushRegister(returnRegister);
+                PushValue(returnRegister);
             }
         }
     }
@@ -113,31 +117,32 @@ namespace generator {
 
             // ReturnContents -> Term
             // Pop return address off stack
-            const int returnAddress1b = registers::Allocate();
-            const int returnAddress2a = registers::Allocate();
-            const int returnAddress2b = registers::Allocate();
+            const int returnAddress1b = dataValues::Allocate();
+            const int returnAddress2a = dataValues::Allocate();
+            const int returnAddress2b = dataValues::Allocate();
 
             assembly::POP();
-            assembly::MOV(registers::MDR2, returnAddress1b);
+            assembly::MOV(MDR_2, returnAddress1b);
             assembly::POP();
-            assembly::MOV(registers::MDR1, returnAddress2a);
-            assembly::MOV(registers::MDR2, returnAddress2b);
+            assembly::MOV(MDR_1, returnAddress2a);
+            assembly::MOV(MDR_2, returnAddress2b);
 
             // Push return value to stack
-            const int returnValue = PopRegister();
-            assembly::MOV(returnValue, registers::MDR1);
+            const int returnValue = PopValue();
+            assembly::MOV(returnValue, MDR_1);
             assembly::PSH();
 
             // Push return address back onto stack
-            assembly::MOV(returnAddress2b, registers::MDR2);
-            assembly::MOV(returnAddress2a, registers::MDR1);
+            assembly::MOV(returnAddress2b, MDR_2);
+            assembly::MOV(returnAddress2a, MDR_1);
             assembly::PSH();
-            assembly::MOV(returnAddress1b, registers::MDR2);
+            assembly::MOV(returnAddress1b, MDR_2);
             assembly::PSH();
 
-            registers::Free(returnAddress1b);
-            registers::Free(returnAddress2a);
-            registers::Free(returnAddress2b);
+            dataValues::Free(returnAddress1b);
+            dataValues::Free(returnAddress2a);
+            dataValues::Free(returnAddress2b);
+            dataValues::Free(returnValue);
         }
     }
 }

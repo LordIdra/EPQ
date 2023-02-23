@@ -2,7 +2,7 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 
 
 
@@ -28,9 +28,9 @@ namespace generator {
 
     namespace Program {
         auto First() -> void {
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             const int IHaveNoIdea = 4;
 
@@ -47,9 +47,9 @@ namespace generator {
             assembly::SET(7, r3);
             assembly::BRA(r1, r2, r3);
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
         }
     }
 }

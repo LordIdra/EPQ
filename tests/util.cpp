@@ -7,7 +7,7 @@
 
 auto CheckErrorCode(const errors::ErrorCode code) -> void {
     if (errors::GetErrorCode() != code) {
-        std::cout << colors::CYAN + "Expected error code " << colors::BOLD_RED << code << 
+        cout << colors::CYAN + "Expected error code " << colors::BOLD_RED << code << 
                      colors::CYAN + " but got " << colors::BOLD_RED << errors::GetErrorCode() << "\n";
         errors::OutputErrors();
     }

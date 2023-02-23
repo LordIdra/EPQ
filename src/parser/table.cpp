@@ -24,9 +24,9 @@ namespace table {
             for (int nonTerminal = FIRST_NON_TERMINAL; nonTerminal <= LAST_NON_TERMINAL; nonTerminal++) {
                 unordered_map<int, ProductionPair> nonTerminalMap;
                 for (int terminal = FIRST_TERMINAL; terminal <= LAST_TERMINAL; terminal++) {
-                    nonTerminalMap.insert(std::make_pair(terminal, emptyProduction));
+                    nonTerminalMap.insert(make_pair(terminal, emptyProduction));
                 }
-                table.insert(std::make_pair(nonTerminal, nonTerminalMap));
+                table.insert(make_pair(nonTerminal, nonTerminalMap));
             }
         }
 

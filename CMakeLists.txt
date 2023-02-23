@@ -30,7 +30,7 @@ SET(SOURCE_FILES
     "generator/assembly.cpp"
     "generator/generator.cpp"
     "generator/memory.cpp"
-    "generator/registers.cpp"
+    "generator/dataValues.cpp"
     "simulator/simulator.cpp"
     "compile.cpp"
 )

@@ -40,14 +40,14 @@ namespace stateGenerator {
                     // Otherwise. create a new state and move to it
                     else {
                         nextState++;
-                        transitions.insert(std::make_pair(nextState, unordered_map<char, int>()));
-                        transitionsFromCurrentState.insert(std::make_pair(character, nextState));
+                        transitions.insert(make_pair(nextState, unordered_map<char, int>()));
+                        transitionsFromCurrentState.insert(make_pair(character, nextState));
                         state = nextState;
                     }
                 }
 
                 // The last state that we landed on will be a final state
-                finalStates.insert(std::make_pair(state, rule.first));
+                finalStates.insert(make_pair(state, rule.first));
             }
         }
 
@@ -58,18 +58,18 @@ namespace stateGenerator {
 
             for (const char number : NUMBER_CHARACTERS) {
                 // Transitions from the initial state to the NUMBER state
-                transitions.at(0).insert(std::make_pair(number, nextState));
+                transitions.at(0).insert(make_pair(number, nextState));
 
                 // Transition from the NUMBER state to the NUMBER state
-                numberTransitions.insert(std::make_pair(number, nextState));
+                numberTransitions.insert(make_pair(number, nextState));
 
                 // Transition from the - state to the NUMBER state via any number (as NUMBER can start with a -)
-                transitions.at(minusState).insert(std::make_pair(number, nextState));
+                transitions.at(minusState).insert(make_pair(number, nextState));
             }
 
             // Add new state and mark it as the final state for NUMBER
-            transitions.insert(std::make_pair(nextState, numberTransitions));
-            finalStates.insert(std::make_pair(nextState, NUMBER));
+            transitions.insert(make_pair(nextState, numberTransitions));
+            finalStates.insert(make_pair(nextState, NUMBER));
         }
 
         auto RecursiveAddTransitions(const int state) -> void {
@@ -80,21 +80,21 @@ namespace stateGenerator {
                     // If the letter does not already have a transition from the current state
                     if (transitions.at(state).count(number) == 0) {
                         // Add a transition to IDENTIFIER via that letter
-                        transitions.at(state).insert(std::make_pair(number, nextState));
+                        transitions.at(state).insert(make_pair(number, nextState));
                     }
                 }
             }
 
             // If the state doesn't have a final state yet, set its final state to be an identifier
             if (finalStates.count(state) == 0) {
-                finalStates.insert(std::make_pair(state, IDENTIFIER));
+                finalStates.insert(make_pair(state, IDENTIFIER));
             }
 
             for (const char letter : IDENTIFIER_CHARACTERS) {
                 // If the letter does not already have a transition from the current state
                 if (transitions.at(state).count(letter) == 0) {
                     // Add a transition to IDENTIFIER via that letter
-                    transitions.at(state).insert(std::make_pair(letter, nextState));
+                    transitions.at(state).insert(make_pair(letter, nextState));
                 }
 
                 // Recurse to the state if it can be reached through a transition via the letter from the current state
@@ -109,17 +109,17 @@ namespace stateGenerator {
 
             for (const char letter : IDENTIFIER_CHARACTERS) {
                 // Transitions from the IDENTIFIER state to the IDENTIFIER state
-                letterTransitions.insert(std::make_pair(letter, nextState));
+                letterTransitions.insert(make_pair(letter, nextState));
             }
 
             for (const char number : NUMBER_CHARACTERS) {
                 // Transitions from the IDENTIFIER state to the IDENTIFIER state
-                letterTransitions.insert(std::make_pair(number, nextState));
+                letterTransitions.insert(make_pair(number, nextState));
             }
 
             // Add new state and mark it as the final state for IDENTIFIER
-            transitions.insert(std::make_pair(nextState, letterTransitions));
-            finalStates.insert(std::make_pair(nextState, IDENTIFIER));
+            transitions.insert(make_pair(nextState, letterTransitions));
+            finalStates.insert(make_pair(nextState, IDENTIFIER));
 
             RecursiveAddTransitions(0);
         }
@@ -127,7 +127,7 @@ namespace stateGenerator {
         auto MakeAllRemainingFinalStatesNone() -> void {
             for (int state = 0; state < nextState; state++) {
                 if (finalStates.count(state) == 0) {
-                    finalStates.insert(std::make_pair(state, NONE));
+                    finalStates.insert(make_pair(state, NONE));
                 }
             }
         }

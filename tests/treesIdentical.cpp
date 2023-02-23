@@ -11,7 +11,7 @@ auto TreesIdentical(const parser::TreeNode *node1, const parser::TreeNode *node2
         const bool contentsIdentical = (node1->token.type == node2->token.type)
             && (node1->token.text == node2->token.text);
         if (!contentsIdentical) {
-            std::cout << colors::RED << "Mismatched tree node: " << 
+            cout << colors::RED << "Mismatched tree node: " << 
                          colors::CYAN << node1->token.text << " " << node2->token.text << 
                          colors::WHITE << "\n";
         }
@@ -28,20 +28,20 @@ auto TreesIdentical(const parser::TreeNode *node1, const parser::TreeNode *node2
         return childrenIdentical;
     }
 
-    std::cout << colors::RED << "Number of children does not match " << 
+    cout << colors::RED << "Number of children does not match " << 
                  colors::CYAN << symbolNames.at(node1->token.type) << "(" << node1->children.size() << " - ";
     
     for (const auto &child : node1->children) {
-        std::cout << symbolNames.at(child.token.type) << " ";
+        cout << symbolNames.at(child.token.type) << " ";
     }
     
-    std::cout << ") " << symbolNames.at(node2->token.type) << "(" << node2->children.size() << " - ";
+    cout << ") " << symbolNames.at(node2->token.type) << "(" << node2->children.size() << " - ";
     
     for (const auto &child : node2->children) {
-        std::cout << symbolNames.at(child.token.type) << " ";
+        cout << symbolNames.at(child.token.type) << " ";
     }
 
-    std::cout << ")" << colors::WHITE << "\n";;
+    cout << ")" << colors::WHITE << "\n";;
 
     return false;
 }

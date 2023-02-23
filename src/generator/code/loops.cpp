@@ -2,7 +2,7 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 
 
 
@@ -18,11 +18,11 @@ namespace generator {
 
         auto Last() -> void {
 
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
-            const int r4 = registers::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
+            const int r4 = dataValues::Allocate();
 
-            const int r1 = PopRegister();
+            const int r1 = PopValue();
 
             assembly::NOT(r1, r1);
             assembly::Comment("branch to " + loopEndStack.top());
@@ -31,17 +31,18 @@ namespace generator {
             assembly::SET("3" + loopEndStack.top(), r4);
             assembly::BRP(r2, r3, r4, r1);
 
-            registers::Free(r2);
-            registers::Free(r3);
-            registers::Free(r4);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
+            dataValues::Free(r4);
         }
     }
 
     namespace For {
         auto Last() -> void {
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             assembly::SET("1" + loopStartStack.top(), r1);
             assembly::SET("2" + loopStartStack.top(), r2);
@@ -51,9 +52,9 @@ namespace generator {
             assembly::NOP();
             assembly::LabelLatestInstruction(loopEndStack.top());
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
 
             loopStartStack.pop();
             loopEndStack.pop();
@@ -62,9 +63,9 @@ namespace generator {
 
     namespace While {
         auto Last() -> void {
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             assembly::Comment("branch to " + loopStartStack.top());
             assembly::SET("1" + loopStartStack.top(), r1);
@@ -74,9 +75,9 @@ namespace generator {
             assembly::NOP();
             assembly::LabelLatestInstruction(loopEndStack.top());
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
 
             loopStartStack.pop();
             loopEndStack.pop();
@@ -85,9 +86,9 @@ namespace generator {
 
     namespace Break {
         auto First() -> void {
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             assembly::Comment("branch to " + loopEndStack.top());
             assembly::SET("1" + loopEndStack.top(), r1);
@@ -95,17 +96,17 @@ namespace generator {
             assembly::SET("3" + loopEndStack.top(), r3);
             assembly::BRA(r1, r2, r3);
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
         }
     }
 
     namespace Continue {
         auto First() -> void {
-            const int r1 = registers::Allocate();
-            const int r2 = registers::Allocate();
-            const int r3 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
+            const int r2 = dataValues::Allocate();
+            const int r3 = dataValues::Allocate();
 
             assembly::Comment("branch to " + loopAssignmentStack.top());
             assembly::SET("1" + loopAssignmentStack.top(), r1);
@@ -113,9 +114,9 @@ namespace generator {
             assembly::SET("3" + loopAssignmentStack.top(), r3);
             assembly::BRA(r1, r2, r3);
 
-            registers::Free(r1);
-            registers::Free(r2);
-            registers::Free(r3);
+            dataValues::Free(r1);
+            dataValues::Free(r2);
+            dataValues::Free(r3);
         }
     }
 }

@@ -1,6 +1,6 @@
 #include "assembler/assembler.hpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 #include "semanticAnalyser/scopes/scopeTraverser.hpp"
 #include "semanticAnalyser/semanticAnalyser.hpp"
 #include "simulator/simulator.hpp"
@@ -158,7 +158,7 @@ TEST_CASE("[7|INT] Assign - Multiply") {
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, comments, false);
+    simulator::Run(program, comments, true);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 12);
 }
@@ -193,14 +193,14 @@ TEST_CASE("[7|INT] Comparison - Equal") {
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == dataValues::FALSE);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == dataValues::TRUE);
 }
 
 TEST_CASE("[7|INT] Comparison - Not Equal") {
@@ -211,14 +211,14 @@ TEST_CASE("[7|INT] Comparison - Not Equal") {
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == dataValues::TRUE);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == dataValues::FALSE);
 }
 
 TEST_CASE("[7|INT] Comparison - Greater") {
@@ -229,15 +229,15 @@ TEST_CASE("[7|INT] Comparison - Greater") {
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == dataValues::FALSE);
     
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == dataValues::TRUE);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == dataValues::FALSE);
 }
 
 TEST_CASE("[7|INT] Comparison - Greater/Equal") {
@@ -248,15 +248,15 @@ TEST_CASE("[7|INT] Comparison - Greater/Equal") {
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == dataValues::FALSE);
     
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == dataValues::TRUE);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == dataValues::TRUE);
 }
 
 TEST_CASE("[7|INT] Comparison - Less") {
@@ -267,15 +267,15 @@ TEST_CASE("[7|INT] Comparison - Less") {
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == dataValues::TRUE);
     
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == dataValues::FALSE);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == dataValues::FALSE);
 }
 
 TEST_CASE("[7|INT] Comparison - Less/Equal") {
@@ -286,15 +286,15 @@ TEST_CASE("[7|INT] Comparison - Less/Equal") {
 
     simulator::Run(program, comments, false);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_1").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_2").address).first == dataValues::TRUE);
     
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == registers::FALSE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == registers::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_3").address).first == dataValues::FALSE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_4").address).first == dataValues::FALSE);
 
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == registers::TRUE);
-    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == registers::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_5").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_6").address).first == dataValues::TRUE);
+    REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT_7").address).first == dataValues::TRUE);
 }
 
 TEST_CASE("[7|INT] Branching - If 1") {
@@ -470,7 +470,7 @@ TEST_CASE("[7|INT] Loops - Break 2") {
     const auto &comments = compile::GetComments();
     auto &traverser = compile::GetTraverser();
 
-    simulator::Run(program, comments, true);
+    simulator::Run(program, comments, false);
 
     REQUIRE(simulator::GetData(traverser.GlobalLookup("TEST_OUTPUT").address).first == 3);
 }

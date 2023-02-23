@@ -2,7 +2,8 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValue.hpp"
+#include "generator/dataValues.hpp"
 #include "arithmetic.cpp"
 
 
@@ -21,11 +22,11 @@ namespace generator {
                 // Declaration_0 -> IDENTIFIER ASSIGN InputTerm
                 // Declaration -> Datatype IDENTIFIER ASSIGN InputTerm
                 if (node->children.at(1).children.at(0).token.type == IDENTIFIER) {
-                    const int r1 = registers::Allocate();
-                    const int r2 = registers::Allocate();
-                    const int r3 = registers::Allocate();
+                    const int r1 = dataValues::Allocate();
+                    const int r2 = dataValues::Allocate();
+                    const int r3 = dataValues::Allocate();
 
-                    const int r4 = PopRegister();
+                    const int r4 = PopValue();
 
                     const string identifier = node->children.at(1).children.at(0).token.text;
 
@@ -40,12 +41,13 @@ namespace generator {
                     assembly::SET(a2, r2);
                     assembly::SET(a3, r3);
 
-                    assembly::MOV(r4, registers::MDR1);
+                    assembly::MOV(r4, MDR_1);
                     assembly::STA(r1, r2, r3);
 
-                    registers::Free(r1);
-                    registers::Free(r2);
-                    registers::Free(r3);
+                    dataValues::Free(r1);
+                    dataValues::Free(r2);
+                    dataValues::Free(r3);
+                    dataValues::Free(r4);
                 }
             }
         }
@@ -56,25 +58,34 @@ namespace generator {
         auto Last() -> void {
             // AssignmentOperation -> ASSIGN InputTerm
             if (GetChildType(0) == ASSIGN) {
-                const int assignFrom = PopRegister();
-                const int assignTo = registerStack.top();
+                const int assignFrom = PopValue();
+                const int assignTo = dataStack.top();
+
                 assembly::MOV(assignFrom, assignTo);
+
+                dataValues::Free(assignFrom);
                 return;
             }
 
             // AssignmentOperation -> ADD_ASSIGN Term
             if (GetChildType(0) == ADD_ASSIGN) {
-                const int assignFrom = PopRegister();
-                const int assignTo = registerStack.top();
+                const int assignFrom = PopValue();
+                const int assignTo = dataStack.top();
+
                 assembly::ADD(assignTo, assignFrom, assignTo);
+
+                dataValues::Free(assignFrom);
                 return;
             }
 
             // AssignmentOperation -> SUBTRACT_ASSIGN Term
             if (GetChildType(0) == SUBTRACT_ASSIGN) {
-                const int assignFrom = PopRegister();
-                const int assignTo = registerStack.top();
+                const int assignFrom = PopValue();
+                const int assignTo = dataStack.top();
+
                 assembly::SUB(assignTo, assignFrom, assignTo);
+
+                dataValues::Free(assignFrom);
                 return;
             }
 
@@ -98,29 +109,31 @@ namespace generator {
 
             // AssignmentOperation -> INCREMENT
             if (GetChildType(0) == INCREMENT) {
-                const int r3 = registers::Allocate();
-                const int r2 = registers::Allocate();
-                const int r1 = PopRegister();
+                const int r3 = dataValues::Allocate();
+                const int r2 = dataValues::Allocate();
+                const int r1 = PopValue();
 
                 assembly::SET(1, r2);
                 assembly::ADD(r1, r2, r3);
 
-                PushRegister(r3);
-                registers::Free(r2);
+                dataValues::Free(r1);
+                dataValues::Free(r2);
+                PushValue(r3);
                 return;
             }
 
             // AssignmentOperation -> DECREMENT
             if (GetChildType(0) == DECREMENT) {
-                const int r3 = registers::Allocate();
-                const int r2 = registers::Allocate();
-                const int r1 = PopRegister();
+                const int r3 = dataValues::Allocate();
+                const int r2 = dataValues::Allocate();
+                const int r1 = PopValue();
 
                 assembly::SET(1, r2);
                 assembly::SUB(r1, r2, r3);
 
-                PushRegister(r3);
-                registers::Free(r2);
+                dataValues::Free(r1);
+                dataValues::Free(r2);
+                PushValue(r3);
                 return;
             }
         }
@@ -133,11 +146,11 @@ namespace generator {
                 // Variable -> IDENTIFIER IdentifierSuffix
                 // Assignment -> IDENTTIFIER IdentifierSuffix AssignmentOperation
                 if (node->children.at(0).children.at(0).token.type == IDENTIFIER) {
-                    const int r1 = registers::Allocate();
-                    const int r2 = registers::Allocate();
-                    const int r3 = registers::Allocate();
+                    const int r1 = dataValues::Allocate();
+                    const int r2 = dataValues::Allocate();
+                    const int r3 = dataValues::Allocate();
 
-                    const int r4 = PopRegister();
+                    const int r4 = PopValue();
 
                     const string identifier = node->children.at(0).children.at(0).token.text;
 
@@ -152,12 +165,13 @@ namespace generator {
                     assembly::SET(a2, r2);
                     assembly::SET(a3, r3);
 
-                    assembly::MOV(r4, registers::MDR1);
+                    assembly::MOV(r4, MDR_1);
                     assembly::STA(r1, r2, r3);
 
-                    registers::Free(r1);
-                    registers::Free(r2);
-                    registers::Free(r3);
+                    dataValues::Free(r1);
+                    dataValues::Free(r2);
+                    dataValues::Free(r3);
+                    dataValues::Free(r4);
                 }
 
                 // Variable -> Dereference

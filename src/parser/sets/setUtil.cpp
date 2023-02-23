@@ -18,26 +18,26 @@ namespace setUtil {
     auto AddEmptyNonTerminalEntries(unordered_map<int, set<int>> &addTo) -> void {
         // Generate a set which consists of all non terminals mapped to empty vectors
         for (int i = FIRST_NON_TERMINAL; i <= LAST_NON_TERMINAL; i++) {
-            addTo.insert(std::pair<int, set<int>> (i, set<int>()));
+            addTo.insert(pair<int, set<int>> (i, set<int>()));
         }
     }
 
     auto AddEmptyTerminalEntries(unordered_map<int, set<int>> &addTo) -> void {
         for (int i = FIRST_TERMINAL; i <= LAST_TERMINAL; i++) {
-            addTo.insert(std::pair<int, set<int>> (i, set<int>()));
+            addTo.insert(pair<int, set<int>> (i, set<int>()));
         }
     }
 
     auto AddEmptyNonTerminalEntries(unordered_map<int, vector<set<int>>> &addTo) -> void {
         // Generate a set which consists of all non terminals mapped to empty vectors
         for (int i = FIRST_NON_TERMINAL; i <= LAST_NON_TERMINAL; i++) {
-            addTo.insert(std::pair<int, vector<set<int>>> (i, vector<set<int>>()));
+            addTo.insert(pair<int, vector<set<int>>> (i, vector<set<int>>()));
         }
     }
 
     auto AddEmptyTerminalEntries(unordered_map<int, vector<set<int>>> &addTo) -> void {
         for (int i = FIRST_TERMINAL; i <= LAST_TERMINAL; i++) {
-            addTo.insert(std::pair<int, vector<set<int>>> (i, vector<set<int>>()));
+            addTo.insert(pair<int, vector<set<int>>> (i, vector<set<int>>()));
         }
     }
 

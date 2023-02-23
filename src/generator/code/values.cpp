@@ -2,7 +2,7 @@
 
 #include "code.cpp"
 #include "generator/assembly.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 
 
 
@@ -50,11 +50,11 @@ namespace generator {
                     const int a2 = div(div(address, 256).rem, 16).quot;
                     const int a3 = div(div(address, 256).rem, 16).rem;
 
-                    const int r1 = registers::Allocate();
-                    const int r2 = registers::Allocate();
-                    const int r3 = registers::Allocate();
+                    const int r1 = dataValues::Allocate();
+                    const int r2 = dataValues::Allocate();
+                    const int r3 = dataValues::Allocate();
 
-                    const int r4 = registers::Allocate();
+                    const int r4 = dataValues::Allocate();
 
                     assembly::Comment("load " + identifier);
                     assembly::SET(a1, r1);
@@ -62,13 +62,12 @@ namespace generator {
                     assembly::SET(a3, r3);
                     assembly::LDA(r1, r2, r3);
 
-                    assembly::MOV(registers::MDR1, r4);
+                    assembly::MOV(MDR_1, r4);
 
-                    PushRegister(r4);
-
-                    registers::Free(r1);
-                    registers::Free(r2);
-                    registers::Free(r3);
+                    dataValues::Free(r1);
+                    dataValues::Free(r2);
+                    dataValues::Free(r3);
+                    PushValue(r4);
                 }
 
                 // IdentifierSuffix -> ListIndex
@@ -88,7 +87,7 @@ namespace generator {
 
     namespace Literal {
         auto First() -> void {
-            const int r1 = registers::Allocate();
+            const int r1 = dataValues::Allocate();
 
             // Literal -> NUMBER
             if (GetChildType(0) == NUMBER) {
@@ -101,15 +100,15 @@ namespace generator {
 
             // Literal -> TRUE
             if (GetChildType(0) == TRUE) {
-                assembly::SET(registers::TRUE, r1);
+                assembly::SET(dataValues::TRUE, r1);
             }
 
             // Literal -> FALSE
             if (GetChildType(0) == FALSE) {
-                assembly::SET(registers::FALSE, r1);
+                assembly::SET(dataValues::FALSE, r1);
             }
 
-            PushRegister(r1);
+            PushValue(r1);
         }
     }
 

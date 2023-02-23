@@ -8,21 +8,21 @@
 
 namespace ScopeManager {
     namespace {
-        std::stack<unordered_map<string, IdentifierSymbol>> stack;
+        stack<unordered_map<string, IdentifierSymbol>> stack_;
         unordered_map<string, FunctionSymbol> functionSymbols;
         Scope root;
         Scope* currentScope;
         string currentFunctionName;
 
-        auto SearchStack(std::stack<unordered_map<string, IdentifierSymbol>> stack, const string &name) ->  IdentifierSymbol {
+        auto SearchStack(stack<unordered_map<string, IdentifierSymbol>> stack_, const string &name) ->  IdentifierSymbol {
             // If there are no tables to search, the name does not exist
-            if (stack.empty()) {
+            if (stack_.empty()) {
                 return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
             }
 
             // Pop top table off the stack
-            unordered_map<string, IdentifierSymbol> table = stack.top();
-            stack.pop();
+            unordered_map<string, IdentifierSymbol> table = stack_.top();
+            stack_.pop();
 
             // If the name exists in the table we just popped, return the IdentifierSymbol it maps to
             if (table.count(name) != 0) {
@@ -30,12 +30,12 @@ namespace ScopeManager {
             }
 
             // If not, continue searching the next table
-            return SearchStack(stack, name);
+            return SearchStack(stack_, name);
         }
     }
 
     auto Reset() -> void {
-        while (!stack.empty()) { stack.pop(); }
+        while (!stack_.empty()) { stack_.pop(); }
         functionSymbols.clear();
         root = Scope();
         currentScope = &root;
@@ -43,25 +43,25 @@ namespace ScopeManager {
 
     auto EnterScope() -> void {
         currentScope = currentScope->EnterScope();
-        stack.push(unordered_map<string, IdentifierSymbol>{});
+        stack_.push(unordered_map<string, IdentifierSymbol>{});
     }
 
     auto ExitScope() -> void {
-        for (const auto &identifier : stack.top()) {
+        for (const auto &identifier : stack_.top()) {
             if (IsInt(identifier.second.type)) {
                 semanticAnalyser::FreeAddresses(1);
             }
         }
         currentScope = currentScope->ExitScope();
-        stack.pop();
+        stack_.pop();
     }
 
 
     auto CurrentScopeLevel() -> SymbolScope {
-        if (stack.size() == 1) {
+        if (stack_.size() == 1) {
             return SCOPE_GLOBAL;
         }
-        if (stack.size() == 2) {
+        if (stack_.size() == 2) {
             return SCOPE_PARAMETER;
         }
         return SCOPE_LOCAL;
@@ -69,29 +69,29 @@ namespace ScopeManager {
 
     auto AddIntIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
         currentScope->AddIdentifier(name, symbol);
-        stack.top().insert(std::make_pair(name, symbol));
+        stack_.top().insert(make_pair(name, symbol));
     }
 
     auto AddFunctionIdentifier(const string &name, const IdentifierSymbol identifierSymbol, const FunctionSymbol &functionSymbol) -> void {
         currentScope->AddIdentifier(name, identifierSymbol);
-        stack.top().insert(std::make_pair(name, identifierSymbol));
-        functionSymbols.insert(std::make_pair(name, functionSymbol));
+        stack_.top().insert(make_pair(name, identifierSymbol));
+        functionSymbols.insert(make_pair(name, functionSymbol));
         currentFunctionName = name;
     }
 
     auto LookupScopes(const string &name) -> IdentifierSymbol {
-        return SearchStack(stack, name);
+        return SearchStack(stack_, name);
     }
 
     auto LookupTopScope(const string &name) -> IdentifierSymbol {
         // If there is no table to search, the symbol obviously does not exist
-        if (stack.empty()) {
+        if (stack_.empty()) {
             return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
         }
 
         // If the name exists in the table we just popped, return the IdentifierSymbol it maps to
-        if (stack.top().count(name) != 0) {
-            return stack.top().at(name);
+        if (stack_.top().count(name) != 0) {
+            return stack_.top().at(name);
         }
 
         // The name does not exist in the top table

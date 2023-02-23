@@ -28,6 +28,7 @@ namespace scanner {
         }
 
         auto TransitionPossible(const char character) -> bool {
+            stateGenerator::Transitions().at(state);
             return stateGenerator::Transitions().at(state).count(character) == 1;
         }
 

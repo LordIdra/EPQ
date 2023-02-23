@@ -8,7 +8,7 @@
 typedef int ProductionLeft;
 typedef vector<int> ProductionRight;
 typedef vector<ProductionRight> ProductionRightList;
-typedef std::pair<ProductionLeft, ProductionRight> ProductionPair;
+typedef pair<ProductionLeft, ProductionRight> ProductionPair;
 
 
 

@@ -22,7 +22,7 @@ auto Scope::ExitScope() -> Scope* {
 }
 
 auto Scope::AddIdentifier(const string &name, const IdentifierSymbol symbol) -> void {
-    identifiers.insert(std::make_pair(name, symbol));
+    identifiers.insert(make_pair(name, symbol));
 }
 
 auto Scope::ContainsIdentifier(const string &identifier) -> bool {

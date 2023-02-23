@@ -33,7 +33,7 @@ auto ScopeTraverser::LocalLookup(const string &identifier) -> IdentifierSymbol {
         }
         tempScope = tempScope->GetParent();
     }
-    std::cout << colors::CYAN << "Identifier " << colors::RED << identifier << colors::CYAN << " not in scope tree" << "\n";
+    cout << colors::CYAN << "Identifier " << colors::RED << identifier << colors::CYAN << " not in scope tree" << "\n";
     return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
 }
 
@@ -60,6 +60,6 @@ auto ScopeTraverser::GlobalLookup(const string &identifier) -> IdentifierSymbol 
             break;
         }
     }
-    std::cout << colors::CYAN << "Identifier " << colors::RED << identifier << colors::CYAN << " not in scope tree" << "\n";
+    cout << colors::CYAN << "Identifier " << colors::RED << identifier << colors::CYAN << " not in scope tree" << "\n";
     return IdentifierSymbol{SCOPE_ERROR, TYPE_ERROR, 0};
 }

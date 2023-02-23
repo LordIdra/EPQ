@@ -26,7 +26,7 @@ enum SymbolType {
     TYPE_INT64,
 };
 
-const std::unordered_map<int, SymbolType> typeMap = {
+const unordered_map<int, SymbolType> typeMap = {
     {VOID, TYPE_VOID},
     {INT4, TYPE_INT4},
     {INT8, TYPE_INT8},
@@ -36,7 +36,7 @@ const std::unordered_map<int, SymbolType> typeMap = {
     {INT64, TYPE_INT64},
 };
 
-const std::unordered_map<SymbolType, string> typeNames = {
+const unordered_map<SymbolType, string> typeNames = {
     {TYPE_ERROR, "error"},
     {TYPE_VOID, "void"},
     {TYPE_FUNCTION, "function"},

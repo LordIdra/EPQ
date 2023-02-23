@@ -1,7 +1,7 @@
 #include "generator/assembly.hpp"
 #include "generator/generator.hpp"
 #include "generator/memory.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 #include "parser/parser.hpp"
 #include "parser/sets/first.hpp"
 #include "parser/table.hpp"
@@ -32,7 +32,7 @@ namespace compile {
             semanticAnalyser::Reset();
             assembly::Reset();
             memory::Reset();
-            registers::Reset();
+            dataValues::Reset();
             generator::Reset();
             simulator::Reset();
         }

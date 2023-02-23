@@ -1,5 +1,5 @@
 #include "generator/memory.hpp"
-#include "generator/registers.hpp"
+#include "generator/dataValues.hpp"
 #include "grammar/nonTerminals.hpp"
 #include "grammar/symbolNames.hpp"
 #include "grammar/terminals.hpp"
@@ -195,7 +195,7 @@ namespace generator {
 
     auto Reset() -> void {
         node = nullptr;
-        while (!registerStack.empty())  { registerStack.pop();  };
+        while (!dataStack.empty())  { dataStack.pop();  };
         while (!loopStartStack.empty()) { loopStartStack.pop(); };
         while (!loopEndStack.empty())   { loopEndStack.pop();   };
     }
@@ -207,8 +207,8 @@ namespace generator {
         RecursiveGenerate(_node);
         scopeTraverser.Next(); // pop global scope
 
-        if (!registerStack.empty()) {
-            std::cout << colors::CYAN << registerStack.size() << colors::RED << " registers remaining on register stack" << colors::WHITE << "\n";
+        if (!dataStack.empty()) {
+            cout << colors::CYAN << dataStack.size() << colors::RED << " registers remaining on register stack" << colors::WHITE << "\n";
         }
 
         assembly::ResolveLabels();

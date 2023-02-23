@@ -4,6 +4,7 @@
 #include "semanticAnalyser/scopes/scope.hpp"
 #include "semanticAnalyser/scopes/scopeManager.hpp"
 #include "semanticErrors.hpp"
+#include "util/errors.hpp"
 #include <iostream>
 
 
@@ -11,6 +12,7 @@
 namespace checks {
     namespace {
         int nextFreeAddress = 1;
+        const int MAX_ADDRESS = 2048 - 48;
 
         auto EvaluateDatatypeType(const parser::TreeNode &node) -> SymbolType {
             return typeMap.at(node.children.at(0).token.type);
@@ -129,6 +131,10 @@ namespace checks {
 
     auto Declaration_0(const parser::TreeNode &node) -> void {
         const int address = nextFreeAddress++;
+
+        if (address > MAX_ADDRESS) {
+            errors::AddError(errors::OUT_OF_MEMORY, "Out of SRAM memory.");
+        }
 
         // Declaration_0 -> OPEN_SQUARE_BRACKET NUMBER CLOSE_SQUARE_BRACKET IDENTIFIER
         if (node.children.at(0).token.type == OPEN_SQUARE_BRACKET) {

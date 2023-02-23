@@ -27,13 +27,13 @@ namespace errors {
 
     auto OutputErrors() -> void {
         if (errors.empty()) {
-            std::cout << colors::BOLD_GREEN << "0 compiler errors" << colors::WHITE << "\n";
+            cout << colors::BOLD_GREEN << "0 compiler errors" << colors::WHITE << "\n";
             return;
         }
         
-        std::cout << colors::BOLD_RED << std::to_string(errors.size()) << " compiler errors" << colors::WHITE << "\n";
+        cout << colors::BOLD_RED << std::to_string(errors.size()) << " compiler errors" << colors::WHITE << "\n";
         for (const string &error : errors) {
-            std::cout << error << colors::WHITE << "\n";
+            cout << error << colors::WHITE << "\n";
         }
     }
 }

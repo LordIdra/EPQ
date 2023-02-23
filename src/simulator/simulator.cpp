@@ -18,8 +18,8 @@ namespace simulator {
         int carry2 = 0;
         
         array<int, REGISTER_SIZE> registers;
-        array<std::pair<int, int>, MEMORY_SIZE> memory;
-        std::stack<std::pair<int, int>> stack;
+        array<pair<int, int>, MEMORY_SIZE> memory;
+        stack<pair<int, int>> stack;
 
         auto GetArg1(const string &instruction) -> int {
             return std::stoi(instruction.substr(4, 2));
@@ -127,7 +127,7 @@ namespace simulator {
         }
 
         auto PSH() -> void {
-            stack.push(std::make_pair(registers.at(0), registers.at(1)));
+            stack.push(make_pair(registers.at(0), registers.at(1)));
         }
 
         auto POP() -> void {
@@ -144,8 +144,8 @@ namespace simulator {
             const int v2 = div(div(newprogramCounter, 256).rem, 16).quot;
             const int v3 = div(div(newprogramCounter, 256).rem, 16).rem;
 
-            stack.push(std::make_pair(v2, v1));
-            stack.push(std::make_pair(0, v3));
+            stack.push(make_pair(v2, v1));
+            stack.push(make_pair(0, v3));
         }
 
         auto RET() -> void {
@@ -195,18 +195,18 @@ namespace simulator {
 
         auto DebugCycle(const unordered_map<int, string> &comments, const string &instruction) -> void {
             if (comments.find(programCounter) != comments.end()) {
-                std::cout << colors::WHITE << comments.at(programCounter) << "\n";
+                cout << colors::WHITE << comments.at(programCounter) << "\n";
             }
-            std::cout << colors::WHITE << FormatInstruction(instruction);
+            cout << colors::WHITE << FormatInstruction(instruction);
             for (int i = 0; i < registers.size(); i++) {
-                std::cout << colors::CYAN << "R" << i << " " << colors::AMBER << FormatValue(registers.at(i));
-                std::cout << colors::WHITE << "|";
+                cout << colors::CYAN << "R" << i << " " << colors::AMBER << FormatValue(registers.at(i));
+                cout << colors::WHITE << "|";
             }
-            std::cout << 
+            cout << 
                 colors::CYAN  << "SP " << colors::AMBER << FormatAddress(stack.size()) <<
                 colors::WHITE << "|"  << 
                 colors::CYAN  << "PC " << colors::AMBER << FormatAddress(programCounter);
-            std::cout << "\n";
+            cout << "\n";
         }
     }
 
@@ -216,7 +216,7 @@ namespace simulator {
         }
 
         for (int i = 0; i < MEMORY_SIZE; i++) {
-            memory.at(i) = std::make_pair(0, 0);
+            memory.at(i) = make_pair(0, 0);
         }
 
         while (!stack.empty()) {
@@ -276,7 +276,7 @@ namespace simulator {
         return registers.at(x);
     }
 
-    auto GetData(const int x) -> std::pair<int, int> {
+    auto GetData(const int x) -> pair<int, int> {
         return memory.at(x);
     }
 }
