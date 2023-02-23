@@ -1,5 +1,7 @@
 #pragma once
 
+#include "generator/dataValue.hpp"
+
 
 
 namespace registers {
@@ -10,6 +12,6 @@ namespace registers {
     const int MDR2 = 1;
     
     auto Reset() -> void;
-    auto Allocate() -> int;
+    auto Allocate() -> DataValue&;
     auto Free(const int r) -> void;
 }
