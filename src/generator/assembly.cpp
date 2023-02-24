@@ -1,5 +1,6 @@
 #include "generator/dataValue.hpp"
 #include "generator/memory.hpp"
+#include "generator/registers.hpp"
 #include <cstdlib>
 #include <generator/assembly.hpp>
 
@@ -91,12 +92,32 @@ namespace assembly {
         program.push_back("LDA " + FormatValue(r1) + " " + FormatValue(r2) + " " + FormatValue(r3));
     }
 
+    auto LDA_VALUE(const int v1, const int v2, const int v3) -> void {
+        SET(v1, MDR_1);
+        SET(v2, MDR_2);
+        SET(v3, MER_1);
+        LDA(MDR_1, MDR_2, MER_1);
+    }
+
     auto STA(const int r1, const int r2, const int r3) -> void {
         program.push_back("STA " + ResolveDataValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3));
     }
 
     auto STA(const Register r1, const Register r2, const Register r3) -> void {
         program.push_back("STA " + FormatValue(r1) + " " + FormatValue(r2) + " " + FormatValue(r3));
+    }
+
+    auto STA_VALUE(const int v1, const int v2, const int v3) -> void {
+        const int r1 = dataValues::Allocate();
+        const int r2 = dataValues::Allocate();
+
+        SET(v1, MER_1);
+        SET(v2, r1);
+        SET(v3, r2);
+        STA(MER_1, r1, r2);
+
+        dataValues::Free(r1);
+        dataValues::Free(r2);
     }
 
     auto ADD(const int r1, const int r2, const int r3) -> void {
@@ -151,8 +172,22 @@ namespace assembly {
         program.push_back("BRA " + ResolveDataValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3));
     }
 
+    auto BRA_VALUE(const string &label) -> void {
+        SET(v1, MDR_1);
+        SET(v2, MDR_2);
+        SET(v3, MER_1);
+        BRA(MDR_1, MDR_2, MER_1);
+    }
+
     auto BRP(const int r1, const int r2, const int r3, const int r4) -> void {
         program.push_back("BRP " + ResolveDataValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3) + " " + ResolveDataValue(r4));
+    }
+
+    auto BRP_VALUE(const string &label, const int r1) -> void {
+        SET("1" + label, MDR_1);
+        SET("2" + label, MDR_2);
+        SET("3" + label, MER_1);
+        BRP(MDR_1, MDR_2, MER_1, r1);
     }
 
     auto MOV(const int r1, const int r2) -> void {

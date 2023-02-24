@@ -18,9 +18,11 @@ namespace assembly {
 
     auto LDA(const int r1, const int r2, const int r3) -> void;
     auto LDA(const Register r1, const Register r2, const Register r3) -> void;
+    auto LDA_VALUE(const int v1, const int v2, const int v3) -> void;
 
     auto STA(const int r1, const int r2, const int r3) -> void;
     auto STA(const Register r1, const Register r2, const Register r3) -> void;
+    auto STA_VALUE(const int v1, const int v2, const int v3) -> void;
 
     auto ADD(const int r1, const int r2, const int r3) -> void;
     auto ADC(const int r1, const int r2, const int r3) -> void;
@@ -39,7 +41,10 @@ namespace assembly {
     auto RET() -> void;
 
     auto BRA(const int r1, const int r2, const int r3) -> void;
+    auto BRA_LABEL(const string &label) -> void;
+
     auto BRP(const int r1, const int r2, const int r3, const int r4) -> void;
+    auto BRP_LABEL(const string &label) -> void;
 
     auto MOV(const int r1, const int r2) -> void;
     auto MOV(const int r1, const Register r2) -> void;

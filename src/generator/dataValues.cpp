@@ -77,13 +77,24 @@ namespace dataValues {
         }
 
         auto CacheDataValuePair() -> void {
+            if (cacheAddress > MAX_ADDRESS) {
+                errors::AddError(errors::OUT_OF_MEMORY, "Out of memory for register cache.");
+                throw;
+            }
+
+            assembly::Comment("prepare to cache first half");
             const Register r1 = PrepareRegisterForCaching(FIRST);
+
+            assembly::Comment("prepare to cache second half");
             const Register r2 = PrepareRegisterForCaching(SECOND);
+
+            cacheAddress++;
 
             const int a1 = div(cacheAddress, 256).quot;
             const int a2 = div(cacheAddress - (a1*256), 16).quot;
             const int a3 = cacheAddress - (a1*256) - (a2*16);
 
+            assembly::Comment("cache register pair");
             assembly::SET(a1, MER_1);
             assembly::SET(a2, r1);
             assembly::SET(a3, r2);
@@ -97,19 +108,22 @@ namespace dataValues {
             const int a2 = div(toUncache.address.address - (a1*256), 16).quot;
             const int a3 = toUncache.address.address - (a1*256) - (a2*16);
 
-            assembly::SET(a1, MER_1);
-            assembly::SET(a2, MDR_1);
-            assembly::SET(a3, MDR_2);
-            assembly::LDA(MER_1, MDR_1, MDR_2);
+            assembly::Comment("uncache register pair");
+            assembly::SET(a1, MDR_1);
+            assembly::SET(a2, MDR_2);
+            assembly::SET(a3, MER_1);
+            assembly::LDA(MDR_1, MDR_2, MER_1);
 
             const Register newRegister = GetFreeRegister();
             toUncache.isCached = false;
             toUncache.register_ = newRegister;
 
             if (toUncache.address.half == FIRST) {
-                assembly::MOV(MDR_1, toUncache.register_);
+                assembly::Comment("restore first half ");
+                assembly::MOV(MDR_1, newRegister);
             } else if (toUncache.address.half == SECOND) {
-                assembly::MOV(MDR_2, toUncache.register_);
+                assembly::Comment("restore second half ");
+                assembly::MOV(MDR_2, newRegister);
             }
         }
     }
@@ -137,7 +151,7 @@ namespace dataValues {
         DataValue &value = values.at(id);
         if (value.isCached) {
             // todo free memory
-            
+
         } else {
             registers.at(value.register_) = FREE;
         }
