@@ -1,6 +1,6 @@
-int32 Factorial(int32 x) {
+int32 Factorial(int16 x) {
    int16 y = int16(1);
-   for int32 i = int32(0); i < x; i++ {
+   for int32 i = int32(0); i < int32(x); i++ {
        y *= int16(i);
    }
    return int32(y);
@@ -15,5 +15,5 @@ void main() {
        int12 j = ->x;
        int4 k = <-j;
     }
-    output call Factorial(int32(x));
+    output call Factorial(int16(x));
 }

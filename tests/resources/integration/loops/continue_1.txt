@@ -1,7 +1,7 @@
 void main() {
     int4 x = 0;
     for int4 i = 0; i < 5; i += 1 {
-        if i % 2 == 0 {
+        if (i % 2) == 0 {
             continue;
         }
         x += 1;

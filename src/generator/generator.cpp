@@ -100,8 +100,6 @@ namespace generator {
         {NonTerminal::L_ElseIf, L_ElseIf::Last},
         {NonTerminal::L_IfBlock, L_IfBlock::Last},
 
-        {NonTerminal::FunctionDeclaration, FunctionDeclaration::Last},
-
         {NonTerminal::FunctionCall, FunctionCall::Last},
 
         {NonTerminal::ReturnContents, ReturnContents::Last},
@@ -154,7 +152,7 @@ namespace generator {
         RecursiveGenerate(node.children.at(1).children.at(2)); // LoopCondition
         RecursiveGenerateBlockWithoutEnteringScope(node.children.at(2));
         assembly::NOP();
-        assembly::LabelLatestInstruction(loopAssignment);
+        assembly::Label(loopAssignment);
         RecursiveGenerate(node.children.at(1).children.at(4)); // Assignment
         scopeTraverser.Next();
     }
@@ -220,5 +218,9 @@ namespace generator {
 
     auto GetComments() -> const unordered_map<int, string>& {
         return assembly::GetComments();
+    }
+
+    auto GetIdentifierAddress(const string &identifier) -> int {
+        return scopeTraverser.LocalLookup(identifier).address;
     }
 }

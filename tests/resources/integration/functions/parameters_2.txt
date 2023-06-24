@@ -1,0 +1,7 @@
+void DoTheThing(int4 x, int4 y) {
+    int4 TEST_OUTPUT = x + y;
+}
+
+void main() {
+    call DoTheThing(3, 2);
+}

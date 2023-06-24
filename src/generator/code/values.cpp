@@ -43,30 +43,11 @@ namespace generator {
                 // Variable -> IDENTIFIER
                 if (node->children.at(1).children.at(0).token.type == NONE) {
                     const string identifier = GetChildText(0);
-
-                    const int address = scopeTraverser.LocalLookup(identifier).address;
-
-                    const int a1 = div(address, 256).quot;
-                    const int a2 = div(div(address, 256).rem, 16).quot;
-                    const int a3 = div(div(address, 256).rem, 16).rem;
-
-                    const int r1 = dataValues::Allocate();
-                    const int r2 = dataValues::Allocate();
-                    const int r3 = dataValues::Allocate();
-
                     const int r4 = dataValues::Allocate();
 
-                    assembly::Comment("load " + identifier);
-                    assembly::SET(a1, r1);
-                    assembly::SET(a2, r2);
-                    assembly::SET(a3, r3);
-                    assembly::LDA(r1, r2, r3);
-
+                    assembly::LDA(identifier);
                     assembly::MOV(MDR_1, r4);
 
-                    dataValues::Free(r1);
-                    dataValues::Free(r2);
-                    dataValues::Free(r3);
                     PushValue(r4);
                 }
 

@@ -22,31 +22,13 @@ namespace generator {
                 // Declaration_0 -> IDENTIFIER ASSIGN InputTerm
                 // Declaration -> Datatype IDENTIFIER ASSIGN InputTerm
                 if (node->children.at(1).children.at(0).token.type == IDENTIFIER) {
-                    const int r1 = dataValues::Allocate();
-                    const int r2 = dataValues::Allocate();
-                    const int r3 = dataValues::Allocate();
-
                     const int r4 = PopValue();
 
                     const string identifier = node->children.at(1).children.at(0).token.text;
 
-                    const int address = scopeTraverser.LocalLookup(identifier).address;
-
-                    const int a1 = div(address, 256).quot;
-                    const int a2 = div(div(address, 256).rem, 16).quot;
-                    const int a3 = div(div(address, 256).rem, 16).rem;
-
-                    assembly::Comment("store " + identifier);
-                    assembly::SET(a1, r1);
-                    assembly::SET(a2, r2);
-                    assembly::SET(a3, r3);
-
                     assembly::MOV(r4, MDR_1);
-                    assembly::STA(r1, r2, r3);
+                    assembly::STA(identifier);
 
-                    dataValues::Free(r1);
-                    dataValues::Free(r2);
-                    dataValues::Free(r3);
                     dataValues::Free(r4);
                 }
             }
@@ -134,6 +116,7 @@ namespace generator {
                 dataValues::Free(r1);
                 dataValues::Free(r2);
                 PushValue(r3);
+
                 return;
             }
         }
@@ -146,31 +129,13 @@ namespace generator {
                 // Variable -> IDENTIFIER IdentifierSuffix
                 // Assignment -> IDENTTIFIER IdentifierSuffix AssignmentOperation
                 if (node->children.at(0).children.at(0).token.type == IDENTIFIER) {
-                    const int r1 = dataValues::Allocate();
-                    const int r2 = dataValues::Allocate();
-                    const int r3 = dataValues::Allocate();
-
                     const int r4 = PopValue();
 
                     const string identifier = node->children.at(0).children.at(0).token.text;
 
-                    const int address = scopeTraverser.LocalLookup(identifier).address;
-
-                    const int a1 = div(address, 256).quot;
-                    const int a2 = div(div(address, 256).rem, 16).quot;
-                    const int a3 = div(div(address, 256).rem, 16).rem;
-
-                    assembly::Comment("store " + identifier);
-                    assembly::SET(a1, r1);
-                    assembly::SET(a2, r2);
-                    assembly::SET(a3, r3);
-
                     assembly::MOV(r4, MDR_1);
-                    assembly::STA(r1, r2, r3);
-
-                    dataValues::Free(r1);
-                    dataValues::Free(r2);
-                    dataValues::Free(r3);
+                    assembly::STA(identifier);
+                    
                     dataValues::Free(r4);
                 }
 

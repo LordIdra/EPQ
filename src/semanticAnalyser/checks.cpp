@@ -239,6 +239,15 @@ namespace checks {
             }
         }
 
+        int parameterSize = 0;
+        for (SymbolType type : parameterTypes) {
+            parameterSize += typeSizes.at(type);
+        }
+
+        if (parameterSize > 7) {
+            errors::AddError(errors::TOO_MANY_PARAMETERS, colors::RED + "The total size of a function's parameters cannot exceed 7 nibbles");
+        }
+
         ScopeManager::AddFunctionIdentifier(name, 
             IdentifierSymbol{ScopeManager::CurrentScopeLevel(), TYPE_FUNCTION, address},
             FunctionSymbol{parameterTypes, returnType});

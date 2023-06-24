@@ -251,6 +251,27 @@ TEST_CASE("[6|SMA] Semantic Analyser invalid program 11") {
     CheckErrorCode(errors::MISMATCHED_TYPE);
 }
 
+TEST_CASE("[6|SMA] Semantic Analyser invalid program 12") {
+    const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/fail_12.txt");
+    
+    errors::Reset();
+    parser::Reset();
+    scanner::Reset();
+    semanticAnalyser::Reset();
+
+    const vector<Token> scannedInput = scanner::Scan(input);
+
+    first::ComputeFirstSet();
+    follow::ComputeFollowSet();
+    table::GenerateTable();
+
+    const parser::TreeNode abstractSyntaxTree = parser::Parse(scannedInput);
+    semanticAnalyser::Analyse(abstractSyntaxTree);
+
+    
+    CheckErrorCode(errors::TOO_MANY_PARAMETERS);
+}
+
 TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
     const vector<string> input = readfile::Read("../../tests/resources/semantic-analyser/pass_1.txt");
     
@@ -275,7 +296,7 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 1") {
     traverser.Next();
         REQUIRE(Expect(traverser.LocalLookup("Factorial"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
         traverser.Next();
-            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT32, 1}));
+            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT16, 1}));
             traverser.Next();
                 REQUIRE(Expect(traverser.LocalLookup("y"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT16, 2}));
                 traverser.Next();
@@ -334,7 +355,7 @@ TEST_CASE("[6|SMA] Semantic Analyser valid program 2") {
 
         REQUIRE(Expect(traverser.LocalLookup("Factorial"), IdentifierSymbol{SCOPE_GLOBAL, TYPE_FUNCTION, 0}));
         traverser.Next();
-            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT32, 1}));
+            REQUIRE(Expect(traverser.LocalLookup("x"), IdentifierSymbol{SCOPE_PARAMETER, TYPE_INT8, 1}));
             traverser.Next();
                 REQUIRE(Expect(traverser.LocalLookup("y"), IdentifierSymbol{SCOPE_LOCAL, TYPE_INT16, 2}));
                 traverser.Next();

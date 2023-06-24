@@ -48,6 +48,18 @@ const unordered_map<SymbolType, string> typeNames = {
     {TYPE_INT64, "int64"},
 };
 
+const unordered_map<SymbolType, int> typeSizes = {
+    {TYPE_ERROR, 0},
+    {TYPE_VOID, 0},
+    {TYPE_FUNCTION, 0},
+    {TYPE_INT4, 1},
+    {TYPE_INT8, 2},
+    {TYPE_INT12, 3},
+    {TYPE_INT16, 4},
+    {TYPE_INT32, 8},
+    {TYPE_INT64, 16},
+};
+
 inline auto IsInt(const SymbolType type) -> bool {
     return (type == TYPE_INT4) 
         || (type == TYPE_INT8) || (type == TYPE_INT12) || (type == TYPE_INT16) || (type == TYPE_INT32) || (type == TYPE_INT64);

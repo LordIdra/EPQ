@@ -34,7 +34,6 @@ namespace generator {
 
             const int IHaveNoIdea = 4;
 
-            assembly::Comment("branch to main");
             assembly::PPC(IHaveNoIdea);
             assembly::SET("1" "main", r1);
             assembly::SET("2" "main", r2);

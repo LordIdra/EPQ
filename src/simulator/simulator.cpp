@@ -12,11 +12,15 @@ namespace simulator {
         const int MEMORY_SIZE = 2048;
         const int STACK_SIZE = 2048;
         const int FINAL_INSTRUCTION = 2047;
+        const int INFINITE_LOOP_HEURISTIC_LIMIT = 100;
 
         int programCounter = 0;
         int carry1 = 0;
         int carry2 = 0;
-        
+
+        int infiniteLoopHeuristic = 0;
+        int cycles = 0;
+
         array<int, REGISTER_SIZE> registers;
         array<pair<int, int>, MEMORY_SIZE> memory;
         stack<pair<int, int>> stack;
@@ -224,6 +228,7 @@ namespace simulator {
         }
 
         programCounter = 0;
+        cycles = 0;
         carry1 = 0;
         carry2 = 0;
     }
@@ -236,6 +241,17 @@ namespace simulator {
 
             if (debugMode) {
                 DebugCycle(comments, instruction);
+            }
+
+            if (opcode == "BRA") {
+                infiniteLoopHeuristic++;
+            } else if (opcode == "BRP") {
+                infiniteLoopHeuristic = 0;
+            }
+
+            if (infiniteLoopHeuristic > INFINITE_LOOP_HEURISTIC_LIMIT) {
+                std::cerr << colors::RED << "Infinite loop heuristic triggered" << colors::WHITE << "\n";
+                break;
             }
 
             if      (opcode == "NOP") { NOP(instruction); }
@@ -267,7 +283,7 @@ namespace simulator {
             carry2 = carry1;
             carry1 = 0;
             programCounter++;
-
+            cycles++;
         }
 
     }
@@ -278,5 +294,9 @@ namespace simulator {
 
     auto GetData(const int x) -> pair<int, int> {
         return memory.at(x);
+    }
+
+    auto GetCycles() -> int {
+        return cycles;
     }
 }

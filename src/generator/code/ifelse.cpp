@@ -14,36 +14,12 @@ namespace generator {
         }
 
         auto Last() -> void {
-            const int r2 = dataValues::Allocate();
-            const int r3 = dataValues::Allocate();
-            const int r4 = dataValues::Allocate();
-
-            const int r1 = PopValue();
-
-            // If the IF statement is followed by an ELSE or ELSE IF statement
-            // const auto ifBlock = node->parent->parent;
-            // const bool hasElseIf = ifBlock->children.at(1).children.at(0).token.type != NONE;
-            // const bool hasElse = ifBlock->children.at(2).children.at(0).token.type != NONE;
-
-            // if (hasElse || hasElseIf) {
-            //     assembly::Comment("branch to " + branchEndStack.top());
-            //     assembly::SET("1" + branchEndStack.top(), r2);
-            //     assembly::SET("2" + branchEndStack.top(), r3);
-            //     assembly::SET("3" + branchEndStack.top(), r4);
-            //     assembly::BRP(r2, r3, r4, r1);
-            // }
+             const int r1 = PopValue();
 
             assembly::NOT(r1, r1);
-            assembly::Comment("branch to " + branchEndStack.top());
-            assembly::SET("1" + branchEndStack.top(), r2);
-            assembly::SET("2" + branchEndStack.top(), r3);
-            assembly::SET("3" + branchEndStack.top(), r4);
-            assembly::BRP(r2, r3, r4, r1);
+            assembly::BRP(branchEndStack.top(), r1);
 
             dataValues::Free(r1);
-            dataValues::Free(r2);
-            dataValues::Free(r3);
-            dataValues::Free(r4);
         }
     }
 
@@ -52,24 +28,10 @@ namespace generator {
 
     namespace N_If {
         auto Last() -> void {
-            const int r2 = dataValues::Allocate();
-            const int r3 = dataValues::Allocate();
-            const int r4 = dataValues::Allocate();
-
-            assembly::Comment("branch to " + branchFinalStack.top());
-            assembly::SET("1" + branchFinalStack.top(), r2);
-            assembly::SET("2" + branchFinalStack.top(), r3);
-            assembly::SET("3" + branchFinalStack.top(), r4);
-            assembly::BRA(r2, r3, r4);
-
-            assembly::NOP();
-            assembly::LabelLatestInstruction(branchEndStack.top());
+            assembly::BRA(branchFinalStack.top());
+            assembly::Label(branchEndStack.top());
 
             branchEndStack.pop();
-
-            dataValues::Free(r2);
-            dataValues::Free(r3);
-            dataValues::Free(r4);
         }
     }
 
@@ -91,8 +53,7 @@ namespace generator {
 
     namespace N_IfBlock {
         auto Last() -> void {
-            assembly::NOP();
-            assembly::LabelLatestInstruction(branchFinalStack.top());
+            assembly::Label(branchFinalStack.top());
             branchFinalStack.pop();
         }
     }

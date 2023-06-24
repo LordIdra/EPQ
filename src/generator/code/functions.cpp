@@ -9,31 +9,17 @@
 
 
 namespace generator {
+
+    namespace {
+        vector<int> argumentList;
+    }
+
     namespace Parameter {
         auto First() -> void {
             const string identifier = node->children.at(1).token.text;
 
-            const int address = scopeTraverser.LocalLookup(identifier).address;
-
-            const int a1 = div(address, 256).quot;
-            const int a2 = div(div(address, 256).rem, 16).quot;
-            const int a3 = div(div(address, 256).rem, 16).rem;
-
-            const int r1 = dataValues::Allocate();
-            const int r2 = dataValues::Allocate();
-            const int r3 = dataValues::Allocate();
-
             assembly::POP();
-
-            assembly::Comment("store " + identifier);
-            assembly::SET(a1, r1);
-            assembly::SET(a2, r2);
-            assembly::SET(a3, r3);
-            assembly::STA(r1, r2, r3);
-
-            dataValues::Free(r1);
-            dataValues::Free(r2);
-            dataValues::Free(r3);
+            assembly::STA(identifier);
         }
     }
 
@@ -44,15 +30,10 @@ namespace generator {
 
             if (node->children.size() == 5) {
                 const string identifier = node->children.at(1).token.text;
-                assembly::NOP();
-                assembly::LabelLatestInstruction(identifier);
+                assembly::Label(identifier);
             }
 
             // RET is added in RecursiveGenerateFunctionDeclaration
-        }
-
-        auto Last() -> void {
-
         }
     }
 
@@ -60,38 +41,37 @@ namespace generator {
         auto First() -> void {
             const int r1 = PopValue();
 
-            assembly::MOV(r1, MDR_1);
-            assembly::PSH();
-
-            dataValues::Free(r1);
+            argumentList.push_back(r1);
         }
     }
 
     namespace FunctionCall {
         auto First() -> void {
             const string identifier = node->children[1].token.text;
-            const int IHaveNoIdea = 4;
-
-            assembly::Comment("call " + identifier);
-            assembly::PPC(IHaveNoIdea);
+            argumentList.clear();
         }
 
         auto Last() -> void {
             const string identifier = node->children.at(1).token.text;
+            const int programCounterIncrement = 4 + (2*argumentList.size());
+
+            for (const int argument : argumentList) {
+                // Make sure all arguments are stored in registers
+                // This makes sure that each argument only occupies 2 instructions
+                dataValues::Load(argument);
+            }
+
+            assembly::Comment("call " + identifier);
+            assembly::PPC(programCounterIncrement);
+
+            for (const int argument : argumentList) {
+                assembly::MOV(argument, MDR_1);
+                dataValues::Free(argument);
+                assembly::PSH();
+            }
 
             // Call code
-            const int r1 = dataValues::Allocate();
-            const int r2 = dataValues::Allocate();
-            const int r3 = dataValues::Allocate();
-
-            assembly::SET("1" + identifier, r1);
-            assembly::SET("2" + identifier, r2);
-            assembly::SET("3" + identifier, r3);
-            assembly::BRA(r1, r2, r3);
-
-            dataValues::Free(r1);
-            dataValues::Free(r2);
-            dataValues::Free(r3);
+            assembly::BRA(identifier);
 
             // Return code
             const SymbolType returnType = ScopeManager::GetFunctionSymbol(identifier).returnType;

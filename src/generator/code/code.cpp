@@ -38,7 +38,7 @@ namespace generator {
         }
         if (dataStack.empty()) {
             cout << colors::RED << "Attempt to pop off empty data stack" << colors::WHITE << "\n";
-            return -1;
+            throw;
         }
         const int r = dataStack.top();
         dataStack.pop();

@@ -43,6 +43,7 @@ namespace errors {
         OUT_OF_MEMORY,
         FREE_UNALLOCATED_MEMORY,
 
+        TOO_MANY_PARAMETERS,
         INCORRECT_NUMBER_OF_ARGUMENTS,
         REDECLARATION
     };

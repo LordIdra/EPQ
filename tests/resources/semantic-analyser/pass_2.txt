@@ -2,9 +2,9 @@ int4 literally_die(int4 x) {
     return x*4;
 }
 
-int64 Factorial(int32 x) {
+int64 Factorial(int8 x) {
    int16 y = int16(1);
-   while (y < x) {
+   while (y < int16(x)) {
         int4 i = int4(2);
         y *= int16(call literally_die(i));
    }
@@ -21,5 +21,5 @@ void main() {
         x /= z;
         x += int4(u);
     }
-    output call Factorial(int32(x));
+    output call Factorial(int8(x));
 }

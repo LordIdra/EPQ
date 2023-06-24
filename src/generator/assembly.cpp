@@ -1,6 +1,5 @@
 #include "generator/dataValue.hpp"
 #include "generator/memory.hpp"
-#include "generator/registers.hpp"
 #include <cstdlib>
 #include <generator/assembly.hpp>
 
@@ -11,6 +10,7 @@
 #include <util/util.hpp>
 
 #include <generator/dataValues.hpp>
+#include <generator/generator.hpp>
 
 
 namespace assembly {
@@ -41,8 +41,8 @@ namespace assembly {
         return identifier + "_" + std::to_string(labelCount.at(identifier));
     }
 
-    auto LabelLatestInstruction(const string &label) -> void {
-        labels.insert(std::make_pair(label, program.size() - 1));
+    auto Label(const string &label) -> void {
+        labels.insert(std::make_pair(label, program.size()));
     }
 
     auto ResolveLabels() -> void {
@@ -54,7 +54,7 @@ namespace assembly {
 
                 const int valueType = std::stoi(instruction.substr(i1+1, 1));
                 const string identifier = instruction.substr(i1+2, i2-i1-2);
-                const int address = labels.at(identifier);
+                const int address = labels.at(identifier) - 1;
                 int value = 0;
 
                 if (valueType == 3) {
@@ -64,7 +64,7 @@ namespace assembly {
                 } else if (valueType == 1) {
                     value = div(div(address, 256).rem, 16).rem;
                 }
-                
+
                 instruction = instruction.substr(0, i1)
                             + FormatValue(value)
                             + instruction.substr(i2+1, instruction.size()-i2-1);
@@ -79,7 +79,7 @@ namespace assembly {
     auto GetComments() -> const unordered_map<int, string>& {
         return comments;
     }
-    
+
     auto NOP() -> void {
         program.emplace_back("NOP");
     }
@@ -92,10 +92,17 @@ namespace assembly {
         program.push_back("LDA " + FormatValue(r1) + " " + FormatValue(r2) + " " + FormatValue(r3));
     }
 
-    auto LDA_VALUE(const int v1, const int v2, const int v3) -> void {
-        SET(v1, MDR_1);
-        SET(v2, MDR_2);
-        SET(v3, MER_1);
+    auto LDA(const string &identifier) -> void {
+        const int address = generator::GetIdentifierAddress(identifier);
+
+        const int a1 = div(address, 256).quot;
+        const int a2 = div(div(address, 256).rem, 16).quot;
+        const int a3 = div(div(address, 256).rem, 16).rem;
+
+        assembly::Comment("load " + identifier);
+        SET(a1, MDR_1);
+        SET(a2, MDR_2);
+        SET(a3, MER_1);
         LDA(MDR_1, MDR_2, MER_1);
     }
 
@@ -103,17 +110,24 @@ namespace assembly {
         program.push_back("STA " + ResolveDataValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3));
     }
 
-    auto STA(const Register r1, const Register r2, const Register r3) -> void {
-        program.push_back("STA " + FormatValue(r1) + " " + FormatValue(r2) + " " + FormatValue(r3));
+    auto STA(const Register r1, const int r2, const int r3) -> void {
+        program.push_back("STA " + FormatValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3));
     }
 
-    auto STA_VALUE(const int v1, const int v2, const int v3) -> void {
+    auto STA(const string &identifier) -> void {
+        const int address = generator::GetIdentifierAddress(identifier);
+
+        const int a1 = div(address, 256).quot;
+        const int a2 = div(div(address, 256).rem, 16).quot;
+        const int a3 = div(div(address, 256).rem, 16).rem;
+
         const int r1 = dataValues::Allocate();
         const int r2 = dataValues::Allocate();
 
-        SET(v1, MER_1);
-        SET(v2, r1);
-        SET(v3, r2);
+        assembly::Comment("store " + identifier);
+        SET(a1, MER_1);
+        SET(a2, r1);
+        SET(a3, r2);
         STA(MER_1, r1, r2);
 
         dataValues::Free(r1);
@@ -172,10 +186,15 @@ namespace assembly {
         program.push_back("BRA " + ResolveDataValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3));
     }
 
-    auto BRA_VALUE(const string &label) -> void {
-        SET(v1, MDR_1);
-        SET(v2, MDR_2);
-        SET(v3, MER_1);
+    auto BRA(const Register r1, const Register r2, const Register r3) -> void {
+        program.push_back("BRA " + FormatValue(r1) + " " + FormatValue(r2) + " " + FormatValue(r3));
+    }
+
+    auto BRA(const string &label) -> void {
+        assembly::Comment("branch to " + label);
+        SET("1" + label, MDR_1);
+        SET("2" + label, MDR_2);
+        SET("3" + label, MER_1);
         BRA(MDR_1, MDR_2, MER_1);
     }
 
@@ -183,7 +202,12 @@ namespace assembly {
         program.push_back("BRP " + ResolveDataValue(r1) + " " + ResolveDataValue(r2) + " " + ResolveDataValue(r3) + " " + ResolveDataValue(r4));
     }
 
-    auto BRP_VALUE(const string &label, const int r1) -> void {
+    auto BRP(const Register r1, const Register r2, const Register r3, const int r4) -> void {
+        program.push_back("BRP " + FormatValue(r1) + " " + FormatValue(r2) + " " + FormatValue(r3) + " " + ResolveDataValue(r4));
+    }
+
+    auto BRP(const string &label, const int r1) -> void {
+        assembly::Comment("branch to " + label);
         SET("1" + label, MDR_1);
         SET("2" + label, MDR_2);
         SET("3" + label, MER_1);
@@ -214,8 +238,12 @@ namespace assembly {
         program.push_back("SET " + FormatValue(v1) + " " + FormatValue(r1));
     }
 
-    auto SET(const string &identifier, const int r1) -> void {
-        program.push_back("SET " "@" + identifier + "%" + " " + ResolveDataValue(r1));
+    auto SET(const string &label, const int r1) -> void {
+        program.push_back("SET " "@" + label + "%" + " " + ResolveDataValue(r1));
+    }
+
+    auto SET(const string &label, const Register r1) -> void {
+        program.push_back("SET " "@" + label + "%" + " " + FormatValue(r1));
     }
 
     auto Comment(const string &comment) -> void {
